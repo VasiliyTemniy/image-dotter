@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/VasiliyTemniy/image-dotter/issues"
   },
-  "homepage": "https://github.com/VasiliyTemniy/image-dotter#readme"
+  "homepage": "https://github.com/VasiliyTemniy/image-dotter#readme",
+  "devDependencies": {
+    "eslint": "^8.25.0"
+  }
 }
