@@ -1,0 +1,19 @@
+{
+  "name": "image-dotter",
+  "description": "maketh coloured dot array for further usage",
+  "version": "0.1.0",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VasiliyTemniy/image-dotter.git"
+  },
+  "author": "VasiliyTemniy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VasiliyTemniy/image-dotter/issues"
+  },
+  "homepage": "https://github.com/VasiliyTemniy/image-dotter#readme"
+}
