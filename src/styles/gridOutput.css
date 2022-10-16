@@ -1,0 +1,43 @@
+:root {
+  --unit: 10px;
+}
+
+.background-container {
+  background-color: #1c1e21;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+.show {
+  opacity: 0;
+  animation: ani 2.5s forwards;
+}
+
+.hide {
+  opacity: 1;
+  animation: ani 2.5s reverse;
+}
+
+.shown {
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+@keyframes ani {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.row {
+  display: flex;
+}
