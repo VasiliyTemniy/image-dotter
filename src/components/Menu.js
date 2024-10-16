@@ -1,50 +1,50 @@
-import { useEffect } from 'react'
-import { makeColorGrid } from '../utils/dottergrid'
-import '../styles/nav-style.css'
+import { useEffect } from 'react';
+import { makeColorGrid } from '../utils/dottergrid';
+import '../styles/nav-style.css';
 
 const Menu = ({ handleFileSelection, gridOutputRef }) => {
 
   useEffect(() => {
-    document.getElementById('rowsInput').value = 50
-    document.getElementById('columnsInput').value = 50
-  }, [])
+    document.getElementById('rowsInput').value = 50;
+    document.getElementById('columnsInput').value = 50;
+  }, []);
 
   const handleCreateClick = (e) => {
-    e.preventDefault
-    const canvasInput = document.getElementById('myCanvas')
-    const contextInput = canvasInput.getContext('2d')
-    const rowsInput = document.getElementById('rowsInput').value
-    const columnsInput = document.getElementById('columnsInput').value
-    const grid = makeColorGrid(rowsInput, columnsInput, contextInput)
-    gridOutputRef.current.handleCreate(grid)
-  }
+    e.preventDefault();
+    const canvasInput = document.getElementById('myCanvas');
+    const contextInput = canvasInput.getContext('2d');
+    const rowsInput = document.getElementById('rowsInput').value;
+    const columnsInput = document.getElementById('columnsInput').value;
+    const grid = makeColorGrid(rowsInput, columnsInput, contextInput);
+    gridOutputRef.current.handleCreate(grid);
+  };
 
   const handleSaveClick = async (e) => {
-    e.preventDefault
+    e.preventDefault();
     const handle = await window.showSaveFilePicker({
       suggestedName: 'grid.json',
       types: [{
-          description: 'Output grid',
-          accept: { 'application/json': ['.json'] },
+        description: 'Output grid',
+        accept: { 'application/json': ['.json'] },
       }],
-    })
+    });
 
-    const blob = new Blob([JSON.stringify(gridOutputRef.current.grid)], { type: "application/json" })
+    const blob = new Blob([JSON.stringify(gridOutputRef.current.grid)], { type: 'application/json' });
 
-    const writableStream = await handle.createWritable()
-    await writableStream.write(blob)
-    await writableStream.close()
-  }
+    const writableStream = await handle.createWritable();
+    await writableStream.write(blob);
+    await writableStream.close();
+  };
 
   const backgroundChangeColor = (e) => {
-    e.preventDefault
-    const background = document.getElementById('background')
-    background.style.backgroundColor = e.target.value
-  }
+    e.preventDefault();
+    const background = document.getElementById('background');
+    background.style.backgroundColor = e.target.value;
+  };
 
   const dotsChangeColor = (e) => {
-    e.preventDefault
-  }
+    e.preventDefault();
+  };
 
   return (
     <>
@@ -65,9 +65,9 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
               className="file-input__label"
               title="Select a file to operate with"
               accept=".bmp, .jpg, .jpeg, .png"
-              >
+            >
                 Select file
-              </label>
+            </label>
             <input id="fileInput" type="file" onChange={handleFileSelection} className="file-input__field"/>
           </li>
           <li className="color-info">
@@ -79,7 +79,7 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
               htmlFor="rowsInput"
               className="text-input__label"
               title="Changes quantity of rows in output"
-              >
+            >
               rows
             </label>
             <input id="rowsInput" name="rows" className="text-input__field"/>
@@ -89,7 +89,7 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
               htmlFor="columnsInput"
               className="text-input__label"
               title="Changes quantity of columns in output"
-              >
+            >
               columns
             </label>
             <input id="columnsInput" name="columns" className="text-input__field"/>
@@ -111,7 +111,7 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
               htmlFor="outputBackgroundColor"
               className="color-input__label"
               title="Changes background color for react output preview"
-              >
+            >
               Background
             </label>
           </li>
@@ -127,15 +127,15 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
               htmlFor="surroundingDotsColor"
               className="color-input__label"
               title="Changes color of surrounding dots for react output"
-              >
+            >
                 Surrounding dots
             </label>
           </li>
         </ul>
       </nav>
     </>
-  )
+  );
 
-}
+};
 
-export default Menu
+export default Menu;

@@ -3,7 +3,7 @@ const ImageInit = () => {
   const topsideStyle = {
     border: '1px solid #000000',
     display: 'inline-block'
-  }
+  };
 
   return (
     <>
@@ -24,7 +24,7 @@ const ImageInit = () => {
         Your browser does not support the HTML5 canvas tag.
       </canvas>
     </>
-  )
-}
+  );
+};
 
-export default ImageInit
+export default ImageInit;
