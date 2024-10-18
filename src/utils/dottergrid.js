@@ -1,24 +1,23 @@
-/* eslint-disable no-unused-vars */
 export const encodeImageFileAsURL = () => {
-  const canvasInput = document.getElementById('myCanvas');
+  const canvasInput = document.getElementById('input-canvas');
   const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
   const outputColor = document.getElementById('color');
-  const outputColorHex = document.getElementById('colorHex');
+  const outputColorHex = document.getElementById('color-hex');
 
-  const canvasOutput = document.getElementById('outputCanvas');
+  const canvasOutput = document.getElementById('output-canvas');
   const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
 
-  const rowsInput = document.getElementById('rowsInput').value;
-  const columnsInput = document.getElementById('columnsInput').value;
+  const rowsInput = document.getElementById('rows-input').value;
+  const columnsInput = document.getElementById('columns-input').value;
 
-  const file = document.getElementById('fileInput').files[0];
+  const file = document.getElementById('file-input').files[0];
 
   canvasInput.addEventListener('mousemove', (e) => {
     const x = e.offsetX;
     const y = e.offsetY;
     const data = contextInput.getImageData(x, y, 1, 1).data;
     outputColor.textContent = `red ${data[0]} green ${data[1]} blue ${data[2]} alpha ${data[3]}`;
-    outputColorHex.textContent = `${rgba2hex(data[0], data[1], data[2], data[3])}`;
+    outputColorHex.textContent = `${rgba2hex(data[0], data[1], data[2], data[3]).toUpperCase()}`;
   });
 
   canvasOutput.addEventListener('mousemove', (e) => {
@@ -26,7 +25,7 @@ export const encodeImageFileAsURL = () => {
     const y = e.offsetY;
     const data = contextOutput.getImageData(x, y, 1, 1).data;
     outputColor.textContent = `red ${data[0]} green ${data[1]} blue ${data[2]} alpha ${data[3]}`;
-    outputColorHex.textContent = `${rgba2hex(data[0], data[1], data[2], data[3])}`;
+    outputColorHex.textContent = `${rgba2hex(data[0], data[1], data[2], data[3]).toUpperCase()}`;
   });
 
   const reader = new FileReader();

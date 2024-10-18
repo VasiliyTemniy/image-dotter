@@ -1,20 +1,19 @@
 import { useEffect } from 'react';
 import { makeColorGrid } from '../utils/dottergrid';
-import '../styles/nav-style.css';
 
 const Menu = ({ handleFileSelection, gridOutputRef }) => {
 
   useEffect(() => {
-    document.getElementById('rowsInput').value = 50;
-    document.getElementById('columnsInput').value = 50;
+    document.getElementById('rows-input').value = 50;
+    document.getElementById('columns-input').value = 50;
   }, []);
 
   const handleCreateClick = (e) => {
     e.preventDefault();
-    const canvasInput = document.getElementById('myCanvas');
+    const canvasInput = document.getElementById('input-canvas');
     const contextInput = canvasInput.getContext('2d');
-    const rowsInput = document.getElementById('rowsInput').value;
-    const columnsInput = document.getElementById('columnsInput').value;
+    const rowsInput = document.getElementById('rows-input').value;
+    const columnsInput = document.getElementById('columns-input').value;
     const grid = makeColorGrid(rowsInput, columnsInput, contextInput);
     gridOutputRef.current.handleCreate(grid);
   };
@@ -55,44 +54,40 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
           DOTTER
         </h2>
         <ul>
-          <li>
-            <input id="darkCheck" type="checkbox" name="Dark theme"/>
-            <label htmlFor="darkCheck" className="label">Dark theme</label>
-          </li>
           <li className="file-input">
             <label
-              htmlFor="fileInput"
+              htmlFor="file-input"
               className="file-input__label"
               title="Select a file to operate with"
               accept=".bmp, .jpg, .jpeg, .png"
             >
                 Select file
             </label>
-            <input id="fileInput" type="file" onChange={handleFileSelection} className="file-input__field"/>
+            <input id="file-input" type="file" onChange={handleFileSelection} className="file-input__field"/>
           </li>
           <li className="color-info">
             <div id="color" >Hover mouse over canvas to get color</div>
-            <div id="colorHex" >#00000000</div>
+            <div id="color-hex" >#00000000</div>
           </li>
           <li className="text-input text-input_floating">
             <label
-              htmlFor="rowsInput"
+              htmlFor="rows-input"
               className="text-input__label"
               title="Changes quantity of rows in output"
             >
               rows
             </label>
-            <input id="rowsInput" name="rows" className="text-input__field"/>
+            <input id="rows-input" name="rows" className="text-input__field"/>
           </li>
           <li className="text-input text-input_floating">
             <label
-              htmlFor="columnsInput"
+              htmlFor="columns-input"
               className="text-input__label"
               title="Changes quantity of columns in output"
             >
               columns
             </label>
-            <input id="columnsInput" name="columns" className="text-input__field"/>
+            <input id="columns-input" name="columns" className="text-input__field"/>
           </li>
           <li className="button-container">
             <button onClick={handleFileSelection}>Apply</button>
