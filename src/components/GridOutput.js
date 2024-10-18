@@ -1,5 +1,4 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import '../styles/grid-output.css';
 
 const GridOutput = forwardRef((props, refs) => {
   const [grid, setGrid] = useState([]);
