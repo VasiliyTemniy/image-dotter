@@ -51,7 +51,7 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
       <nav className="nav">
         <label htmlFor="nav-toggle" className="nav-toggle"></label>
         <h2 className="logo">
-          DOTTER
+          <span>I</span><span style={{ color: '#ff0000' }}>Dotter</span>
         </h2>
         <ul>
           <li className="file-input">
