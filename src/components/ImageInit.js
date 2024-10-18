@@ -8,7 +8,7 @@ const ImageInit = () => {
   return (
     <>
       <canvas
-        id="myCanvas"
+        id="input-canvas"
         width="500"
         height="500"
         style={topsideStyle}
@@ -16,7 +16,7 @@ const ImageInit = () => {
         Your browser does not support the HTML5 canvas tag.
       </canvas>
       <canvas
-        id="outputCanvas"
+        id="output-canvas"
         width="500"
         height="500"
         style={topsideStyle}
