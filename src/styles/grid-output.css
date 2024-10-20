@@ -2,11 +2,11 @@
   --unit: 10px;
 }
 
-.background-container {
+.grid-output__background {
   background-color: #1c1e21;
 }
 
-.container {
+.grid-output__container {
   position: relative;
   display: flex;
   flex-direction: column;

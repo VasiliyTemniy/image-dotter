@@ -1,9 +1,12 @@
 /* Buttons + file-input, which is styled as the same button */
 .button-container {
   display: flex;
+  flex-direction: column;
   justify-content: left;
-  align-items: center;
+  width: 14rem;
   flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 0;
   margin: 0;
 }
 
@@ -11,7 +14,7 @@
   display: none;
 }
 
-.button-container > button,
+.button,
 .file-input__label {
   background-color:#e3e3e3;
   color: #222;
@@ -21,10 +24,9 @@
   outline: none;
   position: relative;
   cursor: pointer;
-  margin: 1rem;
 }
 
-.button-container > button::before,
+.button::before,
 .file-input__label::before {
   content:'';
   position: absolute;
@@ -36,8 +38,8 @@
   transition: top, left, right, bottom, 100ms ease-in-out;
 }
 
-.button-container > button:hover::before,
-.button-container > button:focus-visible::before,
+.button:hover::before,
+.button:focus-visible::before,
 .file-input__label:hover::before,
 .file-input__label:focus-visible::before {
   top: -4px;
@@ -46,7 +48,7 @@
   bottom: -4px;
 }
 
-.button-container > button:active::before,
+.button:active::before,
 .file-input__label:active::before {
   top: 0;
   left: 0;
@@ -54,7 +56,7 @@
   bottom: 0;
 }
 
-.button-container > button:focus,
+.button:focus,
 .file-input__label:focus {
   outline: none;
 }
