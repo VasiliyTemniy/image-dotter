@@ -1,52 +1,42 @@
-export const encodeImageFileAsURL = () => {
-  const canvasInput = document.getElementById('input-canvas');
-  const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
-  const outputColor = document.getElementById('color');
-  const outputColorHex = document.getElementById('color-hex');
-
-  const canvasOutput = document.getElementById('output-canvas');
-  const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
-
-  const rowsInput = document.getElementById('rows-input').value;
-  const columnsInput = document.getElementById('columns-input').value;
-
-  const file = document.getElementById('file-input').files[0];
-
-  canvasInput.addEventListener('mousemove', (e) => {
-    const x = e.offsetX;
-    const y = e.offsetY;
-    const data = contextInput.getImageData(x, y, 1, 1).data;
-    outputColor.textContent = `red ${data[0]} green ${data[1]} blue ${data[2]} alpha ${data[3]}`;
-    outputColorHex.textContent = `${rgba2hex(data[0], data[1], data[2], data[3]).toUpperCase()}`;
+export const readImage = (file) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        const image = new Image();
+        image.src = reader.result;
+        image.onload = () => {
+          resolve(image);
+        };
+      };
+    } catch (error) {
+      reject(error);
+    }
   });
-
-  canvasOutput.addEventListener('mousemove', (e) => {
-    const x = e.offsetX;
-    const y = e.offsetY;
-    const data = contextOutput.getImageData(x, y, 1, 1).data;
-    outputColor.textContent = `red ${data[0]} green ${data[1]} blue ${data[2]} alpha ${data[3]}`;
-    outputColorHex.textContent = `${rgba2hex(data[0], data[1], data[2], data[3]).toUpperCase()}`;
-  });
-
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onloadend = () => {
-    const image = new Image();
-    image.src = reader.result;
-    image.onload = () => {
-      drawImage(image, canvasInput, contextInput);
-      const grid = makeColorGrid(rowsInput, columnsInput, contextInput);
-      drawOutputByGrid(grid, rowsInput, columnsInput, 500, 500, contextOutput);
-    };
-  };
 };
 
-const drawImage = (image, canvasInput, contextInput) => {
-  const width = image.width;
-  const height = image.height;
-  canvasInput.width = width;
-  canvasInput.height = height;
-  contextInput.drawImage(image, 0, 0, width, height);
+export const drawImage = (image, inputCanvasRef) => {
+  // TODO handle something in regards of input image scaling
+  // const width = image.width;
+  // const height = image.height;
+  // canvasInput.width = width;
+  // canvasInput.height = height;
+  // contextInput.drawImage(image, 0, 0, width, height);
+  const canvasInput = inputCanvasRef.current;
+  const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
+  contextInput.drawImage(image, 0, 0, canvasInput.width, canvasInput.height);
+};
+
+export const drawGridPreview = (inputCanvasRef, outputCanvasRef, rowsCount, columnsCount) => {
+  const canvasInput = inputCanvasRef.current;
+  const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
+
+  const canvasOutput = outputCanvasRef.current;
+  const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
+
+  const grid = makeColorGrid(rowsCount, columnsCount, contextInput);
+  drawOutputByGrid(grid, rowsCount, columnsCount, 500, 500, contextOutput);
 };
 
 export const makeColorGrid = (rowsNumber, columnsNumber, contextInput) => {
@@ -60,7 +50,7 @@ export const makeColorGrid = (rowsNumber, columnsNumber, contextInput) => {
       const x = columnWidth * column;
       const y = rowHeight * row;
       const data = contextInput.getImageData(x, y, columnWidth, rowHeight).data;
-      const color = midlleweightColor(data);
+      const color = middleweightColor(data);
       gridrow.push({ color, row, column });
     }
     grid.push(gridrow);
@@ -71,19 +61,17 @@ export const makeColorGrid = (rowsNumber, columnsNumber, contextInput) => {
 
 const drawOutputByGrid = (
   grid,
-  rowsNumber,
-  columnsNumber,
+  rowsCount,
+  columnsCount,
   outputCanvasWidth,
   outputCanvasHeight,
   contextOutput,
 ) => {
   contextOutput.clearRect(0, 0, contextOutput.canvas.width, contextOutput.canvas.height);
-
-  const outputWidth = Math.floor(outputCanvasWidth / rowsNumber);
-  const outputHeight = Math.floor(outputCanvasHeight / columnsNumber);
-
-  for (let row = 0; row < rowsNumber; row++) {
-    for (let column = 0; column < columnsNumber; column++) {
+  const outputWidth = Math.floor(outputCanvasWidth / rowsCount);
+  const outputHeight = Math.floor(outputCanvasHeight / columnsCount);
+  for (let row = 0; row < rowsCount; row++) {
+    for (let column = 0; column < columnsCount; column++) {
       const xOut = outputWidth * column + Math.floor(outputWidth / 2);
       const yOut = outputHeight * row + Math.floor(outputHeight / 2);
       drawCircle(contextOutput, xOut, yOut, Math.floor(outputWidth / 2) - 1, grid[row][column].color);
@@ -91,7 +79,7 @@ const drawOutputByGrid = (
   }
 };
 
-const midlleweightColor = (data) => {
+const middleweightColor = (data) => {
   let red = 0;
   let green = 0;
   let blue = 0;
@@ -108,16 +96,16 @@ const midlleweightColor = (data) => {
   green = Math.round(green / pixelsCounter);
   blue = Math.round(blue / pixelsCounter);
   alpha = Math.round(alpha / pixelsCounter);
-  return rgba2hex(red, green, blue, alpha);
+  return rgba2hex([red, green, blue, alpha]);
 };
 
-const rgba2hex = (red, green, blue, alpha) => {
+export const rgba2hex = (rgba) => {
   return (
     '#' +
-    (red | (1 << 8)).toString(16).slice(1) +
-    (green | (1 << 8)).toString(16).slice(1) +
-    (blue | (1 << 8)).toString(16).slice(1) +
-    (alpha | (1 << 8)).toString(16).slice(1)
+    (rgba[0] | (1 << 8)).toString(16).slice(1) +
+    (rgba[1] | (1 << 8)).toString(16).slice(1) +
+    (rgba[2] | (1 << 8)).toString(16).slice(1) +
+    (rgba[3] | (1 << 8)).toString(16).slice(1)
   );
 };
 

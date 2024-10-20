@@ -1,20 +1,27 @@
-import { useEffect } from 'react';
-import { makeColorGrid } from '../utils/dottergrid';
+import { makeColorGrid, rgba2hex } from '../utils/dottergrid';
 
-const Menu = ({ handleFileSelection, gridOutputRef }) => {
-
-  useEffect(() => {
-    document.getElementById('rows-input').value = 50;
-    document.getElementById('columns-input').value = 50;
-  }, []);
+const Menu = ({
+  handleFileSelection,
+  gridOutputRef,
+  inputCanvasRef,
+  rowsCount,
+  updateRowsCount,
+  columnsCount,
+  updateColumnsCount,
+  backgroundColor,
+  updateBackgroundColor,
+  surroundingDotsColor,
+  updateSurroundingDotsColor,
+  pipetteColor,
+  alwaysRedraw,
+  updateAlwaysRedraw
+}) => {
 
   const handleCreateClick = (e) => {
     e.preventDefault();
-    const canvasInput = document.getElementById('input-canvas');
+    const canvasInput = inputCanvasRef.current;
     const contextInput = canvasInput.getContext('2d');
-    const rowsInput = document.getElementById('rows-input').value;
-    const columnsInput = document.getElementById('columns-input').value;
-    const grid = makeColorGrid(rowsInput, columnsInput, contextInput);
+    const grid = makeColorGrid(rowsCount, columnsCount, contextInput);
     gridOutputRef.current.handleCreate(grid);
   };
 
@@ -36,18 +43,36 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
   };
 
   const backgroundChangeColor = (e) => {
-    e.preventDefault();
-    const background = document.getElementById('background');
+    updateBackgroundColor(e.target.value);
+    const background = gridOutputRef.current.backgroundRef.current;
     background.style.backgroundColor = e.target.value;
   };
 
   const dotsChangeColor = (e) => {
-    e.preventDefault();
+    updateSurroundingDotsColor(e.target.value);
+  };
+
+  const pipetteRGBAText = () => {
+    if (!pipetteColor) {
+      return '  0,   0,   0,   0';
+    }
+    const red = String(pipetteColor[0]).padStart(3, ' ');
+    const green = String(pipetteColor[1]).padStart(3, ' ');
+    const blue = String(pipetteColor[2]).padStart(3, ' ');
+    const alpha = String(pipetteColor[3]).padStart(3, ' ');
+    return `${red}, ${green}, ${blue}, ${alpha}`;
+  };
+
+  const pipetteHexText = () => {
+    if (!pipetteColor) {
+      return '#00000000';
+    }
+    return rgba2hex(pipetteColor).toUpperCase();
   };
 
   return (
     <>
-      <input type="checkbox" id="nav-toggle" hidden />
+      <input type="checkbox" id="nav-toggle" defaultChecked hidden />
       <nav className="nav">
         <label htmlFor="nav-toggle" className="nav-toggle"></label>
         <h2 className="logo">
@@ -63,11 +88,23 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
             >
                 Select file
             </label>
-            <input id="file-input" type="file" onChange={handleFileSelection} className="file-input__field"/>
+            <input
+              id="file-input"
+              type="file"
+              onChange={handleFileSelection}
+              className="file-input__field"
+            />
           </li>
           <li className="color-info">
-            <div id="color" >Hover mouse over canvas to get color</div>
-            <div id="color-hex" >#00000000</div>
+            <div>Color under cursor (pipette):</div>
+            <div id="color-rgba" style={{ fontFamily: 'monospace' }}>
+              <pre>
+                RGBA: {pipetteRGBAText()}
+              </pre>
+            </div>
+            <div id="color-hex" style={{ fontFamily: 'monospace' }}>
+              {pipetteHexText()}
+            </div>
           </li>
           <li className="text-input text-input_floating">
             <label
@@ -77,7 +114,13 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
             >
               rows
             </label>
-            <input id="rows-input" name="rows" className="text-input__field"/>
+            <input
+              id="rows-input"
+              name="rows"
+              className="text-input__field"
+              value={rowsCount}
+              onChange={(e) => updateRowsCount(e.target.value)}
+            />
           </li>
           <li className="text-input text-input_floating">
             <label
@@ -87,23 +130,46 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
             >
               columns
             </label>
-            <input id="columns-input" name="columns" className="text-input__field"/>
+            <input
+              id="columns-input"
+              name="columns"
+              className="text-input__field"
+              value={columnsCount}
+              onChange={(e) => updateColumnsCount(e.target.value)}
+            />
+          </li>
+          <li>
+            <input
+              id="always-redraw"
+              type="checkbox"
+              name="always-redraw"
+              className="checkbox-input__field"
+              checked={alwaysRedraw}
+              onChange={(e) => updateAlwaysRedraw(e.target.checked)}
+            />
+            <label
+              htmlFor="always-redraw"
+              className="checkbox-input__label"
+              title="Should redraw preview on inputs change"
+            >
+              Always redraw preview on params change
+            </label>
           </li>
           <li className="button-container">
-            <button onClick={handleFileSelection}>Apply</button>
-            <button onClick={handleCreateClick}>Create</button>
-            <button onClick={handleSaveClick}>Save output</button>
+            <button className="button" onClick={handleFileSelection}>Redraw canvas preview</button>
+            <button className="button" onClick={handleCreateClick}>Redraw html preview</button>
+            <button className="button" onClick={handleSaveClick}>Save output</button>
           </li>
           <li className="color-input">
             <input
-              id="outputBackgroundColor"
+              id="output-background-color"
               type="color"
-              name="outputBackgroundColor"
-              value="#1c1e21"
+              name="output-background-color"
+              value={backgroundColor}
               onChange={backgroundChangeColor}
             />
             <label
-              htmlFor="outputBackgroundColor"
+              htmlFor="output-background-color"
               className="color-input__label"
               title="Changes background color for react output preview"
             >
@@ -112,14 +178,14 @@ const Menu = ({ handleFileSelection, gridOutputRef }) => {
           </li>
           <li className="color-input">
             <input
-              id="surroundingDotsColor"
+              id="surrounding-dots-color"
               type="color"
-              name="surroundingDotsColor"
-              value="#325e9f"
+              name="surrounding-dots-color"
+              value={surroundingDotsColor}
               onChange={dotsChangeColor}
             />
             <label
-              htmlFor="surroundingDotsColor"
+              htmlFor="surrounding-dots-color"
               className="color-input__label"
               title="Changes color of surrounding dots for react output"
             >

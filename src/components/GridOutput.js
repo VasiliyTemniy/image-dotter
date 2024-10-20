@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 
 const GridOutput = forwardRef((props, refs) => {
   const [grid, setGrid] = useState([]);
@@ -7,38 +7,39 @@ const GridOutput = forwardRef((props, refs) => {
     setGrid(grid);
   };
 
+  const containerRef = useRef(null);
+  const backgroundRef = useRef(null);
+
   useImperativeHandle(refs, () => {
     return {
       handleCreate,
+      backgroundRef,
       grid
     };
   });
 
   useEffect(() => {
-    const container = document.querySelector('.container');
+    const container = containerRef.current;
+    if (!container) return;
     container.classList.add('shown');
     container.addEventListener('click', () => {
       if (container.classList.contains('shown')) {
         container.classList.remove('shown');
         container.classList.add('hide');
-        //console.log('here 1 ', container.classList)
       } else
       if (container.classList.contains('hidden')) {
         container.classList.remove('hidden');
         container.classList.add('show');
-        //console.log('here 2 ', container.classList)
       }
     });
     container.addEventListener('animationend', () => {
       if (container.classList.contains('show')) {
         container.classList.remove('show');
         container.classList.add('shown');
-        //console.log('here 3 ', container.classList)
       }
       if (container.classList.contains('hide')) {
         container.classList.remove('hide');
         container.classList.add('hidden');
-        //console.log('here 4 ', container.classList)
       }
     });
   }, []);
@@ -76,8 +77,8 @@ const GridOutput = forwardRef((props, refs) => {
 
   return (
     <>
-      <div id="background" className="background-container" style={containerStyle}>
-        <div id="container" className="container" style={containerStyle}>
+      <div id="background" className="grid-output__background" ref={backgroundRef} style={containerStyle}>
+        <div id="container" className="grid-output__container" ref={containerRef} style={containerStyle}>
           {outputGrid}
         </div>
       </div>
