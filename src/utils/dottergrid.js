@@ -1,3 +1,5 @@
+import { rgba2hex } from './color';
+
 /**
  * { color: string, length: number, angle: number, stroke: string, strokeWidth: number }
  * @typedef {[string, number, number, string, number]} Cell
@@ -152,21 +154,6 @@ const middleweightColor = (data) => {
   blue = Math.round(blue / pixelsCounter);
   alpha = Math.round(alpha / pixelsCounter);
   return rgba2hex([red, green, blue, alpha]);
-};
-
-/**
- * RGBA represented as [0-255, 0-255, 0-255, 0-255] to hex
- * @param {[number, number, number, number]} rgba
- * @returns {string}
- */
-export const rgba2hex = (rgba) => {
-  return (
-    '#' +
-    (rgba[0] | (1 << 8)).toString(16).slice(1) +
-    (rgba[1] | (1 << 8)).toString(16).slice(1) +
-    (rgba[2] | (1 << 8)).toString(16).slice(1) +
-    (rgba[3] | (1 << 8)).toString(16).slice(1)
-  );
 };
 
 // /**
