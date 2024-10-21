@@ -9,15 +9,14 @@ import './styles/nav.css';
 import './styles/button.css';
 import './styles/input.css';
 import './styles/notification.css';
+import { pipetteHexText, pipetteRGBAText } from './utils/color';
 
 
 const App = () => {
-
   const [rowsCount, setRowsCount] = useState(50);
   const [columnsCount, setColumnsCount] = useState(50);
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
-  const [pipetteColor, setPipetteColor] = useState([0, 0, 0, 0]);
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
   const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
 
@@ -34,6 +33,9 @@ const App = () => {
   const gridOutputRef = useRef();
   const inputCanvasRef = useRef();
   const outputCanvasRef = useRef();
+
+  const pipetteRGBARef = useRef();
+  const pipetteHexRef = useRef();
 
   const updateRowsCount = (count) => {
     if (!count || !Number.isInteger(Number(count)) || Number(count) < 1) {
@@ -68,7 +70,12 @@ const App = () => {
   };
 
   const updatePipetteColor = (rgba) => {
-    setPipetteColor(rgba);
+    if (!pipetteRGBARef || !pipetteHexRef) {
+      return;
+    }
+
+    pipetteRGBARef.current.innerHTML = `<pre>RGBA: ${pipetteRGBAText(rgba)}</pre>`;
+    pipetteHexRef.current.innerHTML = `<pre>Hex: ${pipetteHexText(rgba)}</pre>`;
   };
 
   const updateAlwaysRedraw = (value) => {
@@ -103,9 +110,10 @@ const App = () => {
         updateBackgroundColor={updateBackgroundColor}
         surroundingDotsColor={surroundingDotsColor}
         updateSurroundingDotsColor={updateSurroundingDotsColor}
-        pipetteColor={pipetteColor}
         alwaysRedraw={alwaysRedraw}
         updateAlwaysRedraw={updateAlwaysRedraw}
+        pipetteRGBARef={pipetteRGBARef}
+        pipetteHexRef={pipetteHexRef}
       />
       <ImageInit
         inputCanvasRef={inputCanvasRef}

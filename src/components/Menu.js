@@ -1,4 +1,4 @@
-import { makeColorGrid, rgba2hex } from '../utils/dottergrid';
+import { makeColorGrid } from '../utils/dottergrid';
 
 const Menu = ({
   handleFileSelection,
@@ -12,9 +12,11 @@ const Menu = ({
   updateBackgroundColor,
   surroundingDotsColor,
   updateSurroundingDotsColor,
-  pipetteColor,
+  // pipetteColor,
   alwaysRedraw,
-  updateAlwaysRedraw
+  updateAlwaysRedraw,
+  pipetteRGBARef,
+  pipetteHexRef
 }) => {
 
   const handleCreateClick = (e) => {
@@ -52,24 +54,6 @@ const Menu = ({
     updateSurroundingDotsColor(e.target.value);
   };
 
-  const pipetteRGBAText = () => {
-    if (!pipetteColor) {
-      return '  0,   0,   0,   0';
-    }
-    const red = String(pipetteColor[0]).padStart(3, ' ');
-    const green = String(pipetteColor[1]).padStart(3, ' ');
-    const blue = String(pipetteColor[2]).padStart(3, ' ');
-    const alpha = String(pipetteColor[3]).padStart(3, ' ');
-    return `${red}, ${green}, ${blue}, ${alpha}`;
-  };
-
-  const pipetteHexText = () => {
-    if (!pipetteColor) {
-      return '#00000000';
-    }
-    return rgba2hex(pipetteColor).toUpperCase();
-  };
-
   return (
     <>
       <input type="checkbox" id="nav-toggle" defaultChecked hidden />
@@ -97,13 +81,15 @@ const Menu = ({
           </li>
           <li className="color-info">
             <div>Color under cursor (pipette):</div>
-            <div id="color-rgba" style={{ fontFamily: 'monospace' }}>
+            <div id="color-rgba" style={{ fontFamily: 'monospace' }} ref={pipetteRGBARef}>
               <pre>
-                RGBA: {pipetteRGBAText()}
+                RGBA:   0,   0,   0,   0
               </pre>
             </div>
-            <div id="color-hex" style={{ fontFamily: 'monospace' }}>
-              {pipetteHexText()}
+            <div id="color-hex" style={{ fontFamily: 'monospace' }} ref={pipetteHexRef}>
+              <pre>
+                Hex: #00000000
+              </pre>
             </div>
           </li>
           <li className="text-input text-input_floating">

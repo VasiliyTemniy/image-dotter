@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef, memo } from 'react';
 
 const GridOutput = forwardRef((props, refs) => {
   const [grid, setGrid] = useState([]);
@@ -50,6 +50,18 @@ const GridOutput = forwardRef((props, refs) => {
     gap: '1px',
   };
 
+  return (
+    <>
+      <div id="background" className="grid-output__background" ref={backgroundRef} style={containerStyle}>
+        <div id="container" className="grid-output__container" ref={containerRef} style={containerStyle}>
+          <MemoizedGrid grid={grid}/>
+        </div>
+      </div>
+    </>
+  );
+});
+
+const MemoizedGrid = memo(({ grid }) => {
   const rowStyle = {
     height: '8px',
     //height: '5%',
@@ -63,28 +75,24 @@ const GridOutput = forwardRef((props, refs) => {
     borderRadius: '1000px',
   };
 
-  const outputGrid = grid.map((row, rowIndex) => (
-    <div key={'grid-' + rowIndex} className="row" style={rowStyle}>
-      {row.map((cell, columnIndex) => (
-        <div
-          key={'r' + rowIndex + 'c' + columnIndex}
-          className="cell"
-          style={{ backgroundColor: cell[0], ...cellStyle }}
-        ></div>
+  return (
+    <div>
+      {grid.map((row, rowIndex) => (
+        <div key={'grid-' + rowIndex} className="row" style={rowStyle}>
+          {row.map((cell, columnIndex) => (
+            <div
+              key={'r' + rowIndex + 'c' + columnIndex}
+              className="cell"
+              style={{ backgroundColor: cell[0], ...cellStyle }}
+            ></div>
+          ))}
+        </div>
       ))}
     </div>
-  ));
-
-  return (
-    <>
-      <div id="background" className="grid-output__background" ref={backgroundRef} style={containerStyle}>
-        <div id="container" className="grid-output__container" ref={containerRef} style={containerStyle}>
-          {outputGrid}
-        </div>
-      </div>
-    </>
   );
 });
+
+MemoizedGrid.displayName = 'MemoizedGrid';
 
 GridOutput.displayName = 'GridOutput';
 
