@@ -32,12 +32,6 @@ export const readImage = (file) => {
  * @param {React.MutableRefObject<HTMLCanvasElement>} inputCanvasRef
  */
 export const drawImage = (image, inputCanvasRef) => {
-  // TODO handle something in regards of input image scaling
-  // const width = image.width;
-  // const height = image.height;
-  // canvasInput.width = width;
-  // canvasInput.height = height;
-  // contextInput.drawImage(image, 0, 0, width, height);
   const canvasInput = inputCanvasRef.current;
   const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
   contextInput.drawImage(image, 0, 0, canvasInput.width, canvasInput.height);
@@ -57,7 +51,7 @@ export const drawGridPreview = (inputCanvasRef, outputCanvasRef, rowsCount, colu
   const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
 
   const grid = makeColorGrid(rowsCount, columnsCount, contextInput);
-  drawOutputByGrid(grid, rowsCount, columnsCount, 500, 500, contextOutput);
+  drawOutputByGrid(grid, rowsCount, columnsCount, canvasOutput.width, canvasOutput.height, contextOutput);
 };
 
 /**
@@ -120,7 +114,7 @@ const drawOutputByGrid = (
         contextOutput,
         xOut,
         yOut,
-        Math.floor(outputWidth / 2) - 1,
+        Math.floor(outputWidth / 2) - 5,
         length,
         angle + Math.PI / 2,
         color,

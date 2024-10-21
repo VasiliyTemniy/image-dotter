@@ -1,9 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-const ImageInit = ({ inputCanvasRef, outputCanvasRef, updatePipetteColor }) => {
-
-  const [stretchCanvas, setStretchCanvas] = useState(true);
-  const [screenOverflow, setScreenOverflow] = useState(false);
+const ImageInit = ({
+  inputCanvasRef,
+  outputCanvasRef,
+  updatePipetteColor,
+  stretchCanvas,
+  updateStretchCanvas,
+  screenOverflow,
+  updateScreenOverflow
+}) => {
 
   const topsideStyle = {
     border: '1px solid #000000',
@@ -42,7 +47,7 @@ const ImageInit = ({ inputCanvasRef, outputCanvasRef, updatePipetteColor }) => {
   }, []);
 
   return (
-    <div className='container flex column gap-1rem'>
+    <div className='container width-fit-content'>
       <div className='container flex column padding-1rem gap-1rem'>
         <div className="checkbox-input">
           <input
@@ -51,7 +56,7 @@ const ImageInit = ({ inputCanvasRef, outputCanvasRef, updatePipetteColor }) => {
             name="stretch-canvas"
             className="checkbox-input__field"
             checked={stretchCanvas}
-            onChange={(e) => setStretchCanvas(e.target.checked)}
+            onChange={(e) => updateStretchCanvas(e.target.checked)}
           />
           <label
             htmlFor="stretch-canvas"
@@ -67,7 +72,7 @@ const ImageInit = ({ inputCanvasRef, outputCanvasRef, updatePipetteColor }) => {
             name="screen-overflow"
             className="checkbox-input__field"
             checked={screenOverflow}
-            onChange={(e) => setScreenOverflow(e.target.checked)}
+            onChange={(e) => updateScreenOverflow(e.target.checked)}
           />
           <label
             htmlFor="screen-overflow"
@@ -77,28 +82,28 @@ const ImageInit = ({ inputCanvasRef, outputCanvasRef, updatePipetteColor }) => {
           </label>
         </div>
       </div>
-      <div className='container padding-1rem border-black-1px width-fit-content bg-white'>
+      <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
         <div className='title'>
           Input image canvas
         </div>
         <canvas
           id="input-canvas"
           width="500"
-          height="500"
+          height="100"
           ref={inputCanvasRef}
           style={topsideStyle}
         >
           Your browser does not support the HTML5 canvas tag.
         </canvas>
       </div>
-      <div className='container padding-1rem border-black-1px width-fit-content bg-white'>
+      <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
         <div className='title'>
           Output grid preview canvas
         </div>
         <canvas
           id="output-canvas"
           width="500"
-          height="500"
+          height="100"
           ref={outputCanvasRef}
           style={topsideStyle}
         >

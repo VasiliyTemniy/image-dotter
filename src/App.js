@@ -16,12 +16,15 @@ import { pipetteHexText, pipetteRGBAText } from './utils/color';
 
 
 const App = () => {
+
   const [rowsCount, setRowsCount] = useState(50);
   const [columnsCount, setColumnsCount] = useState(50);
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
   const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
+  const [stretchCanvas, setStretchCanvas] = useState(true);
+  const [screenOverflow, setScreenOverflow] = useState(false);
 
   const showNotification = (text, type) => {
     if (message.timeoutId) {
@@ -85,6 +88,14 @@ const App = () => {
     setAlwaysRedraw(value);
   };
 
+  const updateStretchCanvas = (value) => {
+    setStretchCanvas(value);
+  };
+
+  const updateScreenOverflow = (value) => {
+    setScreenOverflow(value);
+  };
+
   const handleFileSelection = async (e) => {
     e.preventDefault();
     if (!e.target.files || !e.target.files[0]) {
@@ -93,6 +104,49 @@ const App = () => {
     }
 
     const image = await readImage(e.target.files[0]);
+
+    const windowWidth = window.innerWidth;
+
+    let unavailableWidth = 18;
+
+    const canvasStyle = window.getComputedStyle(inputCanvasRef.current);
+    const canvasContainerStyle = window.getComputedStyle(inputCanvasRef.current.parentElement);
+
+    unavailableWidth += Number(canvasStyle.borderLeftWidth.replace('px', ''));
+    unavailableWidth += Number(canvasStyle.borderRightWidth.replace('px', ''));
+    unavailableWidth += Number(canvasStyle.paddingLeft.replace('px', ''));
+    unavailableWidth += Number(canvasStyle.paddingRight.replace('px', ''));
+    unavailableWidth += Number(canvasStyle.marginLeft.replace('px', ''));
+    unavailableWidth += Number(canvasStyle.marginRight.replace('px', ''));
+    unavailableWidth += Number(canvasContainerStyle.borderLeftWidth.replace('px', ''));
+    unavailableWidth += Number(canvasContainerStyle.borderRightWidth.replace('px', ''));
+    unavailableWidth += Number(canvasContainerStyle.paddingLeft.replace('px', ''));
+    unavailableWidth += Number(canvasContainerStyle.paddingRight.replace('px', ''));
+    unavailableWidth += Number(canvasContainerStyle.marginLeft.replace('px', ''));
+    unavailableWidth += Number(canvasContainerStyle.marginRight.replace('px', ''));
+
+    const availableScreenWidth = windowWidth - unavailableWidth;
+
+    if (stretchCanvas && image.width <= availableScreenWidth) {
+      inputCanvasRef.current.width = availableScreenWidth;
+      inputCanvasRef.current.height = Math.floor(image.height * (availableScreenWidth / image.width));
+    } else if (!stretchCanvas && image.width <= availableScreenWidth) {
+      inputCanvasRef.current.width = image.width;
+      inputCanvasRef.current.height = image.height;
+    } else if (screenOverflow && image.width > availableScreenWidth) {
+      inputCanvasRef.current.parent.classList.add('overflow-x-scroll');
+      inputCanvasRef.current.width = image.width;
+      inputCanvasRef.current.height = image.height;
+    } else if (!screenOverflow && image.width > availableScreenWidth) {
+      inputCanvasRef.current.width = availableScreenWidth;
+      inputCanvasRef.current.height = Math.floor(image.height * (availableScreenWidth / image.width));
+    } else {
+      inputCanvasRef.current.width = image.width;
+      inputCanvasRef.current.height = image.height;
+    }
+
+    outputCanvasRef.current.width = inputCanvasRef.current.width;
+    outputCanvasRef.current.height = inputCanvasRef.current.height;
 
     drawImage(image, inputCanvasRef);
     drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
@@ -122,6 +176,10 @@ const App = () => {
         inputCanvasRef={inputCanvasRef}
         outputCanvasRef={outputCanvasRef}
         updatePipetteColor={updatePipetteColor}
+        stretchCanvas={stretchCanvas}
+        updateStretchCanvas={updateStretchCanvas}
+        screenOverflow={screenOverflow}
+        updateScreenOverflow={updateScreenOverflow}
       />
       <GridOutput ref={gridOutputRef} />
     </>
