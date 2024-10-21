@@ -18,6 +18,7 @@ const Menu = ({
   pipetteHexRef,
   aspectRatioMode,
   updateAspectRatioMode,
+  redrawGridPreview
 }) => {
 
   const handleCreateClick = (e) => {
@@ -101,7 +102,7 @@ const Menu = ({
                 className="text-input__label"
                 title="Changes quantity of rows in output"
               >
-              rows
+                rows
               </label>
               <input
                 id="rows-input"
@@ -117,7 +118,7 @@ const Menu = ({
                 className="text-input__label"
                 title="Changes quantity of columns in output"
               >
-              columns
+                columns
               </label>
               <input
                 id="columns-input"
@@ -166,7 +167,7 @@ const Menu = ({
             </label>
           </li>
           <li className="button-container">
-            <button className="button" onClick={handleFileSelection}>Redraw canvas preview</button>
+            <button className="button" onClick={redrawGridPreview}>Redraw canvas preview</button>
             <button className="button" onClick={handleCreateClick}>Redraw html preview</button>
             <button className="button" onClick={handleSaveClick}>Save output</button>
           </li>

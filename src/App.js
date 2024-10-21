@@ -17,8 +17,8 @@ import { pipetteHexText, pipetteRGBAText } from './utils/color';
 
 const App = () => {
 
-  const [rowsCount, setRowsCount] = useState(50);
-  const [columnsCount, setColumnsCount] = useState(50);
+  const [rowsCount, setRowsCount] = useState(20);
+  const [columnsCount, setColumnsCount] = useState(100);
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
@@ -27,6 +27,7 @@ const App = () => {
   const [screenOverflow, setScreenOverflow] = useState(false);
   const [fitBothCanvasInOneRow, setFitBothCanvasInOneRow] = useState(false);
   const [aspectRatioMode, setAspectRatioMode] = useState('image');
+  const [image, setImage] = useState(null);
 
   const showNotification = (text, type) => {
     if (message.timeoutId) {
@@ -51,9 +52,27 @@ const App = () => {
       setRowsCount(50);
       return;
     }
-    setRowsCount(count);
+    let localRowsCount = count;
+    let localColumnsCount = columnsCount;
+
+    setRowsCount(localRowsCount);
+
+    switch (aspectRatioMode) {
+    case 'image':
+      localColumnsCount = Math.floor(count * (inputCanvasRef.current.width / inputCanvasRef.current.height)) || 1;
+      setColumnsCount(localColumnsCount);
+      break;
+    case 'square':
+      localColumnsCount = count;
+      setColumnsCount(localColumnsCount);
+      break;
+    case 'none':
+      break;
+    default:
+      break;
+    }
     if (alwaysRedraw) {
-      drawGridPreview(inputCanvasRef, outputCanvasRef, count, columnsCount);
+      drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
     }
   };
 
@@ -63,9 +82,27 @@ const App = () => {
       setColumnsCount(50);
       return;
     }
-    setColumnsCount(count);
+    let localRowsCount = rowsCount;
+    let localColumnsCount = count;
+
+    setColumnsCount(localColumnsCount);
+
+    switch (aspectRatioMode) {
+    case 'image':
+      localRowsCount = Math.floor(count * (inputCanvasRef.current.height / inputCanvasRef.current.width)) || 1;
+      setRowsCount(localRowsCount);
+      break;
+    case 'square':
+      localRowsCount = count;
+      setRowsCount(localRowsCount);
+      break;
+    case 'none':
+      break;
+    default:
+      break;
+    }
     if (alwaysRedraw) {
-      drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, count);
+      drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
     }
   };
 
@@ -92,18 +129,48 @@ const App = () => {
 
   const updateStretchCanvas = (value) => {
     setStretchCanvas(value);
+    if (!image) {
+      return;
+    }
+    resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, value, screenOverflow, fitBothCanvasInOneRow);
+    drawImage(image, inputCanvasRef);
+    drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
   };
 
   const updateScreenOverflow = (value) => {
     setScreenOverflow(value);
+    if (!image) {
+      return;
+    }
+    resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, stretchCanvas, value, fitBothCanvasInOneRow);
+    drawImage(image, inputCanvasRef);
+    drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
   };
 
   const updateFitBothCanvasInOneRow = (value) => {
     setFitBothCanvasInOneRow(value);
+    if (!image) {
+      return;
+    }
+    resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, stretchCanvas, screenOverflow, value);
+    drawImage(image, inputCanvasRef);
+    drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
   };
 
   const updateAspectRatioMode = (value) => {
     setAspectRatioMode(value);
+    switch (value) {
+    case 'image':
+      setColumnsCount(Math.floor(rowsCount * (inputCanvasRef.current.width / inputCanvasRef.current.height)) || 1);
+      break;
+    case 'square':
+      setColumnsCount(rowsCount);
+      break;
+    case 'none':
+      break;
+    default:
+      break;
+    }
   };
 
   const handleFileSelection = async (e) => {
@@ -115,6 +182,15 @@ const App = () => {
 
     const image = await readImage(e.target.files[0]);
 
+    setImage(image);
+
+    const { localRowsCount, localColumnsCount } = resizeCanvas(image.width, image.height, stretchCanvas, screenOverflow, fitBothCanvasInOneRow);
+
+    drawImage(image, inputCanvasRef);
+    drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
+  };
+
+  const resizeCanvas = (localWidth, localHeight, localStretchCanvas, localScreenOverflow, localFitBothCanvasInOneRow) => {
     const windowWidth = window.innerWidth;
 
     let unavailableWidth = 18;
@@ -137,32 +213,45 @@ const App = () => {
 
     let availableScreenWidth = windowWidth - unavailableWidth;
 
-    if (fitBothCanvasInOneRow) {
+    if (localFitBothCanvasInOneRow) {
       availableScreenWidth = Math.floor((availableScreenWidth - unavailableWidth) / 2);
     }
 
-    if (stretchCanvas && image.width <= availableScreenWidth) {
+    if (localStretchCanvas && localWidth <= availableScreenWidth) {
       inputCanvasRef.current.width = availableScreenWidth;
-      inputCanvasRef.current.height = Math.floor(image.height * (availableScreenWidth / image.width));
-    } else if (!stretchCanvas && image.width <= availableScreenWidth) {
-      inputCanvasRef.current.width = image.width;
-      inputCanvasRef.current.height = image.height;
-    } else if (screenOverflow && image.width > availableScreenWidth) {
-      inputCanvasRef.current.parent.classList.add('overflow-x-scroll');
-      inputCanvasRef.current.width = image.width;
-      inputCanvasRef.current.height = image.height;
-    } else if (!screenOverflow && image.width > availableScreenWidth) {
+      inputCanvasRef.current.height = Math.floor(localHeight * (availableScreenWidth / localWidth));
+    } else if (!localStretchCanvas && localWidth <= availableScreenWidth) {
+      inputCanvasRef.current.width = localWidth;
+      inputCanvasRef.current.height = localHeight;
+    } else if (localScreenOverflow && localWidth > availableScreenWidth) {
+      if (!inputCanvasRef.current.parent.classList.contains('overflow-x-scroll')) {
+        inputCanvasRef.current.parent.classList.add('overflow-x-scroll');
+      }
+      inputCanvasRef.current.width = localWidth;
+      inputCanvasRef.current.height = localHeight;
+    } else if (!localScreenOverflow && localWidth > availableScreenWidth) {
       inputCanvasRef.current.width = availableScreenWidth;
-      inputCanvasRef.current.height = Math.floor(image.height * (availableScreenWidth / image.width));
+      inputCanvasRef.current.height = Math.floor(localHeight * (availableScreenWidth / localWidth));
     } else {
-      inputCanvasRef.current.width = image.width;
-      inputCanvasRef.current.height = image.height;
+      inputCanvasRef.current.width = localWidth;
+      inputCanvasRef.current.height = localHeight;
     }
 
     outputCanvasRef.current.width = inputCanvasRef.current.width;
     outputCanvasRef.current.height = inputCanvasRef.current.height;
 
-    drawImage(image, inputCanvasRef);
+    let localRowsCount = rowsCount;
+    let localColumnsCount = columnsCount;
+
+    if (aspectRatioMode === 'image') {
+      localColumnsCount = Math.floor(rowsCount * (inputCanvasRef.current.width / inputCanvasRef.current.height)) || 1;
+      setColumnsCount(localColumnsCount);
+    }
+
+    return { localRowsCount, localColumnsCount };
+  };
+
+  const redrawGridPreview = () => {
     drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
   };
 
@@ -187,6 +276,7 @@ const App = () => {
         pipetteHexRef={pipetteHexRef}
         aspectRatioMode={aspectRatioMode}
         updateAspectRatioMode={updateAspectRatioMode}
+        redrawGridPreview={redrawGridPreview}
       />
       <ImageInit
         inputCanvasRef={inputCanvasRef}
