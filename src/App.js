@@ -9,6 +9,9 @@ import './styles/nav.css';
 import './styles/button.css';
 import './styles/input.css';
 import './styles/notification.css';
+import './styles/flex.css';
+import './styles/container.css';
+import './styles/main.css';
 import { pipetteHexText, pipetteRGBAText } from './utils/color';
 
 

@@ -78,8 +78,8 @@ const Menu = ({
               className="file-input__field"
             />
           </li>
-          <li className="color-info">
-            <div>Color under cursor (pipette):</div>
+          <li className="container flex column gap-1rem bg-lightgray padding-1rem border-black-1px margin-v-1rem" style={{ width: '14rem', marginTop: '2rem' }}>
+            <div className='title'>Color under cursor (pipette):</div>
             <div id="color-rgba" style={{ fontFamily: 'monospace' }} ref={pipetteRGBARef}>
               <pre>
                 RGBA:   0,   0,   0,   0
@@ -91,37 +91,40 @@ const Menu = ({
               </pre>
             </div>
           </li>
-          <li className="text-input text-input_floating">
-            <label
-              htmlFor="rows-input"
-              className="text-input__label"
-              title="Changes quantity of rows in output"
-            >
+          <li className="container bg-lightgray padding-1rem border-black-1px margin-v-1rem" style={{ width: '14rem' }}>
+            <div className='title'>Grid params</div>
+            <div className="text-input text-input_floating">
+              <label
+                htmlFor="rows-input"
+                className="text-input__label"
+                title="Changes quantity of rows in output"
+              >
               rows
-            </label>
-            <input
-              id="rows-input"
-              name="rows"
-              className="text-input__field"
-              value={rowsCount}
-              onChange={(e) => updateRowsCount(e.target.value)}
-            />
-          </li>
-          <li className="text-input text-input_floating">
-            <label
-              htmlFor="columns-input"
-              className="text-input__label"
-              title="Changes quantity of columns in output"
-            >
+              </label>
+              <input
+                id="rows-input"
+                name="rows"
+                className="text-input__field"
+                value={rowsCount}
+                onChange={(e) => updateRowsCount(e.target.value)}
+              />
+            </div>
+            <div className="text-input text-input_floating">
+              <label
+                htmlFor="columns-input"
+                className="text-input__label"
+                title="Changes quantity of columns in output"
+              >
               columns
-            </label>
-            <input
-              id="columns-input"
-              name="columns"
-              className="text-input__field"
-              value={columnsCount}
-              onChange={(e) => updateColumnsCount(e.target.value)}
-            />
+              </label>
+              <input
+                id="columns-input"
+                name="columns"
+                className="text-input__field"
+                value={columnsCount}
+                onChange={(e) => updateColumnsCount(e.target.value)}
+              />
+            </div>
           </li>
           <li>
             <input

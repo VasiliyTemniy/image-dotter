@@ -1,0 +1,28 @@
+.container.flex {
+  display: flex;
+}
+
+.container.flex.column {
+  flex-direction: column;
+}
+
+.container.flex.wrap {
+  flex-wrap: wrap;
+}
+
+.container.flex.center {
+  justify-content: center;
+  align-items: center;
+}
+
+.container.flex.gap-1rem {
+  gap: 1rem;
+}
+
+.container.flex.gap-2rem {
+  gap: 2rem;
+}
+
+.container.padding-1rem {
+  padding: 1rem;
+}

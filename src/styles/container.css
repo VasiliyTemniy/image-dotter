@@ -1,0 +1,51 @@
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.container.width-fit-content {
+  width: fit-content;
+}
+
+.container.no-overflow {
+  overflow: hidden;
+}
+
+.container.padding-1rem {
+  padding: 1rem;
+}
+
+.container.padding-05rem {
+  padding: 0.5rem;
+}
+
+.container.margin-1rem {
+  margin: 1rem;
+}
+
+.container.margin-v-1rem {
+  margin: 1rem 0;
+}
+
+.container.border-black-1px {
+  border: 1px solid black;
+  border-radius: 0.25rem;
+}
+
+.container > .title {
+  position: absolute;
+  top: -0.6rem;
+  padding: 0 0.25rem;
+  left: 1rem;
+}
+
+.container.bg-white,
+.container.bg-white > .title {
+  background: white;
+}
+
+.container.bg-lightgray,
+.container.bg-lightgray > .title {
+  background: lightgray;
+}
