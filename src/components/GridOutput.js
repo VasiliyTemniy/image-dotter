@@ -63,13 +63,13 @@ const GridOutput = forwardRef((props, refs) => {
     borderRadius: '1000px',
   };
 
-  const outputGrid = grid.map((row, index) => (
-    <div key={index} className="row" style={rowStyle}>
-      {row.map((cell) => (
+  const outputGrid = grid.map((row, rowIndex) => (
+    <div key={'grid-' + rowIndex} className="row" style={rowStyle}>
+      {row.map((cell, columnIndex) => (
         <div
-          key={'l' + String(cell.row) + 'r' + String(cell.column)}
+          key={'r' + rowIndex + 'c' + columnIndex}
           className="cell"
-          style={{ backgroundColor: cell.color, ...cellStyle }}
+          style={{ backgroundColor: cell[0], ...cellStyle }}
         ></div>
       ))}
     </div>
