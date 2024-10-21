@@ -5,6 +5,10 @@ input[type="text"], select {
   margin: 0;
 }
 
+input[type="text"]:disabled, select:disabled {
+  cursor: not-allowed;
+}
+
 .text-input__label, .select-input__label {
   display: block;
   margin-bottom: 0.25rem;
@@ -48,15 +52,15 @@ input[type="text"], select {
 
 .text-input__floating .text-input__label,
 .select-input__floating .select-input__label {
+  z-index: 50;
   position: absolute;
-  left: 5%;
-  top: -10%;
+  left: 0.5rem;
+  top: -0.25rem;
   line-height: 0.5rem;
   display: flex;
   pointer-events: none;
   border: none;
-  background-color: #fff;
-  color: #757575;
+  color: #383838;
   padding-left: 0.1rem;
   padding-right: 0.1rem;
 }
@@ -67,4 +71,15 @@ input[type="text"], select {
 
 .color-input__label {
   padding-left: 0.5rem;
+}
+
+.text-input__label::before, .select-input__label::before {
+  z-index: -1;
+  content: '';
+  background-color: white;
+  height: 0.25rem;
+  width: 100%;
+  position: absolute;
+  top: 0.25rem;
+  left: 0;
 }
