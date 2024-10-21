@@ -2,11 +2,14 @@ import { drawGridPreview, drawImage, readImage } from './utils/dottergrid';
 import ImageInit from './components/ImageInit';
 import GridOutput from './components/GridOutput';
 import Menu from './components/Menu';
+import Notification from './components/Notification';
 import { useRef, useState } from 'react';
 import './styles/grid-output.css';
 import './styles/nav.css';
 import './styles/button.css';
 import './styles/input.css';
+import './styles/notification.css';
+
 
 const App = () => {
 
@@ -16,6 +19,17 @@ const App = () => {
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
   const [pipetteColor, setPipetteColor] = useState([0, 0, 0, 0]);
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
+  const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
+
+  const showNotification = (text, type) => {
+    if (message.timeoutId) {
+      clearTimeout(message.timeoutId);
+    }
+    const timeoutId = setTimeout(() => {
+      setMessage((prev) => ({ ...prev, shown : false }));
+    }, 5000);
+    setMessage({ text, type, timeoutId, shown : true });
+  };
 
   const gridOutputRef = useRef();
   const inputCanvasRef = useRef();
@@ -23,7 +37,7 @@ const App = () => {
 
   const updateRowsCount = (count) => {
     if (!count || !Number.isInteger(Number(count)) || Number(count) < 1) {
-      // TODO Show notification
+      showNotification('Rows count must be a positive integer', 'error');
       setRowsCount(50);
       return;
     }
@@ -35,7 +49,7 @@ const App = () => {
 
   const updateColumnsCount = (count) => {
     if (!count || !Number.isInteger(Number(count)) || Number(count) < 1) {
-      // TODO Show notification
+      showNotification('Columns count must be a positive integer', 'error');
       setColumnsCount(50);
       return;
     }
@@ -64,7 +78,7 @@ const App = () => {
   const handleFileSelection = async (e) => {
     e.preventDefault();
     if (!e.target.files || !e.target.files[0]) {
-      // TODO Show notification
+      showNotification('No file selected', 'error');
       return;
     }
 
@@ -76,6 +90,7 @@ const App = () => {
 
   return (
     <>
+      <Notification message={message.text} type={message.type} shown={message.shown}/>
       <Menu
         handleFileSelection={handleFileSelection}
         gridOutputRef={gridOutputRef}
