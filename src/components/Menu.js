@@ -12,7 +12,6 @@ const Menu = ({
   updateBackgroundColor,
   surroundingDotsColor,
   updateSurroundingDotsColor,
-  // pipetteColor,
   alwaysRedraw,
   updateAlwaysRedraw,
   pipetteRGBARef,
