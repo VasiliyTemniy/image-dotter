@@ -7,7 +7,9 @@ const ImageInit = ({
   stretchCanvas,
   updateStretchCanvas,
   screenOverflow,
-  updateScreenOverflow
+  updateScreenOverflow,
+  fitBothCanvasInOneRow,
+  updateFitBothCanvasInOneRow
 }) => {
 
   const topsideStyle = {
@@ -81,34 +83,52 @@ const ImageInit = ({
             Add horizontal scrollbar if image is wider than screen width
           </label>
         </div>
-      </div>
-      <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
-        <div className='title'>
-          Input image canvas
+        <div className="checkbox-input">
+          <input
+            id="fit-canvas-in-one-row"
+            type="checkbox"
+            name="fit-canvas-in-one-row"
+            className="checkbox-input__field"
+            checked={fitBothCanvasInOneRow}
+            onChange={(e) => updateFitBothCanvasInOneRow(e.target.checked)}
+          />
+          <label
+            htmlFor="fit-canvas-in-one-row"
+            className="checkbox-input__label"
+          >
+            Fit both canvas in one row
+          </label>
         </div>
-        <canvas
-          id="input-canvas"
-          width="500"
-          height="100"
-          ref={inputCanvasRef}
-          style={topsideStyle}
-        >
-          Your browser does not support the HTML5 canvas tag.
-        </canvas>
       </div>
-      <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
-        <div className='title'>
-          Output grid preview canvas
+      <div className={`container ${fitBothCanvasInOneRow ? 'flex wrap' : 'flex column'}`}>
+        <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
+          <div className='title'>
+            Input image canvas
+          </div>
+          <canvas
+            id="input-canvas"
+            width="500"
+            height="100"
+            ref={inputCanvasRef}
+            style={topsideStyle}
+          >
+            Your browser does not support the HTML5 canvas tag.
+          </canvas>
         </div>
-        <canvas
-          id="output-canvas"
-          width="500"
-          height="100"
-          ref={outputCanvasRef}
-          style={topsideStyle}
-        >
-          Your browser does not support the HTML5 canvas tag.
-        </canvas>
+        <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
+          <div className='title'>
+            Output grid preview canvas
+          </div>
+          <canvas
+            id="output-canvas"
+            width="500"
+            height="100"
+            ref={outputCanvasRef}
+            style={topsideStyle}
+          >
+            Your browser does not support the HTML5 canvas tag.
+          </canvas>
+        </div>
       </div>
     </div>
   );

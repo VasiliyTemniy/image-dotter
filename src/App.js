@@ -25,6 +25,7 @@ const App = () => {
   const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
   const [stretchCanvas, setStretchCanvas] = useState(true);
   const [screenOverflow, setScreenOverflow] = useState(false);
+  const [fitBothCanvasInOneRow, setFitBothCanvasInOneRow] = useState(false);
 
   const showNotification = (text, type) => {
     if (message.timeoutId) {
@@ -96,6 +97,10 @@ const App = () => {
     setScreenOverflow(value);
   };
 
+  const updateFitBothCanvasInOneRow = (value) => {
+    setFitBothCanvasInOneRow(value);
+  };
+
   const handleFileSelection = async (e) => {
     e.preventDefault();
     if (!e.target.files || !e.target.files[0]) {
@@ -125,7 +130,11 @@ const App = () => {
     unavailableWidth += Number(canvasContainerStyle.marginLeft.replace('px', ''));
     unavailableWidth += Number(canvasContainerStyle.marginRight.replace('px', ''));
 
-    const availableScreenWidth = windowWidth - unavailableWidth;
+    let availableScreenWidth = windowWidth - unavailableWidth;
+
+    if (fitBothCanvasInOneRow) {
+      availableScreenWidth = Math.floor((availableScreenWidth - unavailableWidth) / 2);
+    }
 
     if (stretchCanvas && image.width <= availableScreenWidth) {
       inputCanvasRef.current.width = availableScreenWidth;
@@ -180,6 +189,8 @@ const App = () => {
         updateStretchCanvas={updateStretchCanvas}
         screenOverflow={screenOverflow}
         updateScreenOverflow={updateScreenOverflow}
+        fitBothCanvasInOneRow={fitBothCanvasInOneRow}
+        updateFitBothCanvasInOneRow={updateFitBothCanvasInOneRow}
       />
       <GridOutput ref={gridOutputRef} />
     </>
