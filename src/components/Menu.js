@@ -15,7 +15,9 @@ const Menu = ({
   alwaysRedraw,
   updateAlwaysRedraw,
   pipetteRGBARef,
-  pipetteHexRef
+  pipetteHexRef,
+  aspectRatioMode,
+  updateAspectRatioMode,
 }) => {
 
   const handleCreateClick = (e) => {
@@ -91,9 +93,9 @@ const Menu = ({
               </pre>
             </div>
           </li>
-          <li className="container bg-lightgray padding-1rem border-black-1px margin-v-1rem" style={{ width: '14rem' }}>
+          <li className="container bg-lightgray padding-1rem border-black-1px margin-v-1rem flex column gap-05rem" style={{ width: '14rem' }}>
             <div className='title'>Grid params</div>
-            <div className="text-input text-input_floating">
+            <div className="text-input text-input__floating">
               <label
                 htmlFor="rows-input"
                 className="text-input__label"
@@ -109,7 +111,7 @@ const Menu = ({
                 onChange={(e) => updateRowsCount(e.target.value)}
               />
             </div>
-            <div className="text-input text-input_floating">
+            <div className="text-input text-input__floating">
               <label
                 htmlFor="columns-input"
                 className="text-input__label"
@@ -124,6 +126,26 @@ const Menu = ({
                 value={columnsCount}
                 onChange={(e) => updateColumnsCount(e.target.value)}
               />
+            </div>
+            <div className="select-input select-input__floating">
+              <label
+                htmlFor="aspect-select"
+                className="select-input__label"
+                title="Changes aspect ratio of output"
+              >
+                aspect ratio mode
+              </label>
+              <select
+                id="aspect-select"
+                name="aspect-select"
+                className="select-input__field"
+                value={aspectRatioMode}
+                onChange={(e) => updateAspectRatioMode(e.target.value)}
+              >
+                <option value="image">Fix by image ratio</option>
+                <option value="square">Fix square ratio</option>
+                <option value="none">Do not fix ratio</option>
+              </select>
             </div>
           </li>
           <li>

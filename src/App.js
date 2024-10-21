@@ -26,6 +26,7 @@ const App = () => {
   const [stretchCanvas, setStretchCanvas] = useState(true);
   const [screenOverflow, setScreenOverflow] = useState(false);
   const [fitBothCanvasInOneRow, setFitBothCanvasInOneRow] = useState(false);
+  const [aspectRatioMode, setAspectRatioMode] = useState('image');
 
   const showNotification = (text, type) => {
     if (message.timeoutId) {
@@ -99,6 +100,10 @@ const App = () => {
 
   const updateFitBothCanvasInOneRow = (value) => {
     setFitBothCanvasInOneRow(value);
+  };
+
+  const updateAspectRatioMode = (value) => {
+    setAspectRatioMode(value);
   };
 
   const handleFileSelection = async (e) => {
@@ -180,6 +185,8 @@ const App = () => {
         updateAlwaysRedraw={updateAlwaysRedraw}
         pipetteRGBARef={pipetteRGBARef}
         pipetteHexRef={pipetteHexRef}
+        aspectRatioMode={aspectRatioMode}
+        updateAspectRatioMode={updateAspectRatioMode}
       />
       <ImageInit
         inputCanvasRef={inputCanvasRef}
