@@ -1,15 +1,3 @@
-/* position: 'absolute',
-zIndex: 101,
-color: type === 'error' ? 'red' : 'green',
-background: 'lightgrey',
-fontSize: 20,
-borderStyle: 'solid',
-borderRadius: 5,
-padding: 10,
-marginBottom: 10,
-opacity: 0,
-animation: 'toggle-visibility-notificaion 5s forwards ease-in-out', */
-
 #notification {
   position: absolute;
   z-index: 101;
@@ -20,23 +8,7 @@ animation: 'toggle-visibility-notificaion 5s forwards ease-in-out', */
   border-style: solid;
   border-radius: 0.5rem;
   padding: 1rem;
-  /* margin-bottom: 10; */
   transform: translateX(-50%);
   transition: opacity 0.5s ease-in-out;
-  /* animation: toggle-visibility-notificaion 5s forwards ease-in-out; */
+  box-shadow:4px 4px 20px 0px rgba(0,0,0, 0.5);
 }
-
-/* @keyframes toggle-visibility-notificaion {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-} */
