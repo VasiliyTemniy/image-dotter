@@ -64,7 +64,7 @@ input[type="text"] {
 }
 
 .color-info {
-  padding-bottom: 1rem;
+  padding: 1rem 0;
 }
 
 .color-input__label {
