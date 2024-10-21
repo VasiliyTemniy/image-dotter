@@ -159,17 +159,27 @@ const App = () => {
 
   const updateAspectRatioMode = (value) => {
     setAspectRatioMode(value);
+
+    let localRowsCount = rowsCount;
+    let localColumnsCount = columnsCount;
+
     switch (value) {
     case 'image':
-      setColumnsCount(Math.floor(rowsCount * (inputCanvasRef.current.width / inputCanvasRef.current.height)) || 1);
+      localColumnsCount = Math.floor(rowsCount * (inputCanvasRef.current.width / inputCanvasRef.current.height)) || 1;
+      setColumnsCount(localColumnsCount);
       break;
     case 'square':
-      setColumnsCount(rowsCount);
+      localColumnsCount = rowsCount;
+      setColumnsCount(localColumnsCount);
       break;
     case 'none':
       break;
     default:
       break;
+    }
+
+    if (alwaysRedraw) {
+      drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
     }
   };
 
