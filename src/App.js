@@ -23,12 +23,16 @@ const App = () => {
 
   const [rowsCount, setRowsCount] = useState(20);
   const [columnsCount, setColumnsCount] = useState(100);
+  const [radius, setRadius] = useState(10);
   const [horizontalGapPx, setHorizontalGapPx] = useState(1);
   const [verticalGapPx, setVerticalGapPx] = useState(1);
   const [angle, setAngle] = useState(0);
   const [useStroke, setUseStroke] = useState(false);
   const [strokeColor, setStrokeColor] = useState('#000000');
   const [strokeWidth, setStrokeWidth] = useState(1);
+  const [useIgnoreColor, setUseIgnoreColor] = useState(false);
+  const [ignoreColor, setIgnoreColor] = useState('#ffffff');
+  const [ignoreColorOpacityThreshold, setIgnoreColorOpacityThreshold] = useState(50);
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
@@ -113,6 +117,19 @@ const App = () => {
     }
     if (alwaysRedraw) {
       redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
+    }
+  };
+
+  const updateRadius = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Radius must be a positive integer', 'error');
+      setRadius(10);
+      return;
+    }
+    setRadius(value);
+
+    if (alwaysRedraw) {
+      redrawGridPreview({ radius : value });
     }
   };
 
@@ -236,7 +253,7 @@ const App = () => {
     setUseStroke(value);
 
     if (alwaysRedraw) {
-      redrawGridPreview({ strokeColor: useStroke ? strokeColor : null, strokeWidth: useStroke ? strokeWidth : null });
+      redrawGridPreview({ strokeColor: value ? strokeColor : null, strokeWidth: value ? strokeWidth : null });
     }
   };
 
@@ -258,6 +275,35 @@ const App = () => {
 
     if (alwaysRedraw && useStroke) {
       redrawGridPreview({ strokeWidth: useStroke ? value : null });
+    }
+  };
+
+  const updateUseIgnoreColor = (value) => {
+    setUseIgnoreColor(value);
+
+    if (alwaysRedraw) {
+      redrawGridPreview({ ignoreColor: value ? ignoreColor : null });
+    }
+  };
+
+  const updateIgnoreColor = (value) => {
+    setIgnoreColor(value);
+
+    if (alwaysRedraw && useIgnoreColor) {
+      redrawGridPreview({ ignoreColor: useIgnoreColor ? value : null });
+    }
+  };
+
+  const updateIgnoreColorOpacityThreshold = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0 || Number(value) > 255) {
+      showNotification('Ignore color opacity threshold must be a positive integer between 0 and 255', 'error');
+      setIgnoreColorOpacityThreshold(100);
+      return;
+    }
+    setIgnoreColorOpacityThreshold(value);
+
+    if (alwaysRedraw && useIgnoreColor) {
+      redrawGridPreview({ ignoreColorOpacityThreshold: useIgnoreColor ? value : null });
     }
   };
 
@@ -349,11 +395,14 @@ const App = () => {
       {
         rowsCount,
         columnsCount,
+        radius,
         horizontalGapPx,
         verticalGapPx,
         angle,
         strokeColor: useStroke ? strokeColor : null,
         strokeWidth: useStroke ? strokeWidth : null,
+        ignoreColor: useIgnoreColor ? ignoreColor : null,
+        ignoreColorOpacityThreshold: useIgnoreColor ? ignoreColorOpacityThreshold : null,
         ...changedParams
       }
     );
@@ -370,6 +419,8 @@ const App = () => {
         updateRowsCount={updateRowsCount}
         columnsCount={columnsCount}
         updateColumnsCount={updateColumnsCount}
+        radius={radius}
+        updateRadius={updateRadius}
         horizontalGapPx={horizontalGapPx}
         updateHorizontalGapPx={updateHorizontalGapPx}
         verticalGapPx={verticalGapPx}
@@ -382,6 +433,12 @@ const App = () => {
         updateStrokeColor={updateStrokeColor}
         strokeWidth={strokeWidth}
         updateStrokeWidth={updateStrokeWidth}
+        useIgnoreColor={useIgnoreColor}
+        updateUseIgnoreColor={updateUseIgnoreColor}
+        ignoreColor={ignoreColor}
+        updateIgnoreColor={updateIgnoreColor}
+        ignoreColorOpacityThreshold={ignoreColorOpacityThreshold}
+        updateIgnoreColorOpacityThreshold={updateIgnoreColorOpacityThreshold}
         backgroundColor={backgroundColor}
         updateBackgroundColor={updateBackgroundColor}
         surroundingDotsColor={surroundingDotsColor}

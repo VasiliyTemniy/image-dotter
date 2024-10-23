@@ -8,6 +8,8 @@ const Menu = ({
   updateRowsCount,
   columnsCount,
   updateColumnsCount,
+  radius,
+  updateRadius,
   horizontalGapPx,
   updateHorizontalGapPx,
   verticalGapPx,
@@ -20,6 +22,12 @@ const Menu = ({
   updateStrokeColor,
   strokeWidth,
   updateStrokeWidth,
+  useIgnoreColor,
+  updateUseIgnoreColor,
+  ignoreColor,
+  updateIgnoreColor,
+  ignoreColorOpacityThreshold,
+  updateIgnoreColorOpacityThreshold,
   backgroundColor,
   updateBackgroundColor,
   surroundingDotsColor,
@@ -142,6 +150,22 @@ const Menu = ({
             </div>
             <div className="text-input text-input__floating">
               <label
+                htmlFor="radius-input"
+                className="text-input__label"
+                title="Changes radius in output"
+              >
+                radius
+              </label>
+              <input
+                id="radius-input"
+                name="radius"
+                className="text-input__field"
+                value={radius}
+                onChange={(e) => updateRadius(e.target.value)}
+              />
+            </div>
+            <div className="text-input text-input__floating">
+              <label
                 htmlFor="horizontal-gap-px-input"
                 className="text-input__label"
                 title="Changes horizontal gap in output"
@@ -260,6 +284,57 @@ const Menu = ({
                 value={strokeWidth}
                 onChange={(e) => updateStrokeWidth(e.target.value)}
                 disabled={!useStroke}
+              />
+            </div>
+            <div className='checkbox-input checkbox-input__floating'>
+              <input
+                id="use-ignore-color"
+                type="checkbox"
+                name="use-ignore-color"
+                className="checkbox-input__field"
+                checked={useIgnoreColor}
+                onChange={(e) => updateUseIgnoreColor(e.target.checked)}
+              />
+              <label
+                htmlFor="use-ignore-color"
+                className="checkbox-input__label"
+                title="Use ignore color or not"
+              >
+                Use ignore color
+              </label>
+            </div>
+            <div className="color-input color-input__floating">
+              <input
+                id="ignore-color"
+                name="ignore-color"
+                type="color"
+                value={ignoreColor}
+                onChange={(e) => updateIgnoreColor(e.target.value)}
+                disabled={!useIgnoreColor}
+              />
+              <label
+                htmlFor="ignore-color"
+                className="color-input__label"
+                title="Changes ignore color of output"
+              >
+                Ignore color
+              </label>
+            </div>
+            <div className="text-input text-input__floating">
+              <label
+                htmlFor="ignore-color-opacity-threshold-input"
+                className="text-input__label"
+                title="Changes ignore color opacity threshold of output"
+              >
+                ignore opacity threshold (0-255)
+              </label>
+              <input
+                id="ignore-color-opacity-threshold-input"
+                name="ignore-color-opacity-threshold"
+                className="text-input__field"
+                value={ignoreColorOpacityThreshold}
+                onChange={(e) => updateIgnoreColorOpacityThreshold(e.target.value)}
+                disabled={!useIgnoreColor}
               />
             </div>
           </li>
