@@ -13,18 +13,20 @@ export interface DotterGridParams {
   ignoreColor: string | null;
   /** 0.0 - 1.0; below this threshold the color will be ignored; null means no color will be ignored */
   ignoreColorOpacityThreshold: number | null;
+  /** 0 - 255; null means no color will be ignored */
+  ignoreColorMaxDeviation: number | null;
 }
 
 /**
  * x and y are top-left corner coordinates of a cell
- * { x: number, y: number, length: number, color: string }
+ * { x: number, y: number, span: number, color: string }
  */
 export type DotterCell = [
   /** x coordinate */
   number,
   /** y coordinate */
   number,
-  /** cell length */
+  /** cell span - number of columns that cell occupies */
   number,
   /** cell color */
   string

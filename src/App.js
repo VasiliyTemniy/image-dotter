@@ -33,6 +33,7 @@ const App = () => {
   const [useIgnoreColor, setUseIgnoreColor] = useState(false);
   const [ignoreColor, setIgnoreColor] = useState('#ffffff');
   const [ignoreColorOpacityThreshold, setIgnoreColorOpacityThreshold] = useState(50);
+  const [ignoreColorMaxDeviation, setIgnoreColorMaxDeviation] = useState(1);
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
@@ -307,6 +308,19 @@ const App = () => {
     }
   };
 
+  const updateIgnoreColorMaxDeviation = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0 || Number(value) > 255) {
+      showNotification('Ignore color max deviation must be a positive integer between 0 and 255', 'error');
+      setIgnoreColorMaxDeviation(100);
+      return;
+    }
+    setIgnoreColorMaxDeviation(value);
+
+    if (alwaysRedraw && useIgnoreColor) {
+      redrawGridPreview({ ignoreColorMaxDeviation: useIgnoreColor ? value : null });
+    }
+  };
+
   const handleFileSelection = async (e) => {
     e.preventDefault();
     if (!e.target.files || !e.target.files[0]) {
@@ -403,6 +417,7 @@ const App = () => {
         strokeWidth: useStroke ? strokeWidth : null,
         ignoreColor: useIgnoreColor ? ignoreColor : null,
         ignoreColorOpacityThreshold: useIgnoreColor ? ignoreColorOpacityThreshold : null,
+        ignoreColorMaxDeviation: useIgnoreColor ? ignoreColorMaxDeviation : null,
         ...changedParams
       }
     );
@@ -439,6 +454,8 @@ const App = () => {
         updateIgnoreColor={updateIgnoreColor}
         ignoreColorOpacityThreshold={ignoreColorOpacityThreshold}
         updateIgnoreColorOpacityThreshold={updateIgnoreColorOpacityThreshold}
+        ignoreColorMaxDeviation={ignoreColorMaxDeviation}
+        updateIgnoreColorMaxDeviation={updateIgnoreColorMaxDeviation}
         backgroundColor={backgroundColor}
         updateBackgroundColor={updateBackgroundColor}
         surroundingDotsColor={surroundingDotsColor}

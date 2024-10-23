@@ -28,6 +28,8 @@ const Menu = ({
   updateIgnoreColor,
   ignoreColorOpacityThreshold,
   updateIgnoreColorOpacityThreshold,
+  ignoreColorMaxDeviation,
+  updateIgnoreColorMaxDeviation,
   backgroundColor,
   updateBackgroundColor,
   surroundingDotsColor,
@@ -334,6 +336,23 @@ const Menu = ({
                 className="text-input__field"
                 value={ignoreColorOpacityThreshold}
                 onChange={(e) => updateIgnoreColorOpacityThreshold(e.target.value)}
+                disabled={!useIgnoreColor}
+              />
+            </div>
+            <div className='text-input text-input__floating'>
+              <label
+                htmlFor="ignore-color-max-deviation"
+                className="text-input__label"
+                title="Changes ignore color max deviation of output"
+              >
+                ignore color max deviation
+              </label>
+              <input
+                id="ignore-color-max-deviation"
+                name="ignore-color-max-deviation"
+                className="text-input__field"
+                value={ignoreColorMaxDeviation}
+                onChange={(e) => updateIgnoreColorMaxDeviation(e.target.value)}
                 disabled={!useIgnoreColor}
               />
             </div>
