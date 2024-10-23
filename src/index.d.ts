@@ -9,6 +9,6 @@ export interface DotterGridParams {
 }
 
 /**
- * { color: string, radius: number, length: number, angle: number, stroke: string, strokeWidth: number }
+ * { x: number, y: number, length: number, color: string }
  */
-export type DotterCell = [string, number, number, number, string, number];
+export type DotterCell = [number, number, number, string];
