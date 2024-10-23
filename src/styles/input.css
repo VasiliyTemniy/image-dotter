@@ -5,8 +5,9 @@ input[type="text"], select {
   margin: 0;
 }
 
-input[type="text"]:disabled, select:disabled {
+input:disabled, select:disabled {
   cursor: not-allowed;
+  color: #00000080;
 }
 
 .text-input__label, .select-input__label {
