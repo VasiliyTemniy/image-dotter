@@ -96,9 +96,9 @@ export const makeColorGrid = (
       const color = middleweightColor(data);
       if (
         ignoreColor && ignoreColorOpacityThreshold &&
-        icRed - color[0] <= ignoreColorMaxDeviation &&
-        icGreen - color[1] <= ignoreColorMaxDeviation &&
-        icBlue - color[2] <= ignoreColorMaxDeviation &&
+        Math.abs(icRed - color[0]) <= ignoreColorMaxDeviation &&
+        Math.abs(icGreen - color[1]) <= ignoreColorMaxDeviation &&
+        Math.abs(icBlue - color[2]) <= ignoreColorMaxDeviation &&
         color[3] <= ignoreColorOpacityThreshold
       ) {
         continue;
