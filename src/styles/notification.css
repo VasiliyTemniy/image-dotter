@@ -1,6 +1,6 @@
 #notification {
   position: absolute;
-  z-index: 101;
+  z-index: 10100;
   top: 1rem;
   left: 50%;
   font-size: 1.4rem;
