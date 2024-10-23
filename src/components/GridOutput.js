@@ -83,7 +83,7 @@ const MemoizedGrid = memo(({ grid }) => {
             <div
               key={'r' + rowIndex + 'c' + columnIndex}
               className="cell"
-              style={{ backgroundColor: cell[0], ...cellStyle }}
+              style={{ backgroundColor: cell[3], ...cellStyle }}
             ></div>
           ))}
         </div>
