@@ -1,11 +1,13 @@
 import { rgba2hex } from './color';
 
 /**
- * { color: string, length: number, angle: number, stroke: string, strokeWidth: number }
- * @typedef {[string, number, number, string, number]} Cell
+ * @typedef {import('../index.d.ts').DotterCell} DotterCell
+ *
+ * @typedef {import('../index.d.ts').DotterGridParams} DotterGridParams
  */
 
 /**
+ * read image from file
  * @param {File} file
  * @returns {Promise<Image>}
  */
@@ -28,6 +30,7 @@ export const readImage = (file) => {
 };
 
 /**
+ * Draw input image in canvas
  * @param {Image} image
  * @param {React.MutableRefObject<HTMLCanvasElement>} inputCanvasRef
  */
@@ -38,43 +41,70 @@ export const drawImage = (image, inputCanvasRef) => {
 };
 
 /**
+ * Make color grid and draw grid preview in canvas
  * @param {React.MutableRefObject<HTMLCanvasElement>} inputCanvasRef
  * @param {React.MutableRefObject<HTMLCanvasElement>} outputCanvasRef
- * @param {number} rowsCount
- * @param {number} columnsCount
+ * @param {DotterGridParams} gridParams
  */
-export const drawGridPreview = (inputCanvasRef, outputCanvasRef, rowsCount, columnsCount) => {
+export const drawGridPreview = (
+  inputCanvasRef,
+  outputCanvasRef,
+  gridParams
+) => {
   const canvasInput = inputCanvasRef.current;
   const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
 
   const canvasOutput = outputCanvasRef.current;
   const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
 
-  const grid = makeColorGrid(rowsCount, columnsCount, contextInput);
-  drawOutputByGrid(grid, rowsCount, columnsCount, canvasOutput.width, canvasOutput.height, contextOutput);
+  const grid = makeColorGrid(contextInput, gridParams);
+  drawOutputByGrid(contextOutput, grid, gridParams );
 };
 
 /**
- * @param {number} rowsNumber
- * @param {number} columnsNumber
+ * Make grid of colored cells from input image
  * @param {CanvasRenderingContext2D} contextInput
- * @returns {Cell[][]}
+ * @param {DotterGridParams} params
+ * @returns {DotterCell[][]}
  */
-export const makeColorGrid = (rowsNumber, columnsNumber, contextInput) => {
-  /** @type {Cell[][]} */
+export const makeColorGrid = (
+  contextInput,
+  {
+    rowsCount,
+    columnsCount,
+    ignoreColor,
+    ignoreColorOpacityThreshold,
+    ignoreColorMaxDeviation
+  }
+) => {
+  /** @type {DotterCell[][]} */
   const grid = [];
-  const columnWidth = Math.floor(contextInput.canvas.width / rowsNumber);
-  const rowHeight = Math.floor(contextInput.canvas.height / columnsNumber);
+  const columnWidth = contextInput.canvas.width / columnsCount;
+  const rowHeight = contextInput.canvas.height / rowsCount;
 
-  for (let row = 0; row < rowsNumber; row++) {
-    /** @type {Cell[]} */
+  const icRed = ignoreColor ? hexToInt(ignoreColor.substring(1, 3)) : 0;
+  const icGreen = ignoreColor ? hexToInt(ignoreColor.substring(3, 5)) : 0;
+  const icBlue = ignoreColor ? hexToInt(ignoreColor.substring(5, 7)) : 0;
+
+  for (let row = 0; row < rowsCount; row++) {
+    /** @type {DotterCell[]} */
     const gridrow = [];
-    for (let column = 0; column < columnsNumber; column++) {
+    for (let column = 0; column < columnsCount; column++) {
       const x = columnWidth * column;
       const y = rowHeight * row;
       const data = contextInput.getImageData(x, y, columnWidth, rowHeight).data;
       const color = middleweightColor(data);
-      gridrow.push([color, 0, 0, '', 0]);
+      if (
+        ignoreColor && ignoreColorOpacityThreshold &&
+        icRed - color[0] <= ignoreColorMaxDeviation &&
+        icGreen - color[1] <= ignoreColorMaxDeviation &&
+        icBlue - color[2] <= ignoreColorMaxDeviation &&
+        color[3] <= ignoreColorOpacityThreshold
+      ) {
+        continue;
+      }
+      // span is 1 now; TODO fix it
+      gridrow.push([x, y, 1, rgba2hex(color)]);
     }
     grid.push(gridrow);
   }
@@ -83,42 +113,48 @@ export const makeColorGrid = (rowsNumber, columnsNumber, contextInput) => {
 };
 
 /**
- * @param {Cell[][]} grid
- * @param {number} rowsCount
- * @param {number} columnsCount
- * @param {number} outputCanvasWidth
- * @param {number} outputCanvasHeight
+ * Draws output to canvas
  * @param {CanvasRenderingContext2D} contextOutput
+ * @param {DotterCell[][]} grid
+ * @param {DotterGridParams} params
  */
 const drawOutputByGrid = (
-  grid,
-  rowsCount,
-  columnsCount,
-  outputCanvasWidth,
-  outputCanvasHeight,
   contextOutput,
+  grid,
+  {
+    rowsCount,
+    columnsCount,
+    radius,
+    horizontalGapPx,
+    verticalGapPx,
+    angle,
+    strokeColor,
+    strokeWidth
+  }
 ) => {
   contextOutput.clearRect(0, 0, contextOutput.canvas.width, contextOutput.canvas.height);
-  const outputWidth = Math.floor(outputCanvasWidth / rowsCount);
-  const outputHeight = Math.floor(outputCanvasHeight / columnsCount);
-  for (let row = 0; row < rowsCount; row++) {
-    for (let column = 0; column < columnsCount; column++) {
-      const xOut = outputWidth * column + Math.floor(outputWidth / 2);
-      const yOut = outputHeight * row + Math.floor(outputHeight / 2);
-      const color = grid[row][column][0];
-      const length = grid[row][column][3];
-      const angle = grid[row][column][4];
-      const stroke = grid[row][column][5];
-      const strokeWidth = grid[row][column][6];
-      drawRoundedLine(
+  const columnWidth = contextOutput.canvas.width / columnsCount;
+  const rowHeight = contextOutput.canvas.height / rowsCount;
+  const effectiveRadius = Math.min(Math.floor(Math.min(columnWidth, rowHeight) / 2), radius);
+
+  for (const row of grid) {
+    for (const cell of row) {
+      const xOut = cell[0] + Math.ceil(verticalGapPx / 2);
+      const yOut = cell[1] + Math.ceil(horizontalGapPx / 2);
+      const thickness = Math.floor(rowHeight - horizontalGapPx);
+      const span = cell[2];
+      const length = Math.floor((columnWidth * span) - verticalGapPx);
+      const color = cell[3];
+      drawRoundRect(
         contextOutput,
         xOut,
         yOut,
-        Math.floor(outputWidth / 2) - 5,
+        thickness,
         length,
-        angle + Math.PI / 2,
+        effectiveRadius,
+        angle,
         color,
-        stroke,
+        strokeColor,
         strokeWidth,
       );
     }
@@ -128,7 +164,7 @@ const drawOutputByGrid = (
 /**
  * Gets middleweight color of some image part by surrounding pixels
  * @param {ImageData["data"]} data
- * @returns {string}
+ * @returns {[number, number, number, number]} middleweight color in rgba format
  */
 const middleweightColor = (data) => {
   let red = 0;
@@ -147,55 +183,40 @@ const middleweightColor = (data) => {
   green = Math.round(green / pixelsCounter);
   blue = Math.round(blue / pixelsCounter);
   alpha = Math.round(alpha / pixelsCounter);
-  return rgba2hex([red, green, blue, alpha]);
+  return [red, green, blue, alpha];
 };
-
-// /**
-//  * @param {CanvasRenderingContext2D} context
-//  * @param {number} x
-//  * @param {number} y
-//  * @param {number} radius
-//  * @param {string} fill
-//  * @param {string} stroke
-//  * @param {number} strokeWidth
-//  */
-// export const drawCircle = (context, x, y, radius, fill, stroke, strokeWidth) => {
-//   context.beginPath();
-//   context.arc(x, y, radius, 0, 2 * Math.PI, false);
-//   if (fill) {
-//     context.fillStyle = fill;
-//     context.fill();
-//   }
-//   if (stroke) {
-//     context.rowWidth = strokeWidth;
-//     context.strokeStyle = stroke;
-//     context.stroke();
-//   }
-// };
 
 /**
  * @param {CanvasRenderingContext2D} context
  * @param {number} x
  * @param {number} y
- * @param {number} radius
+ * @param {number} thickness
  * @param {number} length
+ * @param {number} radius
  * @param {number} angle
  * @param {string} fill
- * @param {string} stroke
+ * @param {string} strokeColor
  * @param {number} strokeWidth
  */
-const drawRoundedLine = (context, x, y, radius, length, angle, fill, stroke, strokeWidth) => {
+const drawRoundRect = (context, x, y, thickness, length, radius, angle, fill, strokeColor, strokeWidth) => {
   context.beginPath();
-  context.arc(x, y, radius, angle, angle + Math.PI, false);
-  context.arc(x + Math.sin(angle) * length, y + Math.cos(angle) * length, radius, angle + Math.PI, angle + 2 * Math.PI, false);
-  context.closePath();
+  // Might not seem obvious about 'thickness', 'length' being used instead of 'width' and 'height', but
+  // we store only length in cell data, while thickness is actually more of a calculated value
+  context.roundRect(x, y, length, thickness, [radius]);
+  if (angle > 0) {
+    context.rotate((-angle * Math.PI) / 180);
+  }
   if (fill) {
     context.fillStyle = fill;
     context.fill();
   }
-  if (stroke) {
-    context.rowWidth = strokeWidth;
-    context.strokeStyle = stroke;
+  if (strokeColor && strokeWidth) {
+    context.lineWidth = strokeWidth;
+    context.strokeStyle = strokeColor;
     context.stroke();
   }
+};
+
+const hexToInt = (hex) => {
+  return parseInt(hex.replace('#', ''), 16);
 };
