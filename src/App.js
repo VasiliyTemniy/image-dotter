@@ -15,10 +15,20 @@ import './styles/main.css';
 import { pipetteHexText, pipetteRGBAText } from './utils/color';
 
 
+/**
+ * @typedef {import('./index.d.ts').DotterGridParams} DotterGridParams
+ */
+
 const App = () => {
 
   const [rowsCount, setRowsCount] = useState(20);
   const [columnsCount, setColumnsCount] = useState(100);
+  const [horizontalGapPx, setHorizontalGapPx] = useState(1);
+  const [verticalGapPx, setVerticalGapPx] = useState(1);
+  const [angle, setAngle] = useState(0);
+  const [useStroke, setUseStroke] = useState(false);
+  const [strokeColor, setStrokeColor] = useState('#000000');
+  const [strokeWidth, setStrokeWidth] = useState(1);
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
@@ -72,7 +82,7 @@ const App = () => {
       break;
     }
     if (alwaysRedraw) {
-      drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
     }
   };
 
@@ -102,7 +112,33 @@ const App = () => {
       break;
     }
     if (alwaysRedraw) {
-      drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
+    }
+  };
+
+  const updateHorizontalGapPx = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Horizontal gap must be a positive integer or 0', 'error');
+      setHorizontalGapPx(1);
+      return;
+    }
+    setHorizontalGapPx(value);
+
+    if (alwaysRedraw) {
+      redrawGridPreview({ horizontalGapPx : value });
+    }
+  };
+
+  const updateVerticalGapPx = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Vertical gap must be a positive integer or 0', 'error');
+      setVerticalGapPx(1);
+      return;
+    }
+    setVerticalGapPx(value);
+
+    if (alwaysRedraw) {
+      redrawGridPreview({ verticalGapPx : value });
     }
   };
 
@@ -134,7 +170,7 @@ const App = () => {
     }
     resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, value, screenOverflow, fitBothCanvasInOneRow);
     drawImage(image, inputCanvasRef);
-    drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
+    redrawGridPreview({});
   };
 
   const updateScreenOverflow = (value) => {
@@ -144,7 +180,7 @@ const App = () => {
     }
     resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, stretchCanvas, value, fitBothCanvasInOneRow);
     drawImage(image, inputCanvasRef);
-    drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
+    redrawGridPreview({});
   };
 
   const updateFitBothCanvasInOneRow = (value) => {
@@ -154,7 +190,7 @@ const App = () => {
     }
     resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, stretchCanvas, screenOverflow, value);
     drawImage(image, inputCanvasRef);
-    drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
+    redrawGridPreview({});
   };
 
   const updateAspectRatioMode = (value) => {
@@ -179,7 +215,49 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
+    }
+  };
+
+  const updateAngle = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0 || Number(value) > 360) {
+      showNotification('Angle must be a positive integer between 0 and 360', 'error');
+      setAngle(0);
+      return;
+    }
+    setAngle(value);
+
+    if (alwaysRedraw) {
+      redrawGridPreview({ angle : value });
+    }
+  };
+
+  const updateUseStroke = (value) => {
+    setUseStroke(value);
+
+    if (alwaysRedraw) {
+      redrawGridPreview({ strokeColor: useStroke ? strokeColor : null, strokeWidth: useStroke ? strokeWidth : null });
+    }
+  };
+
+  const updateStrokeColor = (value) => {
+    setStrokeColor(value);
+
+    if (alwaysRedraw && useStroke) {
+      redrawGridPreview({ strokeColor: useStroke ? value: null });
+    }
+  };
+
+  const updateStrokeWidth = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 1) {
+      showNotification('Stroke width must be a positive integer', 'error');
+      setStrokeWidth(1);
+      return;
+    }
+    setStrokeWidth(value);
+
+    if (alwaysRedraw && useStroke) {
+      redrawGridPreview({ strokeWidth: useStroke ? value : null });
     }
   };
 
@@ -197,7 +275,7 @@ const App = () => {
     const { localRowsCount, localColumnsCount } = resizeCanvas(image.width, image.height, stretchCanvas, screenOverflow, fitBothCanvasInOneRow);
 
     drawImage(image, inputCanvasRef);
-    drawGridPreview(inputCanvasRef, outputCanvasRef, localRowsCount, localColumnsCount);
+    redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
   };
 
   const resizeCanvas = (localWidth, localHeight, localStretchCanvas, localScreenOverflow, localFitBothCanvasInOneRow) => {
@@ -261,8 +339,24 @@ const App = () => {
     return { localRowsCount, localColumnsCount };
   };
 
-  const redrawGridPreview = () => {
-    drawGridPreview(inputCanvasRef, outputCanvasRef, rowsCount, columnsCount);
+  /**
+   * @param {Partial<DotterGridParams>} changedParams
+   */
+  const redrawGridPreview = (changedParams) => {
+    drawGridPreview(
+      inputCanvasRef,
+      outputCanvasRef,
+      {
+        rowsCount,
+        columnsCount,
+        horizontalGapPx,
+        verticalGapPx,
+        angle,
+        strokeColor: useStroke ? strokeColor : null,
+        strokeWidth: useStroke ? strokeWidth : null,
+        ...changedParams
+      }
+    );
   };
 
   return (
@@ -276,6 +370,18 @@ const App = () => {
         updateRowsCount={updateRowsCount}
         columnsCount={columnsCount}
         updateColumnsCount={updateColumnsCount}
+        horizontalGapPx={horizontalGapPx}
+        updateHorizontalGapPx={updateHorizontalGapPx}
+        verticalGapPx={verticalGapPx}
+        updateVerticalGapPx={updateVerticalGapPx}
+        angle={angle}
+        updateAngle={updateAngle}
+        useStroke={useStroke}
+        updateUseStroke={updateUseStroke}
+        strokeColor={strokeColor}
+        updateStrokeColor={updateStrokeColor}
+        strokeWidth={strokeWidth}
+        updateStrokeWidth={updateStrokeWidth}
         backgroundColor={backgroundColor}
         updateBackgroundColor={updateBackgroundColor}
         surroundingDotsColor={surroundingDotsColor}
