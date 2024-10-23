@@ -13,6 +13,7 @@ import './styles/flex.css';
 import './styles/container.css';
 import './styles/main.css';
 import { pipetteHexText, pipetteRGBAText } from './utils/color';
+import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 
 
 /**
@@ -402,7 +403,7 @@ const App = () => {
   /**
    * @param {Partial<DotterGridParams>} changedParams
    */
-  const redrawGridPreview = (changedParams) => {
+  const redrawGridPreview = useDebouncedCallback((changedParams) => {
     drawGridPreview(
       inputCanvasRef,
       outputCanvasRef,
@@ -421,7 +422,7 @@ const App = () => {
         ...changedParams
       }
     );
-  };
+  }, 300);
 
   return (
     <>
