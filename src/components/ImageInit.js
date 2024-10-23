@@ -9,7 +9,9 @@ const ImageInit = ({
   screenOverflow,
   updateScreenOverflow,
   fitBothCanvasInOneRow,
-  updateFitBothCanvasInOneRow
+  updateFitBothCanvasInOneRow,
+  shiftMainByMenu,
+  updateShiftMainByMenu
 }) => {
 
   const topsideStyle = {
@@ -97,6 +99,22 @@ const ImageInit = ({
             className="checkbox-input__label"
           >
             Fit both canvas in one row
+          </label>
+        </div>
+        <div className="checkbox-input">
+          <input
+            id="shift-main-by-menu"
+            type="checkbox"
+            name="shift-main-by-menu"
+            className="checkbox-input__field"
+            checked={shiftMainByMenu}
+            onChange={(e) => updateShiftMainByMenu(e.target.checked)}
+          />
+          <label
+            htmlFor="shift-main-by-menu"
+            className="checkbox-input__label"
+          >
+            Shift main area with menu navbar
           </label>
         </div>
       </div>

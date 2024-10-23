@@ -22,6 +22,7 @@ import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 
 const App = () => {
 
+  const [menuOpen, setMenuOpen] = useState(true);
   const [rowsCount, setRowsCount] = useState(20);
   const [columnsCount, setColumnsCount] = useState(100);
   const [radius, setRadius] = useState(10);
@@ -42,6 +43,7 @@ const App = () => {
   const [stretchCanvas, setStretchCanvas] = useState(true);
   const [screenOverflow, setScreenOverflow] = useState(false);
   const [fitBothCanvasInOneRow, setFitBothCanvasInOneRow] = useState(false);
+  const [shiftMainByMenu, setShiftMainByMenu] = useState(true);
   const [aspectRatioMode, setAspectRatioMode] = useState('image');
   const [image, setImage] = useState(null);
 
@@ -54,6 +56,8 @@ const App = () => {
     }, 5000);
     setMessage({ text, type, timeoutId, shown : true });
   };
+
+  const menuRef = useRef();
 
   const gridOutputRef = useRef();
   const inputCanvasRef = useRef();
@@ -182,12 +186,22 @@ const App = () => {
     setAlwaysRedraw(value);
   };
 
+  const updateMenuOpen = (value) => {
+    setMenuOpen(value);
+    if (!image) {
+      return;
+    }
+    resizeCanvas({ localMenuOpen: value });
+    drawImage(image, inputCanvasRef);
+    redrawGridPreview({});
+  };
+
   const updateStretchCanvas = (value) => {
     setStretchCanvas(value);
     if (!image) {
       return;
     }
-    resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, value, screenOverflow, fitBothCanvasInOneRow);
+    resizeCanvas({ localStretchCanvas: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
   };
@@ -197,7 +211,7 @@ const App = () => {
     if (!image) {
       return;
     }
-    resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, stretchCanvas, value, fitBothCanvasInOneRow);
+    resizeCanvas({ localScreenOverflow: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
   };
@@ -207,7 +221,17 @@ const App = () => {
     if (!image) {
       return;
     }
-    resizeCanvas(inputCanvasRef.current.width, inputCanvasRef.current.height, stretchCanvas, screenOverflow, value);
+    resizeCanvas({ localFitBothCanvasInOneRow: value });
+    drawImage(image, inputCanvasRef);
+    redrawGridPreview({});
+  };
+
+  const updateShiftMainByMenu = (value) => {
+    setShiftMainByMenu(value);
+    if (!image) {
+      return;
+    }
+    resizeCanvas({ localShiftMainByMenu: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
   };
@@ -333,13 +357,24 @@ const App = () => {
 
     setImage(image);
 
-    const { localRowsCount, localColumnsCount } = resizeCanvas(image.width, image.height, stretchCanvas, screenOverflow, fitBothCanvasInOneRow);
+    const { localRowsCount, localColumnsCount } = resizeCanvas({
+      localWidth: image.width,
+      localHeight: image.height
+    });
 
     drawImage(image, inputCanvasRef);
     redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
   };
 
-  const resizeCanvas = (localWidth, localHeight, localStretchCanvas, localScreenOverflow, localFitBothCanvasInOneRow) => {
+  const resizeCanvas = ({
+    localWidth = inputCanvasRef.current.width,
+    localHeight = inputCanvasRef.current.height,
+    localStretchCanvas = stretchCanvas,
+    localScreenOverflow = screenOverflow,
+    localFitBothCanvasInOneRow = fitBothCanvasInOneRow,
+    localShiftMainByMenu = shiftMainByMenu,
+    localMenuOpen = menuOpen
+  }) => {
     const windowWidth = window.innerWidth;
 
     let unavailableWidth = 18;
@@ -364,6 +399,14 @@ const App = () => {
 
     if (localFitBothCanvasInOneRow) {
       availableScreenWidth = Math.floor((availableScreenWidth - unavailableWidth) / 2);
+    }
+
+    if (localShiftMainByMenu && menuRef.current && localMenuOpen) {
+      if (localFitBothCanvasInOneRow) {
+        availableScreenWidth -= Math.ceil(menuRef.current.offsetWidth / 2);
+      } else {
+        availableScreenWidth -= menuRef.current.offsetWidth;
+      }
     }
 
     if (localStretchCanvas && localWidth <= availableScreenWidth) {
@@ -428,6 +471,9 @@ const App = () => {
     <>
       <Notification message={message.text} type={message.type} shown={message.shown}/>
       <Menu
+        menuOpen={menuOpen}
+        updateMenuOpen={updateMenuOpen}
+        menuRef={menuRef}
         handleFileSelection={handleFileSelection}
         gridOutputRef={gridOutputRef}
         inputCanvasRef={inputCanvasRef}
@@ -479,6 +525,8 @@ const App = () => {
         updateScreenOverflow={updateScreenOverflow}
         fitBothCanvasInOneRow={fitBothCanvasInOneRow}
         updateFitBothCanvasInOneRow={updateFitBothCanvasInOneRow}
+        shiftMainByMenu={shiftMainByMenu}
+        updateShiftMainByMenu={updateShiftMainByMenu}
       />
       <GridOutput ref={gridOutputRef} />
     </>

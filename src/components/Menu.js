@@ -1,6 +1,9 @@
 import { makeColorGrid } from '../utils/dottergrid';
 
 const Menu = ({
+  menuOpen,
+  updateMenuOpen,
+  menuRef,
   handleFileSelection,
   gridOutputRef,
   inputCanvasRef,
@@ -47,7 +50,7 @@ const Menu = ({
     e.preventDefault();
     const canvasInput = inputCanvasRef.current;
     const contextInput = canvasInput.getContext('2d');
-    const grid = makeColorGrid(rowsCount, columnsCount, contextInput);
+    const grid = makeColorGrid(contextInput, { rowsCount, columnsCount, ignoreColor, ignoreColorOpacityThreshold, ignoreColorMaxDeviation });
     gridOutputRef.current.handleCreate(grid);
   };
 
@@ -80,8 +83,8 @@ const Menu = ({
 
   return (
     <>
-      <input type="checkbox" id="nav-toggle" defaultChecked hidden />
-      <nav className="nav">
+      <input type="checkbox" id="nav-toggle" checked={menuOpen} onChange={(e) => updateMenuOpen(e.target.checked)} hidden />
+      <nav className="nav" ref={menuRef}>
         <label htmlFor="nav-toggle" className="nav-toggle"></label>
         <h2 className="logo">
           <span>I</span><span style={{ color: '#ff0000' }}>Dotter</span>
