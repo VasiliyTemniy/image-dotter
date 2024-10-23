@@ -104,7 +104,7 @@
 .nav > ul {
   display: block;
   margin: 0;
-  padding: 0;
+  padding: 0 0 3rem; /* bottom padding for correct nav scroll to the bottom */
   list-style: none;
 }
 
