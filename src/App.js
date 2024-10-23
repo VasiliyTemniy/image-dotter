@@ -14,6 +14,7 @@ import './styles/container.css';
 import './styles/main.css';
 import { pipetteHexText, pipetteRGBAText } from './utils/color';
 import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
+import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
 
 
 /**
@@ -21,6 +22,13 @@ import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
  */
 
 const App = () => {
+
+  const layoutSettings = getLocalStorageMap('image-dotter-layout-settings', {
+    stretchCanvas: true,
+    screenOverflow: false,
+    fitBothCanvasInOneRow: false,
+    shiftMainByMenu: true
+  });
 
   const [menuOpen, setMenuOpen] = useState(true);
   const [rowsCount, setRowsCount] = useState(20);
@@ -40,10 +48,10 @@ const App = () => {
   const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
   const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
-  const [stretchCanvas, setStretchCanvas] = useState(true);
-  const [screenOverflow, setScreenOverflow] = useState(false);
-  const [fitBothCanvasInOneRow, setFitBothCanvasInOneRow] = useState(false);
-  const [shiftMainByMenu, setShiftMainByMenu] = useState(true);
+  const [stretchCanvas, setStretchCanvas] = useState(layoutSettings.stretchCanvas);
+  const [screenOverflow, setScreenOverflow] = useState(layoutSettings.screenOverflow);
+  const [fitBothCanvasInOneRow, setFitBothCanvasInOneRow] = useState(layoutSettings.fitBothCanvasInOneRow);
+  const [shiftMainByMenu, setShiftMainByMenu] = useState(layoutSettings.shiftMainByMenu);
   const [aspectRatioMode, setAspectRatioMode] = useState('image');
   const [image, setImage] = useState(null);
 
@@ -198,6 +206,10 @@ const App = () => {
 
   const updateStretchCanvas = (value) => {
     setStretchCanvas(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      stretchCanvas: value
+    });
     if (!image) {
       return;
     }
@@ -208,6 +220,18 @@ const App = () => {
 
   const updateScreenOverflow = (value) => {
     setScreenOverflow(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      screenOverflow: value
+    });
+    if (!inputCanvasRef.current) {
+      return;
+    }
+    if (value && !inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
+      inputCanvasRef.current.parentElement.classList.add('overflow-x-scroll');
+    } else if (!value && inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
+      inputCanvasRef.current.parentElement.classList.remove('overflow-x-scroll');
+    }
     if (!image) {
       return;
     }
@@ -218,6 +242,10 @@ const App = () => {
 
   const updateFitBothCanvasInOneRow = (value) => {
     setFitBothCanvasInOneRow(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      fitBothCanvasInOneRow: value
+    });
     if (!image) {
       return;
     }
@@ -228,6 +256,10 @@ const App = () => {
 
   const updateShiftMainByMenu = (value) => {
     setShiftMainByMenu(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      shiftMainByMenu: value
+    });
     if (!image) {
       return;
     }
@@ -416,8 +448,8 @@ const App = () => {
       inputCanvasRef.current.width = localWidth;
       inputCanvasRef.current.height = localHeight;
     } else if (localScreenOverflow && localWidth > availableScreenWidth) {
-      if (!inputCanvasRef.current.parent.classList.contains('overflow-x-scroll')) {
-        inputCanvasRef.current.parent.classList.add('overflow-x-scroll');
+      if (!inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
+        inputCanvasRef.current.parentElement.classList.add('overflow-x-scroll');
       }
       inputCanvasRef.current.width = localWidth;
       inputCanvasRef.current.height = localHeight;
