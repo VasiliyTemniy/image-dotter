@@ -8,6 +8,18 @@ const Menu = ({
   updateRowsCount,
   columnsCount,
   updateColumnsCount,
+  horizontalGapPx,
+  updateHorizontalGapPx,
+  verticalGapPx,
+  updateVerticalGapPx,
+  angle,
+  updateAngle,
+  useStroke,
+  updateUseStroke,
+  strokeColor,
+  updateStrokeColor,
+  strokeWidth,
+  updateStrokeWidth,
   backgroundColor,
   updateBackgroundColor,
   surroundingDotsColor,
@@ -128,6 +140,38 @@ const Menu = ({
                 onChange={(e) => updateColumnsCount(e.target.value)}
               />
             </div>
+            <div className="text-input text-input__floating">
+              <label
+                htmlFor="horizontal-gap-px-input"
+                className="text-input__label"
+                title="Changes horizontal gap in output"
+              >
+                horizontal gap px
+              </label>
+              <input
+                id="horizontal-gap-px-input"
+                name="horizontal-gap-px"
+                className="text-input__field"
+                value={horizontalGapPx}
+                onChange={(e) => updateHorizontalGapPx(e.target.value)}
+              />
+            </div>
+            <div className="text-input text-input__floating">
+              <label
+                htmlFor="vertical-gap-px-input"
+                className="text-input__label"
+                title="Changes vertical gap in output"
+              >
+                vertical gap px
+              </label>
+              <input
+                id="vertical-gap-px-input"
+                name="vertical-gap-px"
+                className="text-input__field"
+                value={verticalGapPx}
+                onChange={(e) => updateVerticalGapPx(e.target.value)}
+              />
+            </div>
             <div className="select-input select-input__floating">
               <label
                 htmlFor="aspect-select"
@@ -147,6 +191,76 @@ const Menu = ({
                 <option value="square">Fix square ratio</option>
                 <option value="none">Do not fix ratio</option>
               </select>
+            </div>
+          </li>
+          <li className="container bg-lightgray padding-1rem border-black-1px margin-v-1rem flex column gap-05rem" style={{ width: '14rem' }}>
+            <div className='title'>Additional visual params</div>
+            <div className="text-input text-input__floating">
+              <label
+                htmlFor="angle-input"
+                className="text-input__label"
+                title="Changes angle of output"
+              >
+                angle (deg; 0 for horizontal)
+              </label>
+              <input
+                id="angle-input"
+                name="angle"
+                className="text-input__field"
+                value={angle}
+                onChange={(e) => updateAngle(e.target.value)}
+              />
+            </div>
+            <div className='checkbox-input checkbox-input__floating'>
+              <input
+                id="use-stroke"
+                type="checkbox"
+                name="use-stroke"
+                className="checkbox-input__field"
+                checked={useStroke}
+                onChange={(e) => updateUseStroke(e.target.checked)}
+              />
+              <label
+                htmlFor="use-stroke"
+                className="checkbox-input__label"
+                title="Use stroke or not"
+              >
+                Use stroke
+              </label>
+            </div>
+            <div className="color-input color-input__floating">
+              <input
+                id="stroke-color"
+                name="stroke-color"
+                type="color"
+                value={strokeColor}
+                onChange={(e) => updateStrokeColor(e.target.value)}
+                disabled={!useStroke}
+              />
+              <label
+                htmlFor="stroke-color"
+                className="color-input__label"
+                title="Changes stroke color of output"
+              >
+                Stroke color
+              </label>
+            </div>
+            <div className="text-input text-input__floating">
+              <label
+                htmlFor="stroke-width-input"
+                className="text-input__label"
+                title="Changes stroke width of output"
+              >
+                stroke width
+              </label>
+              <input
+                id="stroke-width-input"
+                name="stroke-width"
+                className="text-input__field"
+                value={strokeWidth}
+                onChange={(e) => updateStrokeWidth(e.target.value)}
+                disabled={!useStroke}
+              />
             </div>
           </li>
           <li>
