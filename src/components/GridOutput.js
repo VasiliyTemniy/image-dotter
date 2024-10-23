@@ -46,7 +46,7 @@ const GridOutput = forwardRef((props, refs) => {
 
   const containerStyle = {
     width: '100%',
-    height: '500px',
+    height: '100vh',
     gap: '1px',
   };
 
