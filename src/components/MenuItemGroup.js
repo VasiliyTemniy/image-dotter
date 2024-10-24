@@ -30,7 +30,7 @@ const MenuItemGroup = ({
   };
 
   const foldSymbol = foldable
-    ? folded ? ' ▴' : ' ▾'
+    ? folded ? ' ▾' : ' ▴'
     : '';
 
   return (
