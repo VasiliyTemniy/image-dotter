@@ -31,3 +31,21 @@ export type DotterCell = [
   /** cell color */
   string
 ];
+
+
+export interface MenuItem {
+  tag: 'input' | 'select' | 'div';
+  type: 'text' | 'color' | 'number' | 'checkbox';
+  name: string;
+  value: string;
+  label?: string;
+  updateValue?: (args: any) => void;
+  ref?: React.RefObject<HTMLInputElement> | React.RefObject<HTMLSelectElement> | React.RefObject<HTMLDivElement>;
+  style?: any;
+  disabled?: boolean;
+  tooltip?: string;
+  options?: {
+    value: string;
+    label: string;
+  }[];
+};
