@@ -62,4 +62,13 @@
 
 .container.folded {
   height: 0;
+  margin-bottom: 2rem; /* Makes the label text slightly more readable while container is folded */
+}
+
+.container.folded.container.padding-1rem {
+  padding: 0 1rem;
+}
+
+.container.folded.container.padding-05rem {
+  padding: 0 0.5rem;
 }
