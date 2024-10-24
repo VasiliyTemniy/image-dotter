@@ -109,6 +109,9 @@ const App = () => {
     default:
       break;
     }
+    if (!image) {
+      return;
+    }
     if (alwaysRedraw) {
       redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
     }
@@ -139,6 +142,9 @@ const App = () => {
     default:
       break;
     }
+    if (!image) {
+      return;
+    }
     if (alwaysRedraw) {
       redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
     }
@@ -151,6 +157,9 @@ const App = () => {
       return;
     }
     setRadius(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw) {
       redrawGridPreview({ radius : value });
@@ -164,6 +173,9 @@ const App = () => {
       return;
     }
     setHorizontalGapPx(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw) {
       redrawGridPreview({ horizontalGapPx : value });
@@ -177,6 +189,9 @@ const App = () => {
       return;
     }
     setVerticalGapPx(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw) {
       redrawGridPreview({ verticalGapPx : value });
@@ -195,7 +210,7 @@ const App = () => {
   };
 
   const updatePipetteColor = (rgba) => {
-    if (!pipetteRGBARef || !pipetteHexRef) {
+    if (!pipetteRGBARef.current || !pipetteHexRef.current) {
       return;
     }
 
@@ -212,6 +227,7 @@ const App = () => {
     if (!image) {
       return;
     }
+
     resizeCanvas({ localMenuOpen: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
@@ -226,6 +242,7 @@ const App = () => {
     if (!image) {
       return;
     }
+
     resizeCanvas({ localStretchCanvas: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
@@ -248,6 +265,7 @@ const App = () => {
     if (!image) {
       return;
     }
+
     resizeCanvas({ localScreenOverflow: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
@@ -262,6 +280,7 @@ const App = () => {
     if (!image) {
       return;
     }
+
     resizeCanvas({ localFitBothCanvasInOneRow: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
@@ -276,6 +295,7 @@ const App = () => {
     if (!image) {
       return;
     }
+
     resizeCanvas({ localShiftMainByMenu: value });
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
@@ -302,6 +322,10 @@ const App = () => {
       break;
     }
 
+    if (!image) {
+      return;
+    }
+
     if (alwaysRedraw) {
       redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
     }
@@ -314,6 +338,9 @@ const App = () => {
       return;
     }
     setAngle(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw) {
       redrawGridPreview({ angle : value });
@@ -322,6 +349,9 @@ const App = () => {
 
   const updateUseStroke = (value) => {
     setUseStroke(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw) {
       redrawGridPreview({ strokeColor: value ? strokeColor : null, strokeWidth: value ? strokeWidth : null });
@@ -330,6 +360,9 @@ const App = () => {
 
   const updateStrokeColor = (value) => {
     setStrokeColor(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw && useStroke) {
       redrawGridPreview({ strokeColor: useStroke ? value: null });
@@ -343,6 +376,9 @@ const App = () => {
       return;
     }
     setStrokeWidth(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw && useStroke) {
       redrawGridPreview({ strokeWidth: useStroke ? value : null });
@@ -351,6 +387,9 @@ const App = () => {
 
   const updateUseIgnoreColor = (value) => {
     setUseIgnoreColor(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw) {
       redrawGridPreview({ ignoreColor: value ? ignoreColor : null });
@@ -359,6 +398,9 @@ const App = () => {
 
   const updateIgnoreColor = (value) => {
     setIgnoreColor(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw && useIgnoreColor) {
       redrawGridPreview({ ignoreColor: useIgnoreColor ? value : null });
@@ -372,6 +414,9 @@ const App = () => {
       return;
     }
     setIgnoreColorOpacityThreshold(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw && useIgnoreColor) {
       redrawGridPreview({ ignoreColorOpacityThreshold: useIgnoreColor ? value : null });
@@ -385,6 +430,9 @@ const App = () => {
       return;
     }
     setIgnoreColorMaxDeviation(value);
+    if (!image) {
+      return;
+    }
 
     if (alwaysRedraw && useIgnoreColor) {
       redrawGridPreview({ ignoreColorMaxDeviation: useIgnoreColor ? value : null });
@@ -492,6 +540,8 @@ const App = () => {
    * @param {Partial<DotterGridParams>} changedParams
    */
   const redrawGridPreview = useDebouncedCallback((changedParams) => {
+    // Early return if there is no image has no power placed here because the callback is debounced.
+    // All returns if there is no image must be used before this function's calls.
     drawGridPreview(
       inputCanvasRef,
       outputCanvasRef,
