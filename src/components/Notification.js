@@ -12,4 +12,4 @@ const Notification = ({ message , type, shown }) => {
 
 Notification.displayName = 'Notification';
 
-export default Notification;
+export { Notification };

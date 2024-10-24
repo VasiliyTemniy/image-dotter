@@ -152,4 +152,6 @@ const ImageInit = ({
   );
 };
 
-export default ImageInit;
+ImageInit.displayName = 'ImageInit';
+
+export { ImageInit };

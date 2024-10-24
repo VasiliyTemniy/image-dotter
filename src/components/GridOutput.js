@@ -96,4 +96,4 @@ MemoizedGrid.displayName = 'MemoizedGrid';
 
 GridOutput.displayName = 'GridOutput';
 
-export default GridOutput;
+export { GridOutput };
