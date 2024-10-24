@@ -51,3 +51,15 @@
 .container.bg-lightgray > .title {
   background: lightgray;
 }
+
+.container.foldable > .title {
+  cursor: pointer;
+}
+
+.container.foldable > .title:hover {
+  color: blue;
+}
+
+.container.folded {
+  height: 0;
+}
