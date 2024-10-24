@@ -78,7 +78,7 @@ const MenuCheckboxItem = ({ item }) => {
         ref={item.ref}
         style={item.style}
         checked={item.value}
-        onChange={(e) => item.updateValue(e.target.value)}
+        onChange={(e) => item.updateValue(e.target.checked)}
         disabled={item.disabled}
       />
       <label
