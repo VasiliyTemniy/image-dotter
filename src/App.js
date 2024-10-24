@@ -1,8 +1,8 @@
-import { drawGridPreview, drawImage, readImage } from './utils/dottergrid';
-import ImageInit from './components/ImageInit';
-import GridOutput from './components/GridOutput';
-import Menu from './components/Menu';
-import Notification from './components/Notification';
+import { drawGridPreview, drawImage, makeColorGrid, readImage } from './utils/dottergrid';
+import { ImageInit } from './components/ImageInit';
+import { GridOutput } from './components/GridOutput';
+import { Menu } from './components/Menu';
+import { Notification } from './components/Notification';
 import { useRef, useState } from 'react';
 import './styles/grid-output.css';
 import './styles/nav.css';
@@ -19,6 +19,16 @@ import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
 
 /**
  * @typedef {import('./index.d.ts').DotterGridParams} DotterGridParams
+ */
+
+/**
+ * TODO!!!
+ * 1.DONE. Better input CSS
+ * 2. Add generator - make seed-procedural-generation-based cell generator; optional color generator, optional size (horizontal span) generator
+ * 3. Add animation control and options.
+ * 4.DONE. Make grid settings in menu dropdownable, at least those additional settings, generator settings, animation settings
+ * 5. Save as HTML + CSS instead of json. Leave json as an option. For json, though, change structure -
+ *    some common options like radius and gaps should be handled separately from the grid
  */
 
 const App = () => {
@@ -175,6 +185,9 @@ const App = () => {
 
   const updateBackgroundColor = (hex) => {
     setBackgroundColor(hex);
+    // TODO: DECIDE maybe update output canvas color too?
+    const background = gridOutputRef.current.backgroundRef.current;
+    background.style.backgroundColor = hex;
   };
 
   const updateSurroundingDotsColor = (hex) => {
@@ -499,6 +512,31 @@ const App = () => {
     );
   }, 300);
 
+  const handleRedrawGrid = (e) => {
+    e.preventDefault();
+    const canvasInput = inputCanvasRef.current;
+    const contextInput = canvasInput.getContext('2d');
+    const grid = makeColorGrid(contextInput, { rowsCount, columnsCount, ignoreColor, ignoreColorOpacityThreshold, ignoreColorMaxDeviation });
+    gridOutputRef.current.handleCreate(grid);
+  };
+
+  const handleSaveClick = async (e) => {
+    e.preventDefault();
+    const handle = await window.showSaveFilePicker({
+      suggestedName: 'grid.json',
+      types: [{
+        description: 'Output grid',
+        accept: { 'application/json': ['.json'] },
+      }],
+    });
+
+    const blob = new Blob([JSON.stringify(gridOutputRef.current.grid)], { type: 'application/json' });
+
+    const writableStream = await handle.createWritable();
+    await writableStream.write(blob);
+    await writableStream.close();
+  };
+
   return (
     <>
       <Notification message={message.text} type={message.type} shown={message.shown}/>
@@ -507,45 +545,51 @@ const App = () => {
         updateMenuOpen={updateMenuOpen}
         menuRef={menuRef}
         handleFileSelection={handleFileSelection}
-        gridOutputRef={gridOutputRef}
-        inputCanvasRef={inputCanvasRef}
-        rowsCount={rowsCount}
-        updateRowsCount={updateRowsCount}
-        columnsCount={columnsCount}
-        updateColumnsCount={updateColumnsCount}
-        radius={radius}
-        updateRadius={updateRadius}
-        horizontalGapPx={horizontalGapPx}
-        updateHorizontalGapPx={updateHorizontalGapPx}
-        verticalGapPx={verticalGapPx}
-        updateVerticalGapPx={updateVerticalGapPx}
-        angle={angle}
-        updateAngle={updateAngle}
-        useStroke={useStroke}
-        updateUseStroke={updateUseStroke}
-        strokeColor={strokeColor}
-        updateStrokeColor={updateStrokeColor}
-        strokeWidth={strokeWidth}
-        updateStrokeWidth={updateStrokeWidth}
-        useIgnoreColor={useIgnoreColor}
-        updateUseIgnoreColor={updateUseIgnoreColor}
-        ignoreColor={ignoreColor}
-        updateIgnoreColor={updateIgnoreColor}
-        ignoreColorOpacityThreshold={ignoreColorOpacityThreshold}
-        updateIgnoreColorOpacityThreshold={updateIgnoreColorOpacityThreshold}
-        ignoreColorMaxDeviation={ignoreColorMaxDeviation}
-        updateIgnoreColorMaxDeviation={updateIgnoreColorMaxDeviation}
-        backgroundColor={backgroundColor}
-        updateBackgroundColor={updateBackgroundColor}
-        surroundingDotsColor={surroundingDotsColor}
-        updateSurroundingDotsColor={updateSurroundingDotsColor}
-        alwaysRedraw={alwaysRedraw}
-        updateAlwaysRedraw={updateAlwaysRedraw}
-        pipetteRGBARef={pipetteRGBARef}
-        pipetteHexRef={pipetteHexRef}
-        aspectRatioMode={aspectRatioMode}
-        updateAspectRatioMode={updateAspectRatioMode}
-        redrawGridPreview={redrawGridPreview}
+        handleRedrawGrid={handleRedrawGrid}
+        handleSaveClick={handleSaveClick}
+        handleRedrawGridPreview={redrawGridPreview}
+        values={{
+          rowsCount,
+          columnsCount,
+          radius,
+          horizontalGapPx,
+          verticalGapPx,
+          aspectRatioMode,
+          angle,
+          useStroke,
+          strokeColor,
+          strokeWidth,
+          useIgnoreColor,
+          ignoreColor,
+          ignoreColorOpacityThreshold,
+          ignoreColorMaxDeviation,
+          backgroundColor,
+          surroundingDotsColor,
+          alwaysRedraw
+        }}
+        valueHandlers={{
+          updateRowsCount,
+          updateColumnsCount,
+          updateRadius,
+          updateHorizontalGapPx,
+          updateVerticalGapPx,
+          updateAspectRatioMode,
+          updateAngle,
+          updateUseStroke,
+          updateStrokeColor,
+          updateStrokeWidth,
+          updateUseIgnoreColor,
+          updateIgnoreColor,
+          updateIgnoreColorOpacityThreshold,
+          updateIgnoreColorMaxDeviation,
+          updateBackgroundColor,
+          updateSurroundingDotsColor,
+          updateAlwaysRedraw
+        }}
+        refs={{
+          pipetteRGBARef,
+          pipetteHexRef
+        }}
       />
       <ImageInit
         inputCanvasRef={inputCanvasRef}
@@ -565,4 +609,4 @@ const App = () => {
   );
 };
 
-export default App;
+export { App };
