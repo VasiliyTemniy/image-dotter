@@ -5,16 +5,41 @@ export interface DotterGridParams {
   horizontalGapPx: number;
   verticalGapPx: number;
   angle: number;
-  /** null means no stroke will be drawn */
-  strokeColor: string | null;
-  /** null means no stroke will be drawn */
-  strokeWidth: number | null;
-  /** null means no color will be ignored */
-  ignoreColor: string | null;
-  /** 0.0 - 1.0; below this threshold the color will be ignored; null means no color will be ignored */
-  ignoreColorOpacityThreshold: number | null;
-  /** 0 - 255; null means no color will be ignored */
-  ignoreColorMaxDeviation: number | null;
+  stroke: {
+    color: string;
+    width: number;
+  } | null;
+  ignoreColor: {
+    color: string;
+    opacityThreshold: number;
+    maxDeviation: number;
+  } | null;
+}
+
+export interface GeneratorParams {
+  seed: number;
+  cellSpan: {
+    estimated: number;
+    min: number;
+    max: number;
+  } | null;
+  palette: string[] | null;
+  surroundingCells: {
+    color: string;
+    minDepth: number;
+    maxDepth: number;
+  } | null;
+}
+
+export interface AnimationParams {
+  type: 'slide' | 'appear';
+  direction: 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top' | 'h-sides' | 'v-sides' | 'all' | null;
+  duration: number;
+  delay: {
+    min: number;
+    max: number;
+  } | null;
+  easing: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | null;
 }
 
 /**

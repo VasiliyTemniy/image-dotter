@@ -209,6 +209,187 @@ const Menu = ({
               }
             ]}
           />
+          <MenuItemGroup
+            title="Generator params"
+            tag='li'
+            foldable={true}
+            defaultFolded={true}
+            style={{ width: '14rem' }}
+            items={[
+              {
+                tag: 'input',
+                name: 'seed',
+                label: 'Seed',
+                type: 'number',
+                value: values.seed,
+                updateValue: valueHandlers.updateSeed
+              },
+              {
+                tag: 'input',
+                name: 'use-cell-span',
+                label: 'Use cell span',
+                type: 'checkbox',
+                value: values.useCellSpan,
+                updateValue: valueHandlers.updateUseCellSpan
+              },
+              {
+                tag: 'input',
+                name: 'cell-span-estimated',
+                label: 'Cell span estimated',
+                type: 'number',
+                disabled: !values.useCellSpan,
+                value: values.cellSpanEstimated,
+                updateValue: valueHandlers.updateCellSpanEstimated
+              },
+              {
+                tag: 'input',
+                name: 'cell-span-min',
+                label: 'Cell span min',
+                type: 'number',
+                disabled: !values.useCellSpan,
+                value: values.cellSpanMin,
+                updateValue: valueHandlers.updateCellSpanMin
+              },
+              {
+                tag: 'input',
+                name: 'cell-span-max',
+                label: 'Cell span max',
+                type: 'number',
+                disabled: !values.useCellSpan,
+                value: values.cellSpanMax,
+                updateValue: valueHandlers.updateCellSpanMax
+              },
+              {
+                tag: 'input',
+                name: 'use-palette',
+                label: 'Use palette',
+                type: 'checkbox',
+                value: values.usePalette,
+                updateValue: valueHandlers.updateUsePalette
+              },
+              // Need to add another component for palette - multiple colors
+              // {
+              //   tag: 'input',
+              //   name: 'palette',
+              //   label: 'Palette',
+              //   type: 'color',
+              //   disabled: !values.usePalette,
+              //   value: values.palette,
+              //   updateValue: valueHandlers.updatePalette
+              // }
+              {
+                tag: 'input',
+                name: 'use-surrounding-cells',
+                label: 'Use surrounding cells',
+                type: 'checkbox',
+                value: values.useSurroundingCells,
+                updateValue: valueHandlers.updateUseSurroundingCells
+              },
+              {
+                tag: 'input',
+                name: 'surrounding-cells-color',
+                label: 'Surrounding cells color',
+                type: 'color',
+                disabled: !values.useSurroundingCells,
+                value: values.surroundingCellsColor,
+                updateValue: valueHandlers.updateSurroundingCellsColor
+              },
+              {
+                tag: 'input',
+                name: 'surrounding-cells-min-depth',
+                label: 'Surrounding cells min depth',
+                type: 'number',
+                disabled: !values.useSurroundingCells,
+                value: values.surroundingCellsMinDepth,
+                updateValue: valueHandlers.updateSurroundingCellsMinDepth
+              },
+              {
+                tag: 'input',
+                name: 'surrounding-cells-max-depth',
+                label: 'Surrounding cells max depth',
+                type: 'number',
+                disabled: !values.useSurroundingCells,
+                value: values.surroundingCellsMaxDepth,
+                updateValue: valueHandlers.updateSurroundingCellsMaxDepth
+              }
+            ]}
+          />
+          <MenuItemGroup
+            title="Animation params"
+            tag='li'
+            foldable={true}
+            defaultFolded={true}
+            style={{ width: '14rem' }}
+            items={[
+              {
+                tag: 'select',
+                name: 'animation-type',
+                label: 'Animation type',
+                type: 'select',
+                value: values.animationType,
+                updateValue: valueHandlers.updateAnimationType,
+                options: [
+                  { value: 'slide', label: 'Slide' },
+                  { value: 'appear', label: 'Appear' },
+                ]
+              },
+              {
+                tag: 'select',
+                name: 'animation-direction',
+                label: 'Animation direction',
+                type: 'select',
+                value: values.animationDirection,
+                updateValue: valueHandlers.updateAnimationDirection,
+                options: [
+                  { value: 'left-to-right', label: 'Left to right' },
+                  { value: 'right-to-left', label: 'Right to left' },
+                  { value: 'top-to-bottom', label: 'Top to bottom' },
+                  { value: 'bottom-to-top', label: 'Bottom to top' },
+                  { value: 'h-sides', label: 'Horizontal sides' },
+                  { value: 'v-sides', label: 'Vertical sides' },
+                  { value: 'all', label: 'All' },
+                ]
+              },
+              {
+                tag: 'input',
+                name: 'animation-duration',
+                label: 'Animation duration',
+                type: 'number',
+                value: values.animationDuration,
+                updateValue: valueHandlers.updateAnimationDuration
+              },
+              {
+                tag: 'input',
+                name: 'animation-delay-min',
+                label: 'Animation delay min',
+                type: 'number',
+                value: values.animationDelayMin,
+                updateValue: valueHandlers.updateAnimationDelayMin
+              },
+              {
+                tag: 'input',
+                name: 'animation-delay-max',
+                label: 'Animation delay max',
+                type: 'number',
+                value: values.animationDelayMax,
+                updateValue: valueHandlers.updateAnimationDelayMax
+              },
+              {
+                tag: 'select',
+                name: 'animation-easing',
+                label: 'Animation easing',
+                type: 'select',
+                value: values.animationEasing,
+                updateValue: valueHandlers.updateAnimationEasing,
+                options: [
+                  { value: 'linear', label: 'Linear' },
+                  { value: 'ease-in', label: 'Ease in' },
+                  { value: 'ease-out', label: 'Ease out' },
+                  { value: 'ease-in-out', label: 'Ease in out' },
+                ]
+              }
+            ]}
+          />
           <li>
             <input
               id="always-redraw"
@@ -245,22 +426,6 @@ const Menu = ({
               title="Changes background color for react output preview"
             >
               Background
-            </label>
-          </li>
-          <li className="color-input">
-            <input
-              id="surrounding-dots-color"
-              type="color"
-              name="surrounding-dots-color"
-              value={values.surroundingDotsColor}
-              onChange={(e) => valueHandlers.updateSurroundingDotsColor(e.target.value)}
-            />
-            <label
-              htmlFor="surrounding-dots-color"
-              className="color-input__label"
-              title="Changes color of surrounding dots for react output"
-            >
-                Surrounding dots
             </label>
           </li>
         </ul>

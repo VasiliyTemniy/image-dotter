@@ -41,11 +41,16 @@ const App = () => {
   });
 
   const [menuOpen, setMenuOpen] = useState(true);
+
+  // Main grid params
   const [rowsCount, setRowsCount] = useState(20);
   const [columnsCount, setColumnsCount] = useState(100);
   const [radius, setRadius] = useState(10);
   const [horizontalGapPx, setHorizontalGapPx] = useState(1);
   const [verticalGapPx, setVerticalGapPx] = useState(1);
+  const [aspectRatioMode, setAspectRatioMode] = useState('image');
+
+  // Additional grid params
   const [angle, setAngle] = useState(0);
   const [useStroke, setUseStroke] = useState(false);
   const [strokeColor, setStrokeColor] = useState('#000000');
@@ -54,15 +59,41 @@ const App = () => {
   const [ignoreColor, setIgnoreColor] = useState('#ffffff');
   const [ignoreColorOpacityThreshold, setIgnoreColorOpacityThreshold] = useState(50);
   const [ignoreColorMaxDeviation, setIgnoreColorMaxDeviation] = useState(1);
+
+  // Generator params
+  const [seed, setSeed] = useState(Math.ceil(Math.random() * 100000));
+  const [useCellSpan, setUseCellSpan] = useState(false);
+  const [cellSpanEstimated, setCellSpanEstimated] = useState(1);
+  const [cellSpanMin, setCellSpanMin] = useState(1);
+  const [cellSpanMax, setCellSpanMax] = useState(1);
+  const [usePalette, setUsePalette] = useState(false);
+  const [palette, setPalette] = useState(null);
+  const [useSurroundingCells, setUseSurroundingCells] = useState(false);
+  const [surroundingCellsColor, setSurroundingCellsColor] = useState('#325e9f');
+  const [surroundingCellsMinDepth, setSurroundingCellsMinDepth] = useState(2);
+  const [surroundingCellsMaxDepth, setSurroundingCellsMaxDepth] = useState(3);
+
+  // Animation params
+  const [animationType, setAnimationType] = useState('slide');
+  const [animationDirection, setAnimationDirection] = useState('h-sides');
+  const [animationDuration, setAnimationDuration] = useState(1000);
+  const [animationDelayMin, setAnimationDelayMin] = useState(0);
+  const [animationDelayMax, setAnimationDelayMax] = useState(0);
+  const [animationEasing, setAnimationEasing] = useState('ease-out');
+
+  // Other params
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
-  const [surroundingDotsColor, setSurroundingDotsColor] = useState('#325e9f');
+
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
+
   const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
+
+  // Layout settings
   const [stretchCanvas, setStretchCanvas] = useState(layoutSettings.stretchCanvas);
   const [screenOverflow, setScreenOverflow] = useState(layoutSettings.screenOverflow);
   const [fitBothCanvasInOneRow, setFitBothCanvasInOneRow] = useState(layoutSettings.fitBothCanvasInOneRow);
   const [shiftMainByMenu, setShiftMainByMenu] = useState(layoutSettings.shiftMainByMenu);
-  const [aspectRatioMode, setAspectRatioMode] = useState('image');
+
   const [image, setImage] = useState(null);
 
   const showNotification = (text, type) => {
@@ -84,6 +115,7 @@ const App = () => {
   const pipetteRGBARef = useRef();
   const pipetteHexRef = useRef();
 
+  // Main grid params
   const updateRowsCount = (count) => {
     if (!count || !Number.isInteger(Number(count)) || Number(count) < 1) {
       showNotification('Rows count must be a positive integer', 'error');
@@ -113,7 +145,7 @@ const App = () => {
       return;
     }
     if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
     }
   };
 
@@ -146,7 +178,7 @@ const App = () => {
       return;
     }
     if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
     }
   };
 
@@ -162,7 +194,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ radius : value });
+      redrawGridPreview({ radius : value }, {}, {});
     }
   };
 
@@ -178,7 +210,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ horizontalGapPx : value });
+      redrawGridPreview({ horizontalGapPx : value }, {}, {});
     }
   };
 
@@ -194,111 +226,8 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ verticalGapPx : value });
+      redrawGridPreview({ verticalGapPx : value }, {}, {});
     }
-  };
-
-  const updateBackgroundColor = (hex) => {
-    setBackgroundColor(hex);
-    // TODO: DECIDE maybe update output canvas color too?
-    const background = gridOutputRef.current.backgroundRef.current;
-    background.style.backgroundColor = hex;
-  };
-
-  const updateSurroundingDotsColor = (hex) => {
-    setSurroundingDotsColor(hex);
-  };
-
-  const updatePipetteColor = (rgba) => {
-    if (!pipetteRGBARef.current || !pipetteHexRef.current) {
-      return;
-    }
-
-    pipetteRGBARef.current.innerHTML = `<pre>RGBA: ${pipetteRGBAText(rgba)}</pre>`;
-    pipetteHexRef.current.innerHTML = `<pre>Hex: ${pipetteHexText(rgba)}</pre>`;
-  };
-
-  const updateAlwaysRedraw = (value) => {
-    setAlwaysRedraw(value);
-  };
-
-  const updateMenuOpen = (value) => {
-    setMenuOpen(value);
-    if (!image) {
-      return;
-    }
-
-    resizeCanvas({ localMenuOpen: value });
-    drawImage(image, inputCanvasRef);
-    redrawGridPreview({});
-  };
-
-  const updateStretchCanvas = (value) => {
-    setStretchCanvas(value);
-    setLocalStorageMap('image-dotter-layout-settings', {
-      ...layoutSettings,
-      stretchCanvas: value
-    });
-    if (!image) {
-      return;
-    }
-
-    resizeCanvas({ localStretchCanvas: value });
-    drawImage(image, inputCanvasRef);
-    redrawGridPreview({});
-  };
-
-  const updateScreenOverflow = (value) => {
-    setScreenOverflow(value);
-    setLocalStorageMap('image-dotter-layout-settings', {
-      ...layoutSettings,
-      screenOverflow: value
-    });
-    if (!inputCanvasRef.current) {
-      return;
-    }
-    if (value && !inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
-      inputCanvasRef.current.parentElement.classList.add('overflow-x-scroll');
-    } else if (!value && inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
-      inputCanvasRef.current.parentElement.classList.remove('overflow-x-scroll');
-    }
-    if (!image) {
-      return;
-    }
-
-    resizeCanvas({ localScreenOverflow: value });
-    drawImage(image, inputCanvasRef);
-    redrawGridPreview({});
-  };
-
-  const updateFitBothCanvasInOneRow = (value) => {
-    setFitBothCanvasInOneRow(value);
-    setLocalStorageMap('image-dotter-layout-settings', {
-      ...layoutSettings,
-      fitBothCanvasInOneRow: value
-    });
-    if (!image) {
-      return;
-    }
-
-    resizeCanvas({ localFitBothCanvasInOneRow: value });
-    drawImage(image, inputCanvasRef);
-    redrawGridPreview({});
-  };
-
-  const updateShiftMainByMenu = (value) => {
-    setShiftMainByMenu(value);
-    setLocalStorageMap('image-dotter-layout-settings', {
-      ...layoutSettings,
-      shiftMainByMenu: value
-    });
-    if (!image) {
-      return;
-    }
-
-    resizeCanvas({ localShiftMainByMenu: value });
-    drawImage(image, inputCanvasRef);
-    redrawGridPreview({});
   };
 
   const updateAspectRatioMode = (value) => {
@@ -327,10 +256,11 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
     }
   };
 
+  // Additional grid params
   const updateAngle = (value) => {
     if (!value || !Number.isInteger(Number(value)) || Number(value) < 0 || Number(value) > 360) {
       showNotification('Angle must be a positive integer between 0 and 360', 'error');
@@ -343,7 +273,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ angle : value });
+      redrawGridPreview({ angle : value }, {}, {});
     }
   };
 
@@ -354,7 +284,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ strokeColor: value ? strokeColor : null, strokeWidth: value ? strokeWidth : null });
+      redrawGridPreview({ strokeColor: value ? strokeColor : null, strokeWidth: value ? strokeWidth : null }, {}, {});
     }
   };
 
@@ -365,7 +295,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useStroke) {
-      redrawGridPreview({ strokeColor: useStroke ? value: null });
+      redrawGridPreview({ strokeColor: useStroke ? value: null }, {}, {});
     }
   };
 
@@ -381,7 +311,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useStroke) {
-      redrawGridPreview({ strokeWidth: useStroke ? value : null });
+      redrawGridPreview({ strokeWidth: useStroke ? value : null }, {}, {});
     }
   };
 
@@ -392,7 +322,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ ignoreColor: value ? ignoreColor : null });
+      redrawGridPreview({ ignoreColor: value ? ignoreColor : null }, {}, {});
     }
   };
 
@@ -403,7 +333,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useIgnoreColor) {
-      redrawGridPreview({ ignoreColor: useIgnoreColor ? value : null });
+      redrawGridPreview({ ignoreColor: useIgnoreColor ? value : null }, {}, {});
     }
   };
 
@@ -419,7 +349,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useIgnoreColor) {
-      redrawGridPreview({ ignoreColorOpacityThreshold: useIgnoreColor ? value : null });
+      redrawGridPreview({ ignoreColorOpacityThreshold: useIgnoreColor ? value : null }, {}, {});
     }
   };
 
@@ -435,8 +365,336 @@ const App = () => {
     }
 
     if (alwaysRedraw && useIgnoreColor) {
-      redrawGridPreview({ ignoreColorMaxDeviation: useIgnoreColor ? value : null });
+      redrawGridPreview({ ignoreColorMaxDeviation: useIgnoreColor ? value : null }, {}, {});
     }
+  };
+
+  // Generator params
+  const updateSeed = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) <= 0 || Number(value) >= 100000) {
+      showNotification('Seed must be a positive integer between 1 and 99999', 'error');
+      setSeed(0);
+      return;
+    }
+    setSeed(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw) {
+      redrawGridPreview({}, { seed: value }, {});
+    }
+  };
+
+  const updateUseCellSpan = (value) => {
+    setUseCellSpan(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw) {
+      redrawGridPreview({}, { useCellSpan: value }, {});
+    }
+  };
+
+  const updateCellSpanEstimated = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 1) {
+      showNotification('Cell span estimated must be a positive integer', 'error');
+      setCellSpanEstimated(1);
+      return;
+    }
+    setCellSpanEstimated(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw && useCellSpan) {
+      redrawGridPreview({}, { cellSpanEstimated: value }, {});
+    }
+  };
+
+  const updateCellSpanMin = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 1) {
+      showNotification('Cell span min must be a positive integer', 'error');
+      setCellSpanMin(1);
+      return;
+    }
+    setCellSpanMin(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw && useCellSpan) {
+      redrawGridPreview({}, { cellSpanMin: value }, {});
+    }
+  };
+
+  const updateCellSpanMax = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 1) {
+      showNotification('Cell span max must be a positive integer', 'error');
+      setCellSpanMax(1);
+      return;
+    }
+    setCellSpanMax(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw && useCellSpan) {
+      redrawGridPreview({}, { cellSpanMax: value }, {});
+    }
+  };
+
+  const updateUsePalette = (value) => {
+    setUsePalette(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw) {
+      redrawGridPreview({}, { usePalette: value }, {});
+    }
+  };
+
+  const updatePalette = (value, action) => {
+    if (!value) {
+      showNotification('Please select a color', 'error');
+    }
+
+    if (action === 'add') {
+      setPalette([...palette, value]);
+    } else if (action === 'remove') {
+      setPalette(palette.filter((color) => color !== value));
+    }
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw && usePalette) {
+      const localPalette = action === 'add'
+        ? [...palette, value]
+        : palette.filter((color) => color !== value);
+      redrawGridPreview({}, { palette: localPalette }, {});
+    }
+  };
+
+  const updateUseSurroundingCells = (value) => {
+    setUseSurroundingCells(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw) {
+      redrawGridPreview({}, { useSurroundingCells: value }, {});
+    }
+  };
+
+  const updateSurroundingCellsColor = (value) => {
+    setSurroundingCellsColor(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw && useSurroundingCells) {
+      redrawGridPreview({}, { surroundingCellsColor: value }, {});
+    }
+  };
+
+  const updateSurroundingCellsMinDepth = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Surrounding cells min depth must be a positive integer', 'error');
+      setSurroundingCellsMinDepth(0);
+      return;
+    }
+    setSurroundingCellsMinDepth(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw && useSurroundingCells) {
+      redrawGridPreview({}, { surroundingCellsMinDepth: value }, {});
+    }
+  };
+
+  const updateSurroundingCellsMaxDepth = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Surrounding cells max depth must be a positive integer', 'error');
+      setSurroundingCellsMaxDepth(0);
+      return;
+    }
+    setSurroundingCellsMaxDepth(value);
+    if (!image) {
+      return;
+    }
+
+    if (alwaysRedraw && useSurroundingCells) {
+      redrawGridPreview({}, { surroundingCellsMaxDepth: value }, {});
+    }
+  };
+
+
+  // Animation params
+
+  const updateAnimationType = (value) => {
+    if (!value || ['slide', 'appear'].includes(value) === false) {
+      showNotification('Please select a valid animation type', 'error');
+      setAnimationType('slide');
+      return;
+    }
+    setAnimationType(value);
+    // Maybe redraw the html grid output?
+  };
+
+  const updateAnimationDirection = (value) => {
+    if (
+      (!value && value !== null) ||
+      ['left-to-right', 'right-to-left', 'top-to-bottom', 'bottom-to-top', 'h-sides', 'v-sides', 'all'].includes(value) === false
+    ) {
+      showNotification('Please select a valid animation direction', 'error');
+      setAnimationDirection('left');
+      return;
+    }
+    setAnimationDirection(value);
+    // Maybe redraw the html grid output?
+  };
+
+  const updateAnimationDuration = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Animation duration must be a positive integer', 'error');
+      setAnimationDuration(1000);
+      return;
+    }
+    setAnimationDuration(value);
+    // Maybe redraw the html grid output?
+  };
+
+  const updateAnimationDelayMin = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Animation delay min must be a positive integer', 'error');
+      setAnimationDelayMin(0);
+      return;
+    }
+    setAnimationDelayMin(value);
+    // Maybe redraw the html grid output?
+  };
+
+  const updateAnimationDelayMax = (value) => {
+    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
+      showNotification('Animation delay max must be a positive integer', 'error');
+      setAnimationDelayMax(0);
+      return;
+    }
+    setAnimationDelayMax(value);
+    // Maybe redraw the html grid output?
+  };
+
+  const updateAnimationEasing = (value) => {
+    if (!value || ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'].includes(value) === false) {
+      showNotification('Please select a valid animation easing', 'error');
+      setAnimationEasing('linear');
+      return;
+    }
+    setAnimationEasing(value);
+    // Maybe redraw the html grid output?
+  };
+
+  const updateBackgroundColor = (hex) => {
+    setBackgroundColor(hex);
+    // TODO: DECIDE maybe update output canvas color too?
+    const background = gridOutputRef.current.backgroundRef.current;
+    background.style.backgroundColor = hex;
+  };
+
+  const updatePipetteColor = (rgba) => {
+    if (!pipetteRGBARef.current || !pipetteHexRef.current) {
+      return;
+    }
+
+    pipetteRGBARef.current.innerHTML = `<pre>RGBA: ${pipetteRGBAText(rgba)}</pre>`;
+    pipetteHexRef.current.innerHTML = `<pre>Hex: ${pipetteHexText(rgba)}</pre>`;
+  };
+
+  const updateAlwaysRedraw = (value) => {
+    setAlwaysRedraw(value);
+  };
+
+  const updateMenuOpen = (value) => {
+    setMenuOpen(value);
+    if (!image) {
+      return;
+    }
+
+    resizeCanvas({ localMenuOpen: value });
+    drawImage(image, inputCanvasRef);
+    redrawGridPreview({}, {}, {});
+  };
+
+  const updateStretchCanvas = (value) => {
+    setStretchCanvas(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      stretchCanvas: value
+    });
+    if (!image) {
+      return;
+    }
+
+    resizeCanvas({ localStretchCanvas: value });
+    drawImage(image, inputCanvasRef);
+    redrawGridPreview({}, {}, {});
+  };
+
+  const updateScreenOverflow = (value) => {
+    setScreenOverflow(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      screenOverflow: value
+    });
+    if (!inputCanvasRef.current) {
+      return;
+    }
+    if (value && !inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
+      inputCanvasRef.current.parentElement.classList.add('overflow-x-scroll');
+    } else if (!value && inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
+      inputCanvasRef.current.parentElement.classList.remove('overflow-x-scroll');
+    }
+    if (!image) {
+      return;
+    }
+
+    resizeCanvas({ localScreenOverflow: value });
+    drawImage(image, inputCanvasRef);
+    redrawGridPreview({}, {}, {});
+  };
+
+  const updateFitBothCanvasInOneRow = (value) => {
+    setFitBothCanvasInOneRow(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      fitBothCanvasInOneRow: value
+    });
+    if (!image) {
+      return;
+    }
+
+    resizeCanvas({ localFitBothCanvasInOneRow: value });
+    drawImage(image, inputCanvasRef);
+    redrawGridPreview({}, {}, {});
+  };
+
+  const updateShiftMainByMenu = (value) => {
+    setShiftMainByMenu(value);
+    setLocalStorageMap('image-dotter-layout-settings', {
+      ...layoutSettings,
+      shiftMainByMenu: value
+    });
+    if (!image) {
+      return;
+    }
+
+    resizeCanvas({ localShiftMainByMenu: value });
+    drawImage(image, inputCanvasRef);
+    redrawGridPreview({}, {}, {});
   };
 
   const handleFileSelection = async (e) => {
@@ -456,7 +714,7 @@ const App = () => {
     });
 
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount });
+    redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
   };
 
   const resizeCanvas = ({
@@ -539,7 +797,7 @@ const App = () => {
   /**
    * @param {Partial<DotterGridParams>} changedParams
    */
-  const redrawGridPreview = useDebouncedCallback((changedParams) => {
+  const redrawGridPreview = useDebouncedCallback((changedGridParams, changedGeneratorParams, changedAnimationParams) => {
     // Early return if there is no image has no power placed here because the callback is debounced.
     // All returns if there is no image must be used before this function's calls.
     drawGridPreview(
@@ -552,12 +810,42 @@ const App = () => {
         horizontalGapPx,
         verticalGapPx,
         angle,
-        strokeColor: useStroke ? strokeColor : null,
-        strokeWidth: useStroke ? strokeWidth : null,
-        ignoreColor: useIgnoreColor ? ignoreColor : null,
-        ignoreColorOpacityThreshold: useIgnoreColor ? ignoreColorOpacityThreshold : null,
-        ignoreColorMaxDeviation: useIgnoreColor ? ignoreColorMaxDeviation : null,
-        ...changedParams
+        stroke: useStroke ? {
+          color: strokeColor,
+          width: strokeWidth,
+        } : null,
+        ignoreColor: useIgnoreColor ? {
+          color: ignoreColor,
+          opacityThreshold: ignoreColorOpacityThreshold,
+          maxDeviation: ignoreColorMaxDeviation
+        } : null,
+        ...changedGridParams
+      },
+      {
+        seed,
+        cellSpan: useCellSpan ? {
+          estimated: cellSpanEstimated,
+          min: cellSpanMin,
+          max: cellSpanMax,
+        } : null,
+        palette: usePalette ? palette : null,
+        surroundingCells: useSurroundingCells ? {
+          color: surroundingCellsColor,
+          minDepth: surroundingCellsMinDepth,
+          maxDepth: surroundingCellsMaxDepth,
+        } : null,
+        ...changedGeneratorParams
+      },
+      {
+        type: animationType,
+        direction: animationDirection,
+        duration: animationDuration,
+        delay: animationType === 'slide' ? {
+          min: animationDelayMin,
+          max: animationDelayMax,
+        } : null,
+        easing: animationEasing,
+        ...changedAnimationParams
       }
     );
   }, 300);
@@ -567,7 +855,31 @@ const App = () => {
     const canvasInput = inputCanvasRef.current;
     const contextInput = canvasInput.getContext('2d');
     const grid = makeColorGrid(contextInput, { rowsCount, columnsCount, ignoreColor, ignoreColorOpacityThreshold, ignoreColorMaxDeviation });
-    gridOutputRef.current.handleCreate(grid);
+    // TODO!!! Handle changedAnimationParams and those partial grid params
+    gridOutputRef.current.handleCreate(
+      grid,
+      {
+        radius,
+        horizontalGapPx,
+        verticalGapPx,
+        angle,
+        stroke: useStroke ? {
+          color: strokeColor,
+          width: strokeWidth,
+        } : null,
+      },
+      {
+        type: animationType,
+        direction: animationDirection,
+        duration: animationDuration,
+        delay: animationType === 'slide' ? {
+          min: animationDelayMin,
+          max: animationDelayMax,
+        } : null,
+        easing: animationEasing,
+        // ...changedAnimationParams
+      }
+    );
   };
 
   const handleSaveClick = async (e) => {
@@ -613,8 +925,24 @@ const App = () => {
           ignoreColor,
           ignoreColorOpacityThreshold,
           ignoreColorMaxDeviation,
+          seed,
+          useCellSpan,
+          cellSpanEstimated,
+          cellSpanMin,
+          cellSpanMax,
+          usePalette,
+          palette,
+          useSurroundingCells,
+          surroundingCellsColor,
+          surroundingCellsMinDepth,
+          surroundingCellsMaxDepth,
+          animationType,
+          animationDirection,
+          animationDuration,
+          animationDelayMin,
+          animationDelayMax,
+          animationEasing,
           backgroundColor,
-          surroundingDotsColor,
           alwaysRedraw
         }}
         valueHandlers={{
@@ -632,8 +960,24 @@ const App = () => {
           updateIgnoreColor,
           updateIgnoreColorOpacityThreshold,
           updateIgnoreColorMaxDeviation,
+          updateSeed,
+          updateUseCellSpan,
+          updateCellSpanEstimated,
+          updateCellSpanMin,
+          updateCellSpanMax,
+          updateUsePalette,
+          updatePalette,
+          updateUseSurroundingCells,
+          updateSurroundingCellsColor,
+          updateSurroundingCellsMinDepth,
+          updateSurroundingCellsMaxDepth,
+          updateAnimationType,
+          updateAnimationDirection,
+          updateAnimationDuration,
+          updateAnimationDelayMin,
+          updateAnimationDelayMax,
+          updateAnimationEasing,
           updateBackgroundColor,
-          updateSurroundingDotsColor,
           updateAlwaysRedraw
         }}
         refs={{
