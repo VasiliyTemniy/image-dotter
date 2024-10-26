@@ -285,7 +285,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ strokeColor: value ? strokeColor : null, strokeWidth: value ? strokeWidth : null }, {}, {});
+      redrawGridPreview({ stroke: value ? { color: strokeColor, width: strokeWidth } : null }, {}, {});
     }
   };
 
@@ -296,7 +296,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useStroke) {
-      redrawGridPreview({ strokeColor: useStroke ? value: null }, {}, {});
+      redrawGridPreview({ stroke: { color: strokeColor, width: strokeWidth } }, {}, {});
     }
   };
 
@@ -312,7 +312,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useStroke) {
-      redrawGridPreview({ strokeWidth: useStroke ? value : null }, {}, {});
+      redrawGridPreview({ stroke: { color: strokeColor, width: strokeWidth } }, {}, {});
     }
   };
 
@@ -323,7 +323,11 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ ignoreColor: value ? ignoreColor : null }, {}, {});
+      redrawGridPreview({ ignoreColor: value ? {
+        color: ignoreColor,
+        opacityThreshold: ignoreColorOpacityThreshold,
+        maxDeviation: ignoreColorMaxDeviation
+      } : null }, {}, {});
     }
   };
 
@@ -334,7 +338,11 @@ const App = () => {
     }
 
     if (alwaysRedraw && useIgnoreColor) {
-      redrawGridPreview({ ignoreColor: useIgnoreColor ? value : null }, {}, {});
+      redrawGridPreview({ ignoreColor: useIgnoreColor ? {
+        color: value,
+        opacityThreshold: ignoreColorOpacityThreshold,
+        maxDeviation: ignoreColorMaxDeviation
+      } : null }, {}, {});
     }
   };
 
@@ -350,7 +358,11 @@ const App = () => {
     }
 
     if (alwaysRedraw && useIgnoreColor) {
-      redrawGridPreview({ ignoreColorOpacityThreshold: useIgnoreColor ? value : null }, {}, {});
+      redrawGridPreview({ ignoreColor: useIgnoreColor ? {
+        color: ignoreColor,
+        opacityThreshold: value,
+        maxDeviation: ignoreColorMaxDeviation
+      } : null }, {}, {});
     }
   };
 
@@ -366,7 +378,11 @@ const App = () => {
     }
 
     if (alwaysRedraw && useIgnoreColor) {
-      redrawGridPreview({ ignoreColorMaxDeviation: useIgnoreColor ? value : null }, {}, {});
+      redrawGridPreview({ ignoreColor: useIgnoreColor ? {
+        color: ignoreColor,
+        opacityThreshold: ignoreColorOpacityThreshold,
+        maxDeviation: value
+      } : null }, {}, {});
     }
   };
 
