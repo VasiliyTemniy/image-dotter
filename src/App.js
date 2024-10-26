@@ -67,8 +67,8 @@ const App = () => {
   const [cellSpanEstimated, setCellSpanEstimated] = useState(1);
   const [cellSpanMin, setCellSpanMin] = useState(1);
   const [cellSpanMax, setCellSpanMax] = useState(1);
-  const [usePalette, setUsePalette] = useState(false);
-  const [palette, setPalette] = useState([]);
+  const [useMainPalette, setUseMainPalette] = useState(false);
+  const [mainPalette, setMainPalette] = useState([]);
   const [useSurroundingCells, setUseSurroundingCells] = useState(false);
   const [surroundingCellsColor, setSurroundingCellsColor] = useState('#325e9f80');
   const [surroundingCellsMinDepth, setSurroundingCellsMinDepth] = useState(2);
@@ -446,8 +446,8 @@ const App = () => {
     }
   };
 
-  const updateUsePalette = (value) => {
-    setUsePalette(value);
+  const updateUseMainPalette = (value) => {
+    setUseMainPalette(value);
     if (!image) {
       return;
     }
@@ -457,26 +457,26 @@ const App = () => {
     }
   };
 
-  const updatePalette = (value, action, index) => {
+  const updateMainPalette = (value, action, index) => {
     if (!value) {
       showNotification('Please select a color', 'error');
     }
 
     if (action === 'add') {
-      setPalette([...palette, value]);
+      setMainPalette([...mainPalette, value]);
     } else if (action === 'remove') {
-      setPalette(palette.filter((color, i) => i !== index));
+      setMainPalette(mainPalette.filter((color, i) => i !== index));
     } else if (action === 'replace') {
-      setPalette(palette.map((color, i) => (i === index ? value : color)));
+      setMainPalette(mainPalette.map((color, i) => (i === index ? value : color)));
     }
     if (!image) {
       return;
     }
 
-    if (alwaysRedraw && usePalette) {
+    if (alwaysRedraw && useMainPalette) {
       const localPalette = action === 'add'
-        ? [...palette, value]
-        : palette.filter((color) => color !== value);
+        ? [...mainPalette, value]
+        : mainPalette.filter((color) => color !== value);
       redrawGridPreview({}, { palette: localPalette }, {});
     }
   };
@@ -831,7 +831,7 @@ const App = () => {
           min: cellSpanMin,
           max: cellSpanMax,
         } : null,
-        palette: usePalette ? palette : null,
+        mainPalette: useMainPalette ? mainPalette : null,
         surroundingCells: useSurroundingCells ? {
           color: surroundingCellsColor,
           minDepth: surroundingCellsMinDepth,
@@ -933,8 +933,8 @@ const App = () => {
           cellSpanEstimated,
           cellSpanMin,
           cellSpanMax,
-          usePalette,
-          palette,
+          useMainPalette,
+          mainPalette,
           useSurroundingCells,
           surroundingCellsColor,
           surroundingCellsMinDepth,
@@ -968,8 +968,8 @@ const App = () => {
           updateCellSpanEstimated,
           updateCellSpanMin,
           updateCellSpanMax,
-          updateUsePalette,
-          updatePalette,
+          updateUseMainPalette,
+          updateMainPalette,
           updateUseSurroundingCells,
           updateSurroundingCellsColor,
           updateSurroundingCellsMinDepth,

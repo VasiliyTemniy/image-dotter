@@ -23,7 +23,7 @@ export interface GeneratorParams {
     min: number;
     max: number;
   } | null;
-  palette: string[] | null;
+  mainPalette: string[] | null;
   surroundingCells: {
     color: string;
     minDepth: number;

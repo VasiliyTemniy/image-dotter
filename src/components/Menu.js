@@ -271,21 +271,21 @@ const Menu = ({
               },
               {
                 tag: 'input',
-                name: 'use-palette',
-                label: 'Use palette',
+                name: 'use-main-palette',
+                label: 'Use main palette',
                 type: 'checkbox',
-                value: values.usePalette,
-                updateValue: valueHandlers.updateUsePalette
+                value: values.useMainPalette,
+                updateValue: valueHandlers.updateUseMainPalette
               },
               {
                 tag: 'div',
-                name: 'palette',
-                label: 'Palette',
+                name: 'main-palette',
+                label: 'Main palette',
                 type: 'palette',
-                hidden: !values.usePalette,
-                disabled: !values.usePalette,
-                value: values.palette,
-                updateValue: valueHandlers.updatePalette
+                hidden: !values.useMainPalette,
+                disabled: !values.useMainPalette,
+                value: values.mainPalette,
+                updateValue: valueHandlers.updateMainPalette
               },
               {
                 tag: 'input',
