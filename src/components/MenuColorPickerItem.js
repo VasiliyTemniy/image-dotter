@@ -1,8 +1,11 @@
 import { useState } from 'react';
 
-export const ColorPicker = ({ item }) => {
+const MenuColorPickerItem = ({ item }) => {
 
   const [tempColor, setTempColor] = useState(item.value);
+  const [folded, setFolded] = useState(false);
+
+  const foldSymbol = folded ? ' ▾' : ' ▴';
 
   const updateTempColor = (value) => {
     setTempColor(value);
@@ -11,9 +14,29 @@ export const ColorPicker = ({ item }) => {
     }
   };
 
+  if (folded) {
+    return (
+      <div
+        className='container padding-1rem border-black-1px bg-lightgray color-picker foldable folded'
+        style={{ width: '100%', marginBottom: '1.5rem' }}
+      >
+        <div className="title" onClick={() => setFolded(!folded)} style={item.labelStyle}>
+          <span className='color-picker__sample' style={{ backgroundColor: item.value }}/>
+          {item.label + foldSymbol}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className='container padding-1rem border-black-1px margin-v-1rem width-fit-content bg-lightgray color-picker'>
-      <div className="title">{item.label}</div>
+    <div
+      className='container padding-1rem border-black-1px width-fit-content bg-lightgray color-picker foldable'
+      style={{ marginBottom: '1rem' }}
+    >
+      <div className="title" onClick={() => setFolded(!folded)} style={item.labelStyle}>
+        <span className='color-picker__sample' style={{ backgroundColor: item.value }}/>
+        {item.label + foldSymbol}
+      </div>
       <div className="container flex align-center gap-1rem">
         <span className='color-input'>
           <input
@@ -69,3 +92,7 @@ export const ColorPicker = ({ item }) => {
     </div>
   );
 };
+
+MenuColorPickerItem.displayName = 'MenuColorPickerItem';
+
+export { MenuColorPickerItem };
