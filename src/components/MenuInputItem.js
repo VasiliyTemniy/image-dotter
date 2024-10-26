@@ -1,3 +1,5 @@
+import { MenuColorPickerItem } from './MenuColorPickerItem.js';
+
 /**
  * @typedef {import('../index.d.ts').MenuItem} MenuItem
  */
@@ -15,7 +17,7 @@ const MenuInputItem = ({
   }
 
   if (item.type === 'color') {
-    return MenuColorItem({ item });
+    return MenuColorPickerItem({ item });
   }
 
   return (
@@ -43,31 +45,31 @@ const MenuInputItem = ({
   );
 };
 
-const MenuColorItem = ({ item }) => {
-  return (
-    <div className={`${item.type}-input`}>
-      <input
-        id={`${item.type}-${item.name}`}
-        type={item.type}
-        name={`${item.type}-${item.name}`}
-        className={`${item.type}-input__field`}
-        ref={item.ref}
-        style={item.style}
-        value={item.value}
-        onChange={(e) => item.updateValue(e.target.value)}
-        disabled={item.disabled}
-      />
-      <label
-        htmlFor={`${item.type}-${item.name}`}
-        className={`${item.type}-input__label`}
-        title={item.tooltip}
-        style={item.labelStyle}
-      >
-        {item.label}
-      </label>
-    </div>
-  );
-};
+// const MenuColorItem = ({ item }) => {
+//   return (
+//     <div className={`${item.type}-input`}>
+//       <input
+//         id={`${item.type}-${item.name}`}
+//         type={item.type}
+//         name={`${item.type}-${item.name}`}
+//         className={`${item.type}-input__field`}
+//         ref={item.ref}
+//         style={item.style}
+//         value={item.value}
+//         onChange={(e) => item.updateValue(e.target.value)}
+//         disabled={item.disabled}
+//       />
+//       <label
+//         htmlFor={`${item.type}-${item.name}`}
+//         className={`${item.type}-input__label`}
+//         title={item.tooltip}
+//         style={item.labelStyle}
+//       >
+//         {item.label}
+//       </label>
+//     </div>
+//   );
+// };
 
 const MenuCheckboxItem = ({ item }) => {
   return (

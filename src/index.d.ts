@@ -69,6 +69,7 @@ export interface MenuItem {
   style?: any;
   labelStyle?: any;
   disabled?: boolean;
+  hidden?: boolean;
   tooltip?: string;
   options?: {
     value: string;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MenuTextItem } from './MenuTextItem.js';
 import { MenuInputItem } from './MenuInputItem.js';
 import { MenuSelectItem } from './MenuSelectItem.js';
+import { MenuPaletteItem } from './Palette.js';
 
 /**
  * @typedef {import('../index.d.ts').MenuItem} MenuItem
@@ -37,22 +38,28 @@ const MenuItemGroup = ({
     tag === 'div'
       ? <div
         className={
-          'container flex column gap-1rem bg-lightgray padding-1rem border-black-1px margin-v-1rem' +
+          'container flex column gap-1rem bg-lightgray padding-1rem border-black-1px' +
           (foldable ? ' foldable' : '') +
           (folded ? ' folded' : '')
         }
-        style={style}
+        style={{
+          marginBottom: folded ? '1.5rem' : '1rem',
+          ...style
+        }}
       >
         <div className='title' onClick={onClick}>{title + foldSymbol}</div>
         {folded ? null : <MenuItemGroupContents items={items} />}
       </div>
       : <li
         className={
-          'container flex column gap-1rem bg-lightgray padding-1rem border-black-1px margin-v-1rem' +
+          'container flex column gap-1rem bg-lightgray padding-1rem border-black-1px' +
           (foldable ? ' foldable' : '') +
           (folded ? ' folded' : '')
         }
-        style={style}
+        style={{
+          marginBottom: folded ? '1.5rem' : '1rem',
+          ...style
+        }}
       >
         <div className='title' onClick={onClick}>{title + foldSymbol}</div>
         {folded ? null : <MenuItemGroupContents items={items} />}
@@ -71,6 +78,21 @@ const MenuItemGroupContents = ({
   const renderList = [];
 
   for (const item of items) {
+    if (item.hidden) {
+      continue;
+    }
+
+    if (item.type === 'palette') {
+      renderList.push(
+        <MenuPaletteItem
+          key={`${item.type}-${item.name}`}
+          palette={item.value}
+          updatePalette={item.updateValue}
+        />
+      );
+      continue;
+    }
+
     switch (item.tag) {
     case 'div':
       renderList.push(

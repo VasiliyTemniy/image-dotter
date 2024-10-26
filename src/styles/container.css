@@ -1,5 +1,6 @@
 .container {
   position: relative;
+  box-sizing: border-box;
 }
 
 .container.width-fit-content {
@@ -37,7 +38,7 @@
 
 .container > .title {
   position: absolute;
-  top: -0.6rem;
+  top: -0.8rem;
   padding: 0 0.25rem;
   left: 1rem;
   border: 1px solid black;
@@ -49,12 +50,16 @@
   background: white;
 }
 
-.container.bg-lightgray,
+.container.bg-lightgray {
+  background: #e3e3e380;
+}
+
 .container.bg-lightgray > .title {
-  background: lightgray;
+  background: #e3e3e3;
 }
 
 .container.foldable > .title {
+  padding: 2px 2px 0 6px;
   cursor: pointer;
 }
 

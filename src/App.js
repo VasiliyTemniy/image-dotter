@@ -12,6 +12,7 @@ import './styles/notification.css';
 import './styles/flex.css';
 import './styles/container.css';
 import './styles/main.css';
+import './styles/color-picker.css';
 import { pipetteHexText, pipetteRGBAText } from './utils/color';
 import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
@@ -53,10 +54,10 @@ const App = () => {
   // Additional grid params
   const [angle, setAngle] = useState(0);
   const [useStroke, setUseStroke] = useState(false);
-  const [strokeColor, setStrokeColor] = useState('#000000');
+  const [strokeColor, setStrokeColor] = useState('#000000ff');
   const [strokeWidth, setStrokeWidth] = useState(1);
   const [useIgnoreColor, setUseIgnoreColor] = useState(false);
-  const [ignoreColor, setIgnoreColor] = useState('#ffffff');
+  const [ignoreColor, setIgnoreColor] = useState('#ffffffff');
   const [ignoreColorOpacityThreshold, setIgnoreColorOpacityThreshold] = useState(50);
   const [ignoreColorMaxDeviation, setIgnoreColorMaxDeviation] = useState(1);
 
@@ -67,9 +68,9 @@ const App = () => {
   const [cellSpanMin, setCellSpanMin] = useState(1);
   const [cellSpanMax, setCellSpanMax] = useState(1);
   const [usePalette, setUsePalette] = useState(false);
-  const [palette, setPalette] = useState(null);
+  const [palette, setPalette] = useState([]);
   const [useSurroundingCells, setUseSurroundingCells] = useState(false);
-  const [surroundingCellsColor, setSurroundingCellsColor] = useState('#325e9f');
+  const [surroundingCellsColor, setSurroundingCellsColor] = useState('#325e9f80');
   const [surroundingCellsMinDepth, setSurroundingCellsMinDepth] = useState(2);
   const [surroundingCellsMaxDepth, setSurroundingCellsMaxDepth] = useState(3);
 
@@ -82,7 +83,7 @@ const App = () => {
   const [animationEasing, setAnimationEasing] = useState('ease-out');
 
   // Other params
-  const [backgroundColor, setBackgroundColor] = useState('#1c1e21');
+  const [backgroundColor, setBackgroundColor] = useState('#1c1e21ff');
 
   const [alwaysRedraw, setAlwaysRedraw] = useState(true);
 
@@ -456,7 +457,7 @@ const App = () => {
     }
   };
 
-  const updatePalette = (value, action) => {
+  const updatePalette = (value, action, index) => {
     if (!value) {
       showNotification('Please select a color', 'error');
     }
@@ -464,7 +465,9 @@ const App = () => {
     if (action === 'add') {
       setPalette([...palette, value]);
     } else if (action === 'remove') {
-      setPalette(palette.filter((color) => color !== value));
+      setPalette(palette.filter((color, i) => i !== index));
+    } else if (action === 'replace') {
+      setPalette(palette.map((color, i) => (i === index ? value : color)));
     }
     if (!image) {
       return;

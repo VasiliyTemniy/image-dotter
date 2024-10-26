@@ -21,13 +21,14 @@ const Menu = ({
         <h2 className="logo">
           <span>I</span><span style={{ color: '#ff0000' }}>Dotter</span>
         </h2>
-        <ul>
+        <ul className='container flex column gap-05rem' style={{ paddingTop: '1rem' }}>
           <li className="file-input">
             <label
               htmlFor="file-input"
               className="file-input__label"
               title="Select a file to operate with"
               accept=".bmp, .jpg, .jpeg, .png"
+              style={{ width: '12rem', display: 'block', textAlign: 'center' }}
             >
                 Select file
             </label>
@@ -43,7 +44,7 @@ const Menu = ({
             tag='li'
             foldable={true}
             defaultFolded={true}
-            style={{ width: '14rem', marginTop: '2rem' }}
+            style={{ width: '18rem', marginTop: '2rem' }}
             items={[
               {
                 tag: 'div',
@@ -66,7 +67,7 @@ const Menu = ({
             tag='li'
             foldable={true}
             defaultFolded={true}
-            style={{ width: '14rem' }}
+            style={{ width: '18rem' }}
             items={[
               {
                 tag: 'input',
@@ -137,7 +138,7 @@ const Menu = ({
             tag='li'
             foldable={true}
             defaultFolded={true}
-            style={{ width: '14rem' }}
+            style={{ width: '18rem' }}
             items={[
               {
                 tag: 'input',
@@ -160,6 +161,7 @@ const Menu = ({
                 name: 'stroke-color',
                 label: 'Stroke color',
                 type: 'color',
+                hidden: !values.useStroke,
                 disabled: !values.useStroke,
                 value: values.strokeColor,
                 updateValue: valueHandlers.updateStrokeColor
@@ -169,6 +171,7 @@ const Menu = ({
                 name: 'stroke-width',
                 label: 'Stroke width',
                 type: 'number',
+                hidden: !values.useStroke,
                 disabled: !values.useStroke,
                 value: values.strokeWidth,
                 updateValue: valueHandlers.updateStrokeWidth
@@ -186,6 +189,7 @@ const Menu = ({
                 name: 'ignore-color',
                 label: 'Ignore color',
                 type: 'color',
+                hidden: !values.useIgnoreColor,
                 disabled: !values.useIgnoreColor,
                 value: values.ignoreColor,
                 updateValue: valueHandlers.updateIgnoreColor
@@ -195,6 +199,7 @@ const Menu = ({
                 name: 'ignore-color-opacity-threshold',
                 label: 'Ignore color opacity threshold (0-255)',
                 type: 'number',
+                hidden: !values.useIgnoreColor,
                 disabled: !values.useIgnoreColor,
                 value: values.ignoreColorOpacityThreshold,
                 updateValue: valueHandlers.updateIgnoreColorOpacityThreshold
@@ -204,6 +209,8 @@ const Menu = ({
                 name: 'ignore-color-max-deviation',
                 label: 'Ignore color max deviation',
                 type: 'number',
+                hidden: !values.useIgnoreColor,
+                disabled: !values.useIgnoreColor,
                 value: values.ignoreColorMaxDeviation,
                 updateValue: valueHandlers.updateIgnoreColorMaxDeviation
               }
@@ -214,7 +221,7 @@ const Menu = ({
             tag='li'
             foldable={true}
             defaultFolded={true}
-            style={{ width: '14rem' }}
+            style={{ width: '18rem' }}
             items={[
               {
                 tag: 'input',
@@ -237,6 +244,7 @@ const Menu = ({
                 name: 'cell-span-estimated',
                 label: 'Cell span estimated',
                 type: 'number',
+                hidden: !values.useCellSpan,
                 disabled: !values.useCellSpan,
                 value: values.cellSpanEstimated,
                 updateValue: valueHandlers.updateCellSpanEstimated
@@ -246,6 +254,7 @@ const Menu = ({
                 name: 'cell-span-min',
                 label: 'Cell span min',
                 type: 'number',
+                hidden: !values.useCellSpan,
                 disabled: !values.useCellSpan,
                 value: values.cellSpanMin,
                 updateValue: valueHandlers.updateCellSpanMin
@@ -255,6 +264,7 @@ const Menu = ({
                 name: 'cell-span-max',
                 label: 'Cell span max',
                 type: 'number',
+                hidden: !values.useCellSpan,
                 disabled: !values.useCellSpan,
                 value: values.cellSpanMax,
                 updateValue: valueHandlers.updateCellSpanMax
@@ -267,16 +277,16 @@ const Menu = ({
                 value: values.usePalette,
                 updateValue: valueHandlers.updateUsePalette
               },
-              // Need to add another component for palette - multiple colors
-              // {
-              //   tag: 'input',
-              //   name: 'palette',
-              //   label: 'Palette',
-              //   type: 'color',
-              //   disabled: !values.usePalette,
-              //   value: values.palette,
-              //   updateValue: valueHandlers.updatePalette
-              // }
+              {
+                tag: 'div',
+                name: 'palette',
+                label: 'Palette',
+                type: 'palette',
+                hidden: !values.usePalette,
+                disabled: !values.usePalette,
+                value: values.palette,
+                updateValue: valueHandlers.updatePalette
+              },
               {
                 tag: 'input',
                 name: 'use-surrounding-cells',
@@ -290,6 +300,7 @@ const Menu = ({
                 name: 'surrounding-cells-color',
                 label: 'Surrounding cells color',
                 type: 'color',
+                hidden: !values.useSurroundingCells,
                 disabled: !values.useSurroundingCells,
                 value: values.surroundingCellsColor,
                 updateValue: valueHandlers.updateSurroundingCellsColor
@@ -299,6 +310,7 @@ const Menu = ({
                 name: 'surrounding-cells-min-depth',
                 label: 'Surrounding cells min depth',
                 type: 'number',
+                hidden: !values.useSurroundingCells,
                 disabled: !values.useSurroundingCells,
                 value: values.surroundingCellsMinDepth,
                 updateValue: valueHandlers.updateSurroundingCellsMinDepth
@@ -308,6 +320,7 @@ const Menu = ({
                 name: 'surrounding-cells-max-depth',
                 label: 'Surrounding cells max depth',
                 type: 'number',
+                hidden: !values.useSurroundingCells,
                 disabled: !values.useSurroundingCells,
                 value: values.surroundingCellsMaxDepth,
                 updateValue: valueHandlers.updateSurroundingCellsMaxDepth
@@ -319,7 +332,7 @@ const Menu = ({
             tag='li'
             foldable={true}
             defaultFolded={true}
-            style={{ width: '14rem' }}
+            style={{ width: '18rem' }}
             items={[
               {
                 tag: 'select',
@@ -338,6 +351,7 @@ const Menu = ({
                 name: 'animation-direction',
                 label: 'Animation direction',
                 type: 'select',
+                disabled: values.animationType === 'appear',
                 value: values.animationDirection,
                 updateValue: valueHandlers.updateAnimationDirection,
                 options: [
@@ -363,6 +377,7 @@ const Menu = ({
                 name: 'animation-delay-min',
                 label: 'Animation delay min',
                 type: 'number',
+                disabled: values.animationType === 'appear',
                 value: values.animationDelayMin,
                 updateValue: valueHandlers.updateAnimationDelayMin
               },
@@ -371,6 +386,7 @@ const Menu = ({
                 name: 'animation-delay-max',
                 label: 'Animation delay max',
                 type: 'number',
+                disabled: values.animationType === 'appear',
                 value: values.animationDelayMax,
                 updateValue: valueHandlers.updateAnimationDelayMax
               },
