@@ -24,6 +24,7 @@ const MenuInputItem = ({
         htmlFor={`${item.type}-${item.name}`}
         className={`${item.type}-input__label`}
         title={item.tooltip}
+        style={item.labelStyle}
       >
         {item.label}
       </label>
@@ -60,6 +61,7 @@ const MenuColorItem = ({ item }) => {
         htmlFor={`${item.type}-${item.name}`}
         className={`${item.type}-input__label`}
         title={item.tooltip}
+        style={item.labelStyle}
       >
         {item.label}
       </label>
@@ -85,6 +87,7 @@ const MenuCheckboxItem = ({ item }) => {
         htmlFor={`${item.type}-${item.name}`}
         className={`${item.type}-input__label`}
         title={item.tooltip}
+        style={item.labelStyle}
       >
         {item.label}
       </label>
