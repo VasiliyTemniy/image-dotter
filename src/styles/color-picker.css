@@ -4,6 +4,7 @@
   width: calc(2.8rem - 10px);
   border: 1px solid #767676;
   border-radius: 0.2rem;
+  flex-shrink: 0;
 }
 
 .color-picker .color-input::before {
@@ -25,8 +26,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: calc(1.8rem - 10px);
-  width: calc(2.8rem - 10px);
+  /* height: calc(1.8rem - 10px); */
+  /* width: calc(2.8rem - 10px); */
   border-radius: 0.2rem;
   background-image: linear-gradient(45deg, gray 25%, transparent 25%, transparent 75%, gray 75%), linear-gradient(45deg, gray 25%, transparent 25%, transparent 75%, gray 75%);
   background-size: 12px 12px;
@@ -55,4 +56,13 @@
   pointer-events: initial;
   visibility: visible;
   cursor: pointer;
+}
+
+.color-picker .color-alpha-input {
+  position: relative;
+  top: 0.3rem;
+}
+
+.color-picker .color-alpha-input > .color-alpha-input__field {
+  width: 100%;
 }

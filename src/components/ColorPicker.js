@@ -14,13 +14,14 @@ export const ColorPicker = ({ item }) => {
   return (
     <div className='container padding-1rem border-black-1px margin-v-1rem width-fit-content bg-lightgray color-picker'>
       <div className="title">{item.label}</div>
-      <div className="container flex align-center gap-05rem">
+      <div className="container flex align-center gap-1rem">
         <span className='color-input'>
           <input
             id={`color-${item.name}`}
             type='color'
             name={`color-${item.name}`}
             className='color-input__field'
+            style={{ flexShrink: 0 }}
             value={item.value.substring(0, 7)}
             onChange={(e) => {
               const newColor = e.target.value + item.value.substring(7);
@@ -38,7 +39,7 @@ export const ColorPicker = ({ item }) => {
             name={`text-${item.name}`}
             className='text-input__field'
             ref={item.ref}
-            style={{ fontFamily: 'monospace', fontSize: '0.9rem' }}
+            style={{ fontFamily: 'monospace', fontSize: '0.9rem', flexShrink: 1 }}
             value={tempColor.toUpperCase()}
             onChange={(e) => updateTempColor(e.target.value)}
             onBlur={() => tempColor.length < 9 ? setTempColor(item.value) : void 0}
@@ -47,7 +48,7 @@ export const ColorPicker = ({ item }) => {
         </span>
       </div>
       <div className='container flex align-center gap-05rem color-alpha-input'>
-        <span>&nbsp;&nbsp;Alpha:</span>
+        <span style={{ flexShrink: 0 }}>Alpha:</span>
         <input
           type='range'
           name={`color-alpha-${item.name}`}
@@ -55,6 +56,7 @@ export const ColorPicker = ({ item }) => {
           min="0"
           max="255"
           step="1"
+          style={{ flexShrink: 1 }}
           value={parseInt(item.value.substring(7), 16)}
           onChange={(e) => {
             const newColor = item.value.substring(0, 7) + (Number(e.target.value) | (1 << 8)).toString(16).slice(1);
