@@ -67,6 +67,7 @@ export interface MenuItem {
   updateValue?: (args: any) => void;
   ref?: React.RefObject<HTMLInputElement> | React.RefObject<HTMLSelectElement> | React.RefObject<HTMLDivElement>;
   style?: any;
+  labelStyle?: any;
   disabled?: boolean;
   tooltip?: string;
   options?: {
