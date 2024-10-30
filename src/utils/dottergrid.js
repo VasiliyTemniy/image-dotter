@@ -213,7 +213,7 @@ const drawRoundRect = (context, x, y, thickness, length, radius, angle, fill, st
     context.save();
     context.translate(x + length / 2, y + thickness / 2);
     context.rotate((-angle * Math.PI) / 180);
-    context.roundRect(-length / 2, - thickness / 2, length, thickness, [radius]);
+    context.roundRect(-length / 2, -thickness / 2, length, thickness, [radius]);
     context.restore();
   } else {
     context.roundRect(x, y, length, thickness, [radius]);
