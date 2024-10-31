@@ -33,10 +33,14 @@ export const readImage = (file) => {
 
 /**
  * Draw input image in canvas
- * @param {Image} image
+ * @param {Image | null | undefined} image
  * @param {React.MutableRefObject<HTMLCanvasElement>} inputCanvasRef
  */
 export const drawImage = (image, inputCanvasRef) => {
+  if (!image) {
+    console.log('Draw image called while there is no image');
+    return;
+  }
   const canvasInput = inputCanvasRef.current;
   const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
   contextInput.drawImage(image, 0, 0, canvasInput.width, canvasInput.height);
@@ -89,8 +93,8 @@ export const makeColorGrid = (
 ) => {
   /** @type {DotterCell[][]} */
   const grid = [];
-  const columnWidth = contextInput.canvas.width / columnsCount;
-  const rowHeight = contextInput.canvas.height / rowsCount;
+  const columnWidth = Math.max(contextInput.canvas.width / columnsCount, 1);
+  const rowHeight = Math.max(contextInput.canvas.height / rowsCount, 1);
 
   const icRed = ignoreColor ? hexToInt(ignoreColor.color.substring(1, 3)) : 0;
   const icGreen = ignoreColor ? hexToInt(ignoreColor.color.substring(3, 5)) : 0;
@@ -151,8 +155,8 @@ const drawOutputByGrid = (
   }
 ) => {
   contextOutput.clearRect(0, 0, contextOutput.canvas.width, contextOutput.canvas.height);
-  const columnWidth = contextOutput.canvas.width / columnsCount;
-  const rowHeight = contextOutput.canvas.height / rowsCount;
+  const columnWidth = Math.max(contextOutput.canvas.width / columnsCount, 1);
+  const rowHeight = Math.max(contextOutput.canvas.height / rowsCount, 1);
   const effectiveRadius = Math.min(Math.floor(Math.min(columnWidth, rowHeight) / 2), radius);
 
   for (const row of grid) {
