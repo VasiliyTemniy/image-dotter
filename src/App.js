@@ -19,7 +19,9 @@ import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
 
 
 /**
- * @typedef {import('./index.d.ts').DotterGridParams} DotterGridParams
+ * @typedef {import('./index.d.ts').GridParams} GridParams
+ * @typedef {import('./index.d.ts').GeneratorParams} GeneratorParams
+ * @typedef {import('./index.d.ts').AnimationParams} AnimationParams
  */
 
 /**
@@ -56,13 +58,17 @@ const App = () => {
   const [useStroke, setUseStroke] = useState(false);
   const [strokeColor, setStrokeColor] = useState('#000000ff');
   const [strokeWidth, setStrokeWidth] = useState(1);
-  const [useIgnoreColor, setUseIgnoreColor] = useState(false);
+  // const [useIgnoreColor, setUseIgnoreColor] = useState(false);
+  const [useIgnoreColor, setUseIgnoreColor] = useState(true);
   const [ignoreColor, setIgnoreColor] = useState('#ffffffff');
-  const [ignoreColorOpacityThreshold, setIgnoreColorOpacityThreshold] = useState(50);
-  const [ignoreColorMaxDeviation, setIgnoreColorMaxDeviation] = useState(1);
+  // const [ignoreColorOpacityThreshold, setIgnoreColorOpacityThreshold] = useState(50);
+  const [ignoreColorOpacityThreshold, setIgnoreColorOpacityThreshold] = useState(255);
+  // const [ignoreColorMaxDeviation, setIgnoreColorMaxDeviation] = useState(1);
+  const [ignoreColorMaxDeviation, setIgnoreColorMaxDeviation] = useState(3);
 
   // Generator params
-  const [seed, setSeed] = useState(Math.ceil(Math.random() * 100000));
+  // const [seed, setSeed] = useState(Math.ceil(Math.random() * 100000));
+  const [seed, setSeed] = useState(98564);
   const [useCellSpan, setUseCellSpan] = useState(false);
   const [cellSpanEstimated, setCellSpanEstimated] = useState(1);
   const [cellSpanMin, setCellSpanMin] = useState(1);
@@ -410,7 +416,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { useCellSpan: value }, {});
+      redrawGridPreview({}, { cellSpan: value ? { estimated: cellSpanEstimated, min: cellSpanMin, max: cellSpanMax } : null }, {});
     }
   };
 
@@ -426,7 +432,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useCellSpan) {
-      redrawGridPreview({}, { cellSpanEstimated: value }, {});
+      redrawGridPreview({}, { cellSpan: { estimated: value, min: cellSpanMin, max: cellSpanMax } }, {});
     }
   };
 
@@ -436,13 +442,18 @@ const App = () => {
       setCellSpanMin(1);
       return;
     }
+    if (value > cellSpanMax) {
+      showNotification('Cell span min must be less than cell span max', 'error');
+      setCellSpanMin(cellSpanMax);
+      return;
+    }
     setCellSpanMin(value);
     if (!image) {
       return;
     }
 
     if (alwaysRedraw && useCellSpan) {
-      redrawGridPreview({}, { cellSpanMin: value }, {});
+      redrawGridPreview({}, { cellSpan: { estimated: cellSpanEstimated, min: value, max: cellSpanMax } }, {});
     }
   };
 
@@ -452,13 +463,18 @@ const App = () => {
       setCellSpanMax(1);
       return;
     }
+    if (value < cellSpanMin) {
+      showNotification('Cell span max must be greater than cell span min', 'error');
+      setCellSpanMax(cellSpanMin);
+      return;
+    }
     setCellSpanMax(value);
     if (!image) {
       return;
     }
 
     if (alwaysRedraw && useCellSpan) {
-      redrawGridPreview({}, { cellSpanMax: value }, {});
+      redrawGridPreview({}, { cellSpan: { estimated: cellSpanEstimated, min: cellSpanMin, max: value } }, {});
     }
   };
 
@@ -469,7 +485,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { usePalette: value }, {});
+      redrawGridPreview({}, { mainPalette: value ? { colors: mainPalette } : null }, {});
     }
   };
 
@@ -478,22 +494,23 @@ const App = () => {
       showNotification('Please select a color', 'error');
     }
 
+    let localMainPalette = mainPalette;
+
     if (action === 'add') {
-      setMainPalette([...mainPalette, value]);
+      localMainPalette = [...mainPalette, value];
     } else if (action === 'remove') {
-      setMainPalette(mainPalette.filter((color, i) => i !== index));
+      localMainPalette = mainPalette.filter((color, i) => i !== index);
     } else if (action === 'replace') {
-      setMainPalette(mainPalette.map((color, i) => (i === index ? value : color)));
+      localMainPalette = mainPalette.map((color, i) => (i === index ? value : color));
     }
+
+    setMainPalette(localMainPalette);
     if (!image) {
       return;
     }
 
     if (alwaysRedraw && useMainPalette) {
-      const localPalette = action === 'add'
-        ? [...mainPalette, value]
-        : mainPalette.filter((color) => color !== value);
-      redrawGridPreview({}, { palette: localPalette }, {});
+      redrawGridPreview({}, { mainPalette: localMainPalette }, {});
     }
   };
 
@@ -504,7 +521,7 @@ const App = () => {
     }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { useSurroundingCells: value }, {});
+      redrawGridPreview({}, { surroundingCells: value ? { color: surroundingCellsColor, minDepth: surroundingCellsMinDepth, maxDepth: surroundingCellsMaxDepth } : null }, {});
     }
   };
 
@@ -515,7 +532,7 @@ const App = () => {
     }
 
     if (alwaysRedraw && useSurroundingCells) {
-      redrawGridPreview({}, { surroundingCellsColor: value }, {});
+      redrawGridPreview({}, { surroundingCells: { color: value, minDepth: surroundingCellsMinDepth, maxDepth: surroundingCellsMaxDepth } }, {});
     }
   };
 
@@ -525,13 +542,18 @@ const App = () => {
       setSurroundingCellsMinDepth(0);
       return;
     }
+    if (value > surroundingCellsMaxDepth) {
+      showNotification('Surrounding cells min depth must be less than surrounding cells max depth', 'error');
+      setSurroundingCellsMinDepth(surroundingCellsMaxDepth);
+      return;
+    }
     setSurroundingCellsMinDepth(value);
     if (!image) {
       return;
     }
 
     if (alwaysRedraw && useSurroundingCells) {
-      redrawGridPreview({}, { surroundingCellsMinDepth: value }, {});
+      redrawGridPreview({}, { surroundingCells: { color: surroundingCellsColor, minDepth: value, maxDepth: surroundingCellsMaxDepth } }, {});
     }
   };
 
@@ -541,13 +563,18 @@ const App = () => {
       setSurroundingCellsMaxDepth(0);
       return;
     }
+    if (value < surroundingCellsMinDepth) {
+      showNotification('Surrounding cells max depth must be greater than surrounding cells min depth', 'error');
+      setSurroundingCellsMaxDepth(surroundingCellsMinDepth);
+      return;
+    }
     setSurroundingCellsMaxDepth(value);
     if (!image) {
       return;
     }
 
     if (alwaysRedraw && useSurroundingCells) {
-      redrawGridPreview({}, { surroundingCellsMaxDepth: value }, {});
+      redrawGridPreview({}, { surroundingCells: { color: surroundingCellsColor, minDepth: surroundingCellsMinDepth, maxDepth: value } }, {});
     }
   };
 
@@ -813,61 +840,65 @@ const App = () => {
     return { localRowsCount, localColumnsCount };
   };
 
-  /**
-   * @param {Partial<DotterGridParams>} changedParams
-   */
-  const redrawGridPreview = useDebouncedCallback((changedGridParams, changedGeneratorParams, changedAnimationParams) => {
+  const redrawGridPreview = useDebouncedCallback(
+    /**
+     * @param {Partial<GridParams>} changedGridParams
+     * @param {Partial<GeneratorParams>} changedGeneratorParams
+     * @param {Partial<AnimationParams>} changedAnimationParams
+     */
+    (changedGridParams, changedGeneratorParams, changedAnimationParams) => {
     // Early return if there is no image has no power placed here because the callback is debounced.
     // All returns if there is no image must be used before this function's calls.
-    drawGridPreview(
-      inputCanvasRef,
-      outputCanvasRef,
-      {
-        rowsCount,
-        columnsCount,
-        radius,
-        horizontalGapPx,
-        verticalGapPx,
-        angle,
-        stroke: useStroke ? {
-          color: strokeColor,
-          width: strokeWidth,
-        } : null,
-        ignoreColor: useIgnoreColor ? {
-          color: ignoreColor,
-          opacityThreshold: ignoreColorOpacityThreshold,
-          maxDeviation: ignoreColorMaxDeviation
-        } : null,
-        ...changedGridParams
-      },
-      {
-        seed,
-        cellSpan: useCellSpan ? {
-          estimated: cellSpanEstimated,
-          min: cellSpanMin,
-          max: cellSpanMax,
-        } : null,
-        mainPalette: useMainPalette ? mainPalette : null,
-        surroundingCells: useSurroundingCells ? {
-          color: surroundingCellsColor,
-          minDepth: surroundingCellsMinDepth,
-          maxDepth: surroundingCellsMaxDepth,
-        } : null,
-        ...changedGeneratorParams
-      },
-      {
-        type: animationType,
-        direction: animationDirection,
-        duration: animationDuration,
-        delay: animationType === 'slide' ? {
-          min: animationDelayMin,
-          max: animationDelayMax,
-        } : null,
-        easing: animationEasing,
-        ...changedAnimationParams
-      }
-    );
-  }, 300);
+      drawGridPreview(
+        inputCanvasRef,
+        outputCanvasRef,
+        {
+          rowsCount,
+          columnsCount,
+          radius,
+          horizontalGapPx,
+          verticalGapPx,
+          angle,
+          stroke: useStroke ? {
+            color: strokeColor,
+            width: strokeWidth,
+          } : null,
+          ignoreColor: useIgnoreColor ? {
+            color: ignoreColor,
+            opacityThreshold: ignoreColorOpacityThreshold,
+            maxDeviation: ignoreColorMaxDeviation
+          } : null,
+          ...changedGridParams
+        },
+        {
+          seed,
+          cellSpan: useCellSpan ? {
+            estimated: cellSpanEstimated,
+            min: cellSpanMin,
+            max: cellSpanMax,
+          } : null,
+          mainPalette: useMainPalette ? mainPalette : null,
+          surroundingCells: useSurroundingCells ? {
+            color: surroundingCellsColor,
+            minDepth: surroundingCellsMinDepth,
+            maxDepth: surroundingCellsMaxDepth,
+          } : null,
+          ...changedGeneratorParams
+        },
+        {
+          type: animationType,
+          direction: animationDirection,
+          duration: animationDuration,
+          delay: animationType === 'slide' ? {
+            min: animationDelayMin,
+            max: animationDelayMax,
+          } : null,
+          easing: animationEasing,
+          ...changedAnimationParams
+        }
+      );
+    }, 300
+  );
 
   const handleRedrawGrid = (e) => {
     e.preventDefault();

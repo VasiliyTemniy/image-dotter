@@ -80,12 +80,12 @@ export const makeColorGrid = (
     ignoreColor
   },
   // TODO! Implement generator
-  // {
-  //   seed,
-  //   cellSpan,
-  //   palette,
-  //   surroundingCells
-  // }
+  {
+    seed,
+    cellSpan,
+    // mainPalette,
+    // surroundingCells
+  }
 ) => {
   /** @type {DotterCell[][]} */
   const grid = [];
@@ -99,7 +99,7 @@ export const makeColorGrid = (
   for (let row = 0; row < rowsCount; row++) {
     /** @type {DotterCell[]} */
     const gridrow = [];
-    for (let column = 0; column < columnsCount; column++) {
+    for (let column = 0; column < columnsCount; void 0) {
       const x = columnWidth * column;
       const y = rowHeight * row;
       const data = contextInput.getImageData(x, y, columnWidth, rowHeight).data;
@@ -111,10 +111,20 @@ export const makeColorGrid = (
         Math.abs(icBlue - color[2]) <= ignoreColor.maxDeviation &&
         color[3] <= ignoreColor.opacityThreshold
       ) {
+        column++; // skip this cell; When I first changed 'for' cycle third param to void 0, I forgot to add this - it was an infinite loop
         continue;
       }
-      // span is 1 now; TODO fix it
-      gridrow.push([x, y, 1, rgba2hex(color)]);
+      let span = 1;
+      // span is random (cellSpanMin .. cellSpanMax) now; TODO fix it - implement generator
+      // span uses seed instead of random
+      if (cellSpan && cellSpan.max > cellSpan.min) {
+        // span = Math.round(Math.random() * (cellSpan.max - cellSpan.min) + cellSpan.min);
+        span = Math.round((row + column + seed * (row / (column + 1))) % (cellSpan.max - cellSpan.min) + cellSpan.min);
+      } else if (cellSpan && cellSpan.max === cellSpan.min) {
+        span = cellSpan.min;
+      }
+      gridrow.push([column, row, span, rgba2hex(color)]);
+      column += span;
     }
     grid.push(gridrow);
   }
@@ -148,8 +158,8 @@ const drawOutputByGrid = (
 
   for (const row of grid) {
     for (const cell of row) {
-      const xOut = cell[0] + Math.ceil(verticalGapPx / 2);
-      const yOut = cell[1] + Math.ceil(horizontalGapPx / 2);
+      const xOut = (cell[0] * columnWidth) + Math.ceil(verticalGapPx / 2);
+      const yOut = (cell[1] * rowHeight)   + Math.ceil(horizontalGapPx / 2);
       const thickness = Math.floor(rowHeight - horizontalGapPx);
       const span = cell[2];
       const length = Math.floor((columnWidth * span) - verticalGapPx);
