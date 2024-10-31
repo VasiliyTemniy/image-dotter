@@ -3,7 +3,7 @@ import { rgba2hex } from './color';
 /**
  * @typedef {import('../index.d.ts').DotterCell} DotterCell
  *
- * @typedef {import('../index.d.ts').DotterGridParams} DotterGridParams
+ * @typedef {import('../index.d.ts').GridParams} GridParams
  * @typedef {import('../index.d.ts').GeneratorParams} GeneratorParams
  * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
  */
@@ -68,7 +68,7 @@ export const drawGridPreview = (
 /**
  * Make grid of colored cells from input image
  * @param {CanvasRenderingContext2D} contextInput
- * @param {DotterGridParams} params
+ * @param {GridParams} params
  * @param {GeneratorParams} generatorParams
  * @returns {DotterCell[][]}
  */
@@ -128,7 +128,6 @@ export const makeColorGrid = (
     }
     grid.push(gridrow);
   }
-
   return grid;
 };
 
