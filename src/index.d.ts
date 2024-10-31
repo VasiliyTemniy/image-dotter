@@ -1,4 +1,4 @@
-export interface DotterGridParams {
+export interface GridParams {
   rowsCount: number;
   columnsCount: number;
   radius: number;
@@ -47,9 +47,9 @@ export interface AnimationParams {
  * { x: number, y: number, span: number, color: string }
  */
 export type DotterCell = [
-  /** x coordinate */
+  /** x grid coordinate (column) */
   number,
-  /** y coordinate */
+  /** y grid coordinate (row) */
   number,
   /** cell span - number of columns that cell occupies */
   number,
