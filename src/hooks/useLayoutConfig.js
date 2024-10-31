@@ -45,13 +45,10 @@ export const useLayoutConfig = (
       ...layoutParams,
       stretchCanvas: value
     });
-    if (!image) {
-      return;
-    }
 
     resizeCanvas({ stretchCanvas: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {}, {});
+    redrawGridPreview({}, {});
   };
 
   const updateScreenOverflow = (value) => {
@@ -68,13 +65,10 @@ export const useLayoutConfig = (
     } else if (!value && inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
       inputCanvasRef.current.parentElement.classList.remove('overflow-x-scroll');
     }
-    if (!image) {
-      return;
-    }
 
     resizeCanvas({ screenOverflow: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {}, {});
+    redrawGridPreview({}, {});
   };
 
   const updateFitBothCanvasInOneRow = (value) => {
@@ -83,13 +77,10 @@ export const useLayoutConfig = (
       ...layoutParams,
       fitBothCanvasInOneRow: value
     });
-    if (!image) {
-      return;
-    }
 
-    resizeCanvas({ fitBothCanvasInOneRow: value });
+    resizeCanvas({ fitBothCanvasInOneRow: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {}, {});
+    redrawGridPreview({}, {});
   };
 
   const updateShiftMainByMenu = (value) => {
@@ -98,13 +89,10 @@ export const useLayoutConfig = (
       ...layoutParams,
       shiftMainByMenu: value
     });
-    if (!image) {
-      return;
-    }
 
-    resizeCanvas({ shiftMainByMenu: value });
+    resizeCanvas({ shiftMainByMenu: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {}, {});
+    redrawGridPreview({}, {});
   };
 
   return {

@@ -30,10 +30,11 @@ const initialGridConfig = {
   },
 };
 
+const MAX_CELLS = 100000;
+
 /**
  *
  * @param {(message: string) => void} showNotification
- * @param {HTMLCanvasElement} image
  * @param {number} canvasHeight
  * @param {number} canvasWidth
  * @param {(changedGridParams: GridParams, changedGeneratorParams: GeneratorParams) => void} redrawGridPreview
@@ -41,7 +42,6 @@ const initialGridConfig = {
  */
 export const useGridConfig = (
   showNotification,
-  image,
   canvasHeight,
   canvasWidth,
   redrawGridPreview,
@@ -67,11 +67,15 @@ export const useGridConfig = (
   const updateRowsCount = (count) => {
     if (!count || !Number.isInteger(count) || count < 1) {
       showNotification('Rows count must be a positive integer', 'error');
-      setRowsCount(50);
+      setRowsCount(initialGridConfig.rowsCount);
       return;
     }
     let localRowsCount = count;
     let localColumnsCount = columnsCount;
+    if (localRowsCount * localColumnsCount > MAX_CELLS) {
+      showNotification('Too many cells', 'error');
+      localRowsCount = Math.floor(MAX_CELLS / localColumnsCount) || 1;
+    }
 
     setRowsCount(localRowsCount);
 
@@ -89,22 +93,24 @@ export const useGridConfig = (
     default:
       break;
     }
-    if (!image) {
-      return;
-    }
+
     if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
     }
   };
 
   const updateColumnsCount = (count) => {
     if (!count || !Number.isInteger(count) || count < 1) {
       showNotification('Columns count must be a positive integer', 'error');
-      setColumnsCount(50);
+      setColumnsCount(initialGridConfig.columnsCount);
       return;
     }
     let localRowsCount = rowsCount;
     let localColumnsCount = count;
+    if (localRowsCount * localColumnsCount > MAX_CELLS) {
+      showNotification('Too many cells', 'error');
+      localColumnsCount = Math.floor(MAX_CELLS / localRowsCount) || 1;
+    }
 
     setColumnsCount(localColumnsCount);
 
@@ -122,11 +128,9 @@ export const useGridConfig = (
     default:
       break;
     }
-    if (!image) {
-      return;
-    }
+
     if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
     }
   };
 
@@ -137,12 +141,10 @@ export const useGridConfig = (
       newRadius = initialGridConfig.radius;
     }
     setRadius(newRadius);
-    if (!image) {
-      return;
-    }
+
 
     if (alwaysRedraw) {
-      redrawGridPreview({ radius: newRadius }, {}, {});
+      redrawGridPreview({ radius: newRadius }, {});
     }
   };
 
@@ -153,12 +155,10 @@ export const useGridConfig = (
       newHorizontalGapPx = initialGridConfig.horizontalGapPx;
     }
     setHorizontalGapPx(newHorizontalGapPx);
-    if (!image) {
-      return;
-    }
+
 
     if (alwaysRedraw) {
-      redrawGridPreview({ horizontalGapPx: newHorizontalGapPx }, {}, {});
+      redrawGridPreview({ horizontalGapPx: newHorizontalGapPx }, {});
     }
   };
 
@@ -169,12 +169,10 @@ export const useGridConfig = (
       newVerticalGapPx = initialGridConfig.verticalGapPx;
     }
     setVerticalGapPx(newVerticalGapPx);
-    if (!image) {
-      return;
-    }
+
 
     if (alwaysRedraw) {
-      redrawGridPreview({ verticalGapPx: newVerticalGapPx }, {}, {});
+      redrawGridPreview({ verticalGapPx: newVerticalGapPx }, {});
     }
   };
 
@@ -199,12 +197,8 @@ export const useGridConfig = (
       break;
     }
 
-    if (!image) {
-      return;
-    }
-
     if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
+      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
     }
   };
 
@@ -216,34 +210,25 @@ export const useGridConfig = (
       newAngle = initialGridConfig.angle;
     }
     setAngle(newAngle);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ angle: newAngle }, {}, {});
+      redrawGridPreview({ angle: newAngle }, {});
     }
   };
 
   const updateUseStroke = (value) => {
     setUseStroke(value);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ stroke: value ? stroke : null }, {}, {});
+      redrawGridPreview({ stroke: value ? stroke : null }, {});
     }
   };
 
   const _updateStroke = (newStroke) => {
     setStroke(newStroke);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ stroke: useStroke ? newStroke : null }, {}, {});
+      redrawGridPreview({ stroke: useStroke ? newStroke : null }, {});
     }
   };
 
@@ -263,23 +248,17 @@ export const useGridConfig = (
 
   const updateUseIgnoreColor = (value) => {
     setUseIgnoreColor(value);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ ignoreColor: value ? ignoreColor : null }, {}, {});
+      redrawGridPreview({ ignoreColor: value ? ignoreColor : null }, {});
     }
   };
 
   const _updateIgnoreColor = (newIgnoreColor) => {
     setIgnoreColor(newIgnoreColor);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({ ignoreColor: useIgnoreColor ? newIgnoreColor : null }, {}, {});
+      redrawGridPreview({ ignoreColor: useIgnoreColor ? newIgnoreColor : null }, {});
     }
   };
 

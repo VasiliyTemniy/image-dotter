@@ -74,9 +74,10 @@ const App = () => {
      * @param {Partial<GridParams>} changedGridParams
      * @param {Partial<GeneratorParams>} changedGeneratorParams
      */
-    (changedGridParams, changedGeneratorParams) => {
-    // Early return if there is no image has no power placed here because the callback is debounced.
-    // All returns if there is no image must be used before this function's calls.
+    (changedGridParams, changedGeneratorParams, _image = image) => {
+      if (!_image) {
+        return;
+      }
       drawGridPreview(
         inputCanvasRef,
         outputCanvasRef,
@@ -99,7 +100,6 @@ const App = () => {
 
   const { params: gridParams, controls: gridControls, setters: gridSetters } = useGridConfig(
     showNotification,
-    image,
     inputCanvasRef.current ? inputCanvasRef.current.height : 0,
     inputCanvasRef.current ? inputCanvasRef.current.width : 0,
     redrawGridPreview,
@@ -108,7 +108,6 @@ const App = () => {
 
   const { params: generatorParams, controls: generatorControls } = useGeneratorConfig(
     showNotification,
-    image,
     redrawGridPreview,
     alwaysRedraw
   );
@@ -123,8 +122,8 @@ const App = () => {
     fitBothCanvasInOneRow = layoutParams.fitBothCanvasInOneRow,
     shiftMainByMenu = layoutParams.shiftMainByMenu,
   }, {
-    localWidth = inputCanvasRef.current.width,
-    localHeight = inputCanvasRef.current.height,
+    localHeight = inputCanvasRef.current ? inputCanvasRef.current.height : 0,
+    localWidth = inputCanvasRef.current ? inputCanvasRef.current.width : 0,
     localMenuOpen = menuOpen
   }) => {
     const windowWidth = window.innerWidth;
@@ -230,7 +229,7 @@ const App = () => {
 
     resizeCanvas({}, { localMenuOpen: value });
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {}, {});
+    redrawGridPreview({}, {});
   };
 
   const handleFileSelection = async (e) => {
@@ -250,7 +249,7 @@ const App = () => {
     });
 
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, {});
+    redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, image);
   };
 
   const handleRedrawGrid = (e) => {

@@ -31,13 +31,11 @@ const initialGeneratorConfig = {
 /**
  *
  * @param {(message: string) => void} showNotification
- * @param {HTMLCanvasElement} image
  * @param {(changedGridParams: GridParams, changedGeneratorParams: GeneratorParams) => void} redrawGridPreview
  * @param {boolean} alwaysRedraw
  */
 export const useGeneratorConfig = (
   showNotification,
-  image,
   redrawGridPreview,
   alwaysRedraw
 ) => {
@@ -58,34 +56,25 @@ export const useGeneratorConfig = (
       return;
     }
     setSeed(value);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { seed: value }, {});
+      redrawGridPreview({}, { seed: value });
     }
   };
 
   const updateUseCellSpan = (value) => {
     setUseCellSpan(value);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { cellSpan: value ? cellSpan : null }, {});
+      redrawGridPreview({}, { cellSpan: value ? cellSpan : null });
     }
   };
 
   const _updateCellSpan = (newCellSpan) => {
     setCellSpan(newCellSpan);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { cellSpan: useCellSpan ? newCellSpan : null }, {});
+      redrawGridPreview({}, { cellSpan: useCellSpan ? newCellSpan : null });
     }
   };
 
@@ -132,12 +121,9 @@ export const useGeneratorConfig = (
 
   const updateUseMainPalette = (value) => {
     setUseMainPalette(value);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { mainPalette: value ? mainPalette : null }, {});
+      redrawGridPreview({}, { mainPalette: value ? mainPalette : null });
     }
   };
 
@@ -161,34 +147,25 @@ export const useGeneratorConfig = (
     }
 
     setMainPalette(newMainPalette);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw && useMainPalette) {
-      redrawGridPreview({}, { mainPalette: newMainPalette }, {});
+      redrawGridPreview({}, { mainPalette: newMainPalette });
     }
   };
 
   const updateUseSurroundingCells = (value) => {
     setUseSurroundingCells(value);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { surroundingCells: value ? surroundingCells : null }, {});
+      redrawGridPreview({}, { surroundingCells: value ? surroundingCells : null });
     }
   };
 
   const _updateSurroundingCells = (newSurroundingCells) => {
     setSurroundingCells(newSurroundingCells);
-    if (!image) {
-      return;
-    }
 
     if (alwaysRedraw) {
-      redrawGridPreview({}, { surroundingCells: useSurroundingCells ? newSurroundingCells : null }, {});
+      redrawGridPreview({}, { surroundingCells: useSurroundingCells ? newSurroundingCells : null });
     }
   };
 
