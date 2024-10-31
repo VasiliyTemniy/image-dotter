@@ -1,3 +1,13 @@
+export interface LayoutParams {
+  stretchCanvas: boolean,
+  screenOverflow: boolean,
+  fitBothCanvasInOneRow: boolean,
+  shiftMainByMenu: boolean
+}
+
+export interface LayoutConfigState extends LayoutParams {
+}
+
 export interface GridParams {
   rowsCount: number;
   columnsCount: number;
@@ -16,6 +26,14 @@ export interface GridParams {
   } | null;
 }
 
+export interface GridConfigState extends GridParams {
+  aspectRatioMode: 'image' | 'square' | 'none';
+  useStroke: boolean;
+  useIgnoreColor: boolean;
+  useMainPalette: boolean;
+  useSurroundingCells: boolean;
+}
+
 export interface GeneratorParams {
   seed: number;
   cellSpan: {
@@ -31,6 +49,12 @@ export interface GeneratorParams {
   } | null;
 }
 
+export interface GeneratorConfigState extends GeneratorParams {
+  useCellSpan: boolean;
+  useMainPalette: boolean;
+  useSurroundingCells: boolean;
+}
+
 export interface AnimationParams {
   type: 'slide' | 'appear';
   direction: 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top' | 'h-sides' | 'v-sides' | 'all' | null;
@@ -40,6 +64,9 @@ export interface AnimationParams {
     max: number;
   } | null;
   easing: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | null;
+}
+
+export interface AnimationConfigState extends AnimationParams {
 }
 
 /**
