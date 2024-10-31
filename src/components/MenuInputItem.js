@@ -20,6 +20,16 @@ const MenuInputItem = ({
     return MenuColorPickerItem({ item });
   }
 
+  let onChange = (e) => {
+    item.updateValue(e.target.value);
+  };
+
+  if (item.type === 'number') {
+    onChange = (e) => {
+      item.updateValue(Number(e.target.value));
+    };
+  }
+
   return (
     <div className={`${item.type}-input`}>
       <label
@@ -38,7 +48,7 @@ const MenuInputItem = ({
         ref={item.ref}
         style={item.style}
         value={item.value}
-        onChange={(e) => item.updateValue(e.target.value)}
+        onChange={onChange}
         disabled={item.disabled}
       />
     </div>
