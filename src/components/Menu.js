@@ -113,7 +113,7 @@ const Menu = ({
                 tag: 'input',
                 name: 'rows',
                 label: 'Rows',
-                type: 'text',
+                type: 'number',
                 value: gridParams.rowsCount,
                 updateValue: gridControls.updateRowsCount
               },
@@ -121,7 +121,7 @@ const Menu = ({
                 tag: 'input',
                 name: 'columns',
                 label: 'Columns',
-                type: 'text',
+                type: 'number',
                 value: gridParams.columnsCount,
                 updateValue: gridControls.updateColumnsCount
               },
