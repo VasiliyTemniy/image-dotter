@@ -4,14 +4,8 @@ const ImageInit = ({
   inputCanvasRef,
   outputCanvasRef,
   updatePipetteColor,
-  stretchCanvas,
-  updateStretchCanvas,
-  screenOverflow,
-  updateScreenOverflow,
-  fitBothCanvasInOneRow,
-  updateFitBothCanvasInOneRow,
-  shiftMainByMenu,
-  updateShiftMainByMenu
+  layoutParams,
+  layoutControls,
 }) => {
 
   const topsideStyle = {
@@ -59,8 +53,8 @@ const ImageInit = ({
             type="checkbox"
             name="stretch-canvas"
             className="checkbox-input__field"
-            checked={stretchCanvas}
-            onChange={(e) => updateStretchCanvas(e.target.checked)}
+            checked={layoutParams.stretchCanvas}
+            onChange={(e) => layoutControls.updateStretchCanvas(e.target.checked)}
           />
           <label
             htmlFor="stretch-canvas"
@@ -75,8 +69,8 @@ const ImageInit = ({
             type="checkbox"
             name="screen-overflow"
             className="checkbox-input__field"
-            checked={screenOverflow}
-            onChange={(e) => updateScreenOverflow(e.target.checked)}
+            checked={layoutParams.screenOverflow}
+            onChange={(e) => layoutControls.updateScreenOverflow(e.target.checked)}
           />
           <label
             htmlFor="screen-overflow"
@@ -91,8 +85,8 @@ const ImageInit = ({
             type="checkbox"
             name="fit-canvas-in-one-row"
             className="checkbox-input__field"
-            checked={fitBothCanvasInOneRow}
-            onChange={(e) => updateFitBothCanvasInOneRow(e.target.checked)}
+            checked={layoutParams.fitBothCanvasInOneRow}
+            onChange={(e) => layoutControls.updateFitBothCanvasInOneRow(e.target.checked)}
           />
           <label
             htmlFor="fit-canvas-in-one-row"
@@ -107,8 +101,8 @@ const ImageInit = ({
             type="checkbox"
             name="shift-main-by-menu"
             className="checkbox-input__field"
-            checked={shiftMainByMenu}
-            onChange={(e) => updateShiftMainByMenu(e.target.checked)}
+            checked={layoutParams.shiftMainByMenu}
+            onChange={(e) => layoutControls.updateShiftMainByMenu(e.target.checked)}
           />
           <label
             htmlFor="shift-main-by-menu"
@@ -118,7 +112,7 @@ const ImageInit = ({
           </label>
         </div>
       </div>
-      <div className={`container ${fitBothCanvasInOneRow ? 'flex wrap' : 'flex column'}`}>
+      <div className={`container ${layoutParams.fitBothCanvasInOneRow ? 'flex wrap' : 'flex column'}`}>
         <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
           <div className='title'>
             Input image canvas

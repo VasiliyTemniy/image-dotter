@@ -1,5 +1,39 @@
 import { MenuItemGroup } from './MenuItemGroup';
 
+/**
+ * @typedef {import('../index.d.ts').GridConfigState} GridConfigState
+ * @typedef {import('../index.d.ts').GeneratorConfigState} GeneratorConfigState
+ * @typedef {import('../index.d.ts').AnimationConfigState} AnimationConfigState
+ * @typedef {import('../index.d.ts').GridParams} GridParams
+ * @typedef {import('../index.d.ts').GeneratorParams} GeneratorParams
+ * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
+ * @typedef {import('../hooks/useGridConfig.js').GridConfigControls} GridConfigControls
+ * @typedef {import('../hooks/useGeneratorConfig.js').GeneratorConfigControls} GeneratorConfigControls
+ * @typedef {import('../hooks/useAnimationConfig.js').AnimationConfigControls} AnimationConfigControls
+ */
+
+/**
+ * @param {{
+ *   menuOpen: boolean,
+ *   updateMenuOpen: (value: boolean) => void,
+ *   menuRef: React.RefObject<HTMLNavElement>,
+ *   handleFileSelection: (e: React.ChangeEvent<HTMLInputElement>) => void,
+ *   handleRedrawGrid: () => void,
+ *   handleSaveClick: () => void,
+ *   handleRedrawGridPreview: (params: {
+ *     gridParams: GridParams,
+ *     generatorParams: GeneratorParams
+ *   }) => void,
+ *   gridParams: GridConfigState,
+ *   gridControls: GridConfigControls,
+ *   generatorParams: GeneratorConfigState,
+ *   generatorControls: GeneratorConfigControls,
+ *   animationParams: AnimationConfigState,
+ *   animationControls: AnimationConfigControls,
+ *   values: any,
+ *   valueHandlers: any,
+ *  }} params
+ */
 const Menu = ({
   menuOpen,
   updateMenuOpen,
@@ -8,6 +42,12 @@ const Menu = ({
   handleRedrawGrid,
   handleSaveClick,
   handleRedrawGridPreview,
+  gridParams,
+  gridControls,
+  generatorParams,
+  generatorControls,
+  animationParams,
+  animationControls,
   values,
   valueHandlers,
   refs,
@@ -74,48 +114,48 @@ const Menu = ({
                 name: 'rows',
                 label: 'Rows',
                 type: 'text',
-                value: values.rowsCount,
-                updateValue: valueHandlers.updateRowsCount
+                value: gridParams.rowsCount,
+                updateValue: gridControls.updateRowsCount
               },
               {
                 tag: 'input',
                 name: 'columns',
                 label: 'Columns',
                 type: 'text',
-                value: values.columnsCount,
-                updateValue: valueHandlers.updateColumnsCount
+                value: gridParams.columnsCount,
+                updateValue: gridControls.updateColumnsCount
               },
               {
                 tag: 'input',
                 name: 'radius',
                 label: 'Radius',
                 type: 'number',
-                value: values.radius,
-                updateValue: valueHandlers.updateRadius
+                value: gridParams.radius,
+                updateValue: gridControls.updateRadius
               },
               {
                 tag: 'input',
                 name: 'horizontal-gap-px',
                 label: 'Horizontal gap px',
                 type: 'number',
-                value: values.horizontalGapPx,
-                updateValue: valueHandlers.updateHorizontalGapPx
+                value: gridParams.horizontalGapPx,
+                updateValue: gridControls.updateHorizontalGapPx
               },
               {
                 tag: 'input',
                 name: 'vertical-gap-px',
                 label: 'Vertical gap px',
                 type: 'number',
-                value: values.verticalGapPx,
-                updateValue: valueHandlers.updateVerticalGapPx
+                value: gridParams.verticalGapPx,
+                updateValue: gridControls.updateVerticalGapPx
               },
               {
                 tag: 'select',
                 name: 'aspect-select',
                 label: 'Aspect ratio mode',
                 type: 'select',
-                value: values.aspectRatioMode,
-                updateValue: valueHandlers.updateAspectRatioMode,
+                value: gridParams.aspectRatioMode,
+                updateValue: gridControls.updateAspectRatioMode,
                 options: [
                   {
                     value: 'image',
@@ -145,74 +185,74 @@ const Menu = ({
                 name: 'angle',
                 label: 'Angle',
                 type: 'number',
-                value: values.angle,
-                updateValue: valueHandlers.updateAngle
+                value: gridParams.angle,
+                updateValue: gridControls.updateAngle
               },
               {
                 tag: 'input',
                 name: 'use-stroke',
                 label: 'Use stroke',
                 type: 'checkbox',
-                value: values.useStroke,
-                updateValue: valueHandlers.updateUseStroke
+                value: gridParams.useStroke,
+                updateValue: gridControls.updateUseStroke
               },
               {
                 tag: 'input',
                 name: 'stroke-color',
                 label: 'Stroke color',
                 type: 'color',
-                hidden: !values.useStroke,
-                disabled: !values.useStroke,
-                value: values.strokeColor,
-                updateValue: valueHandlers.updateStrokeColor
+                hidden: !gridParams.useStroke,
+                disabled: !gridParams.useStroke,
+                value: gridParams.stroke.color,
+                updateValue: gridControls.updateStroke.color
               },
               {
                 tag: 'input',
                 name: 'stroke-width',
                 label: 'Stroke width',
                 type: 'number',
-                hidden: !values.useStroke,
-                disabled: !values.useStroke,
-                value: values.strokeWidth,
-                updateValue: valueHandlers.updateStrokeWidth
+                hidden: !gridParams.useStroke,
+                disabled: !gridParams.useStroke,
+                value: gridParams.stroke.width,
+                updateValue: gridControls.updateStroke.width
               },
               {
                 tag: 'input',
                 name: 'use-ignore-color',
                 label: 'Use ignore color',
                 type: 'checkbox',
-                value: values.useIgnoreColor,
-                updateValue: valueHandlers.updateUseIgnoreColor
+                value: gridParams.useIgnoreColor,
+                updateValue: gridControls.updateUseIgnoreColor
               },
               {
                 tag: 'input',
                 name: 'ignore-color',
                 label: 'Ignore color',
                 type: 'color',
-                hidden: !values.useIgnoreColor,
-                disabled: !values.useIgnoreColor,
-                value: values.ignoreColor,
-                updateValue: valueHandlers.updateIgnoreColor
+                hidden: !gridParams.useIgnoreColor,
+                disabled: !gridParams.useIgnoreColor,
+                value: gridParams.ignoreColor.color,
+                updateValue: gridControls.updateIgnoreColor.color
               },
               {
                 tag: 'input',
                 name: 'ignore-color-opacity-threshold',
                 label: 'Ignore color opacity threshold (0-255)',
                 type: 'number',
-                hidden: !values.useIgnoreColor,
-                disabled: !values.useIgnoreColor,
-                value: values.ignoreColorOpacityThreshold,
-                updateValue: valueHandlers.updateIgnoreColorOpacityThreshold
+                hidden: !gridParams.useIgnoreColor,
+                disabled: !gridParams.useIgnoreColor,
+                value: gridParams.ignoreColor.opacityThreshold,
+                updateValue: gridControls.updateIgnoreColor.opacityThreshold
               },
               {
                 tag: 'input',
                 name: 'ignore-color-max-deviation',
                 label: 'Ignore color max deviation',
                 type: 'number',
-                hidden: !values.useIgnoreColor,
-                disabled: !values.useIgnoreColor,
-                value: values.ignoreColorMaxDeviation,
-                updateValue: valueHandlers.updateIgnoreColorMaxDeviation
+                hidden: !gridParams.useIgnoreColor,
+                disabled: !gridParams.useIgnoreColor,
+                value: gridParams.ignoreColor.maxDeviation,
+                updateValue: gridControls.updateIgnoreColor.maxDeviation
               }
             ]}
           />
@@ -228,102 +268,102 @@ const Menu = ({
                 name: 'seed',
                 label: 'Seed',
                 type: 'number',
-                value: values.seed,
-                updateValue: valueHandlers.updateSeed
+                value: generatorParams.seed,
+                updateValue: generatorControls.updateSeed
               },
               {
                 tag: 'input',
                 name: 'use-cell-span',
                 label: 'Use cell span',
                 type: 'checkbox',
-                value: values.useCellSpan,
-                updateValue: valueHandlers.updateUseCellSpan
+                value: generatorParams.useCellSpan,
+                updateValue: generatorControls.updateUseCellSpan
               },
               {
                 tag: 'input',
                 name: 'cell-span-estimated',
                 label: 'Cell span estimated',
                 type: 'number',
-                hidden: !values.useCellSpan,
-                disabled: !values.useCellSpan,
-                value: values.cellSpanEstimated,
-                updateValue: valueHandlers.updateCellSpanEstimated
+                hidden: !generatorParams.useCellSpan,
+                disabled: !generatorParams.useCellSpan,
+                value: generatorParams.cellSpan.estimated,
+                updateValue: generatorControls.updateCellSpan.estimated
               },
               {
                 tag: 'input',
                 name: 'cell-span-min',
                 label: 'Cell span min',
                 type: 'number',
-                hidden: !values.useCellSpan,
-                disabled: !values.useCellSpan,
-                value: values.cellSpanMin,
-                updateValue: valueHandlers.updateCellSpanMin
+                hidden: !generatorParams.useCellSpan,
+                disabled: !generatorParams.useCellSpan,
+                value: generatorParams.cellSpan.min,
+                updateValue: generatorControls.updateCellSpan.min
               },
               {
                 tag: 'input',
                 name: 'cell-span-max',
                 label: 'Cell span max',
                 type: 'number',
-                hidden: !values.useCellSpan,
-                disabled: !values.useCellSpan,
-                value: values.cellSpanMax,
-                updateValue: valueHandlers.updateCellSpanMax
+                hidden: !generatorParams.useCellSpan,
+                disabled: !generatorParams.useCellSpan,
+                value: generatorParams.cellSpan.max,
+                updateValue: generatorControls.updateCellSpan.max
               },
               {
                 tag: 'input',
                 name: 'use-main-palette',
                 label: 'Use main palette',
                 type: 'checkbox',
-                value: values.useMainPalette,
-                updateValue: valueHandlers.updateUseMainPalette
+                value: generatorParams.useMainPalette,
+                updateValue: generatorControls.updateUseMainPalette
               },
               {
                 tag: 'div',
                 name: 'main-palette',
                 label: 'Main palette',
                 type: 'palette',
-                hidden: !values.useMainPalette,
-                disabled: !values.useMainPalette,
-                value: values.mainPalette,
-                updateValue: valueHandlers.updateMainPalette
+                hidden: !generatorParams.useMainPalette,
+                disabled: !generatorParams.useMainPalette,
+                value: generatorParams.mainPalette,
+                updateValue: generatorControls.updateMainPalette
               },
               {
                 tag: 'input',
                 name: 'use-surrounding-cells',
                 label: 'Use surrounding cells',
                 type: 'checkbox',
-                value: values.useSurroundingCells,
-                updateValue: valueHandlers.updateUseSurroundingCells
+                value: generatorParams.useSurroundingCells,
+                updateValue: generatorControls.updateUseSurroundingCells
               },
               {
                 tag: 'input',
                 name: 'surrounding-cells-color',
                 label: 'Surrounding cells color',
                 type: 'color',
-                hidden: !values.useSurroundingCells,
-                disabled: !values.useSurroundingCells,
-                value: values.surroundingCellsColor,
-                updateValue: valueHandlers.updateSurroundingCellsColor
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.color,
+                updateValue: generatorControls.updateSurroundingCells.color
               },
               {
                 tag: 'input',
                 name: 'surrounding-cells-min-depth',
                 label: 'Surrounding cells min depth',
                 type: 'number',
-                hidden: !values.useSurroundingCells,
-                disabled: !values.useSurroundingCells,
-                value: values.surroundingCellsMinDepth,
-                updateValue: valueHandlers.updateSurroundingCellsMinDepth
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.minDepth,
+                updateValue: generatorControls.updateSurroundingCells.minDepth
               },
               {
                 tag: 'input',
                 name: 'surrounding-cells-max-depth',
                 label: 'Surrounding cells max depth',
                 type: 'number',
-                hidden: !values.useSurroundingCells,
-                disabled: !values.useSurroundingCells,
-                value: values.surroundingCellsMaxDepth,
-                updateValue: valueHandlers.updateSurroundingCellsMaxDepth
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.maxDepth,
+                updateValue: generatorControls.updateSurroundingCells.maxDepth
               }
             ]}
           />
@@ -339,8 +379,8 @@ const Menu = ({
                 name: 'animation-type',
                 label: 'Animation type',
                 type: 'select',
-                value: values.animationType,
-                updateValue: valueHandlers.updateAnimationType,
+                value: animationParams.type,
+                updateValue: animationControls.updateType,
                 options: [
                   { value: 'slide', label: 'Slide' },
                   { value: 'appear', label: 'Appear' },
@@ -351,9 +391,9 @@ const Menu = ({
                 name: 'animation-direction',
                 label: 'Animation direction',
                 type: 'select',
-                disabled: values.animationType === 'appear',
-                value: values.animationDirection,
-                updateValue: valueHandlers.updateAnimationDirection,
+                disabled: animationParams.type === 'appear',
+                value: animationParams.direction,
+                updateValue: animationControls.updateDirection,
                 options: [
                   { value: 'left-to-right', label: 'Left to right' },
                   { value: 'right-to-left', label: 'Right to left' },
@@ -369,34 +409,34 @@ const Menu = ({
                 name: 'animation-duration',
                 label: 'Animation duration',
                 type: 'number',
-                value: values.animationDuration,
-                updateValue: valueHandlers.updateAnimationDuration
+                value: animationParams.duration,
+                updateValue: animationControls.updateDuration
               },
               {
                 tag: 'input',
                 name: 'animation-delay-min',
                 label: 'Animation delay min',
                 type: 'number',
-                disabled: values.animationType === 'appear',
-                value: values.animationDelayMin,
-                updateValue: valueHandlers.updateAnimationDelayMin
+                disabled: animationParams.type === 'appear',
+                value: animationParams.delay.min,
+                updateValue: animationControls.updateDelay.min
               },
               {
                 tag: 'input',
                 name: 'animation-delay-max',
                 label: 'Animation delay max',
                 type: 'number',
-                disabled: values.animationType === 'appear',
-                value: values.animationDelayMax,
-                updateValue: valueHandlers.updateAnimationDelayMax
+                disabled: animationParams.type === 'appear',
+                value: animationParams.delay.max,
+                updateValue: animationControls.updateDelay.max
               },
               {
                 tag: 'select',
                 name: 'animation-easing',
                 label: 'Animation easing',
                 type: 'select',
-                value: values.animationEasing,
-                updateValue: valueHandlers.updateAnimationEasing,
+                value: animationParams.easing,
+                updateValue: animationControls.updateEasing,
                 options: [
                   { value: 'linear', label: 'Linear' },
                   { value: 'ease-in', label: 'Ease in' },
