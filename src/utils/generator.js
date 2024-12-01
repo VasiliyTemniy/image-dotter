@@ -43,6 +43,15 @@ export class Generator {
     this.setParams({ seed, possibleValues, estimated, estimatedFactor, estimatedIndex });
   }
 
+  /**
+   * @param {{
+   *    seed: number,
+   *    possibleValues: number[],
+   *    estimated: number | null | undefined,
+   *    estimatedFactor?: number,
+   *    estimatedIndex: number | null | undefined
+   * }} params
+   */
   setParams({ seed, possibleValues, estimated = null, estimatedFactor = null, estimatedIndex = null }) {
     this.#seed = seed;
     this.#possibleValues = possibleValues;
@@ -127,8 +136,14 @@ export class Generator {
     }
   }
 
-  // No randomness, only use some formulas, constants and seed
-  generateNextValue () {
+  /**
+   * Generates next value based on weights, possibleValues and seed\
+   * Returns one of possibleValues
+   * @param {{ recalculateWeights?: boolean, returnValueIndex?: boolean }} options - recalculateWeights - set it to false to handle recalculation in parent method
+   * @returns {any | { value: any, valueIndex: number }} - typeof this.#possibleValues[number] | { value: typeof this.#possibleValues[number], valueIndex: number }
+   */
+  generateNextValue (options = {}) {
+    const { recalculateWeights = true, returnValueIndex = false } = options;
     /** From 0 to sum of all weights */
     const weightsAsLine = [{ index: -1, weight: 0 }];
     for (let i = 0; i < this.#weights.length; i++) {
@@ -157,8 +172,42 @@ export class Generator {
 
     const newValue = this.#possibleValues[newValueIndex];
     this.#values.push(newValue);
-    this.recalculateWeights(newValueIndex);
+    if (recalculateWeights) {
+      this.recalculateWeights(newValueIndex);
+    }
+    if (returnValueIndex) {
+      return { value: newValue, valueIndex: newValueIndex };
+    }
+
     return newValue;
+  }
+
+  /**
+   * Override prev value if needed
+   * @param {{ value?: any, valueIndex?: number }} param - value is typeof this.#possibleValues[number], while valueIndex represents index of this.#possibleValues
+   * @param {{ recalculateWeights?: boolean }} options - recalculateWeights - set it to false to handle recalculation in parent method
+   * @returns {void}
+   */
+  overridePrevValue ({ value = null, valueIndex = null }, options = {}) {
+    const { recalculateWeights = true } = options;
+
+    if (valueIndex !== null) {
+      this.#values[this.#values.length - 1] = this.#possibleValues[valueIndex];
+      if (recalculateWeights) {
+        this.recalculateWeights(valueIndex);
+      }
+      return;
+    } else {
+      const valueIndex = this.#possibleValues.indexOf(value);
+      if (valueIndex === -1) {
+        throw new Error('Value not found in possibleValues');
+      }
+      this.#values[this.#values.length - 1] = value;
+      if (recalculateWeights) {
+        this.recalculateWeights(valueIndex);
+      }
+      return;
+    }
   }
 
   /**
