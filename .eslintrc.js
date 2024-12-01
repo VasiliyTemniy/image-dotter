@@ -2,6 +2,7 @@
 module.exports = {
   'env': {
     'browser': true,
+    'es2022': true,
     'es6': true
   },
   'extends': [
@@ -12,7 +13,7 @@ module.exports = {
     'ecmaFeatures': {
       'jsx': true
     },
-    'ecmaVersion': 2018,
+    'ecmaVersion': 2022,
     'sourceType': 'module'
   },
   'plugins': [
