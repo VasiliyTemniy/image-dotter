@@ -1,4 +1,4 @@
-import { drawGridPreview, drawImage, makeColorGrid, readImage } from './utils/dottergrid';
+import { drawGridPreview, drawImage, makeColorGrid, mapColorGridToHex, readImage } from './utils/dottergrid';
 import { ImageInit } from './components/ImageInit';
 import { GridOutput } from './components/GridOutput';
 import { Menu } from './components/Menu';
@@ -19,6 +19,7 @@ import { useGridConfig } from './hooks/useGridConfig.js';
 import { useGeneratorConfig } from './hooks/useGeneratorConfig.js';
 import { useAnimationConfig } from './hooks/useAnimationConfig.js';
 import { useLayoutConfig } from './hooks/useLayoutConfig.js';
+import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
 
 
 /**
@@ -256,7 +257,7 @@ const App = () => {
     e.preventDefault();
     const canvasInput = inputCanvasRef.current;
     const contextInput = canvasInput.getContext('2d');
-    const grid = makeColorGrid(contextInput, gridParams, generatorParams);
+    const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, generatorParams));
     // TODO!!! Handle changedAnimationParams and those partial grid params
     gridOutputRef.current.handleCreate(
       grid,
@@ -301,6 +302,9 @@ const App = () => {
     await writableStream.close();
   };
 
+  // Set to true to test and debug the generator
+  const generatorTest = false;
+
   return (
     <>
       <Notification message={message.text} type={message.type} shown={message.shown}/>
@@ -338,6 +342,7 @@ const App = () => {
         layoutParams={layoutParams}
         layoutControls={layoutControls}
       />
+      {generatorTest && <GeneratorTestComponent/>}
       <GridOutput ref={gridOutputRef} />
     </>
   );
