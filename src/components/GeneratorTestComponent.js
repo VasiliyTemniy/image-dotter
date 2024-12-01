@@ -7,7 +7,7 @@ export const GeneratorTestComponent = () => {
 
   // const possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   // const possibleValues = [1, 2, 3];
-  const possibleValues = [1, 2, 3, 400, 5, 6, 7];
+  const possibleValues = ['#AABBFF50', '#BBFFAA50', '#FFAAFF50', '#FFBBAA50'];
 
 
 
@@ -15,7 +15,7 @@ export const GeneratorTestComponent = () => {
     seed: 98564,
     possibleValues,
     // estimated: 2.35,
-    estimatedIndex: 0,
+    estimatedIndex: 1,
     testCanvasRef: generatorTestCanvasRef
   });
 
