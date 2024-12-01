@@ -209,7 +209,8 @@ export class Generator {
     for (let i = 0; i < this.#possibleValues.length; i++) {
       // Lower part with value names
       ctx.fillStyle = 'rgb(0, 0, 0)';
-      ctx.fillText(this.#possibleValues[i], (i * columnWidth) + (columnWidth / 2) - 5, canvasHeight - 5, columnWidth);
+      ctx.textAlign = 'center';
+      ctx.fillText(this.#possibleValues[i], (i * columnWidth) + (columnWidth / 2), canvasHeight - 5, columnWidth);
     }
 
     for (let i = 0; i < this.#possibleValues.length; i++) {
