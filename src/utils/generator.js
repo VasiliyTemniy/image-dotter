@@ -14,6 +14,22 @@ const WEIGHT_INCREASE_DISTANCE_DIMINISHING_FACTOR = 0.1;
  * In image-dotter, it is used for cell span, surrounding cells and color data generation
  */
 export class Generator {
+
+  /** @type {number} */
+  #seed;
+  /** Use only numbers if estimated is provided @type {any[]} */
+  #possibleValues;
+  /** @type {number | null} */
+  #estimated;
+  /** @type {number | null} */
+  #estimatedIndex;
+  /** The bigger this factor - the less estimated value affects weights @type {number} */
+  #estimatedFactor;
+  /** Values that have been already picked, in order of them being picked @type {any[]} */
+  #values;
+  /** @type {number[]} */
+  #weights;
+
   /**
    * @param {{
    *    seed: number,
@@ -24,24 +40,31 @@ export class Generator {
    * }} params
    */
   constructor ({ seed, possibleValues, estimated = null, estimatedFactor = null, estimatedIndex = null }) {
-    this.seed = seed;
-    this.possibleValues = possibleValues;
-    this.estimated = estimated;
-    this.estimatedIndex = estimatedIndex;
-    this.estimatedFactor = estimatedFactor ? estimatedFactor : possibleValues.length**(possibleValues.length / 3.3);
-    this.values = [];
-    this.weights = this.initWeights();
+    this.setParams({ seed, possibleValues, estimated, estimatedFactor, estimatedIndex });
+  }
 
-    if (this.estimated !== null) {
-      for (let i = 0; i < this.possibleValues.length - 1; i++) {
-        if (this.possibleValues[i] > this.possibleValues[i + 1]) {
-          throw new Error('Possible values must be sorted if estimated value is set');
+  setParams({ seed, possibleValues, estimated = null, estimatedFactor = null, estimatedIndex = null }) {
+    this.#seed = seed;
+    this.#possibleValues = possibleValues;
+    this.#estimated = estimated;
+    this.#estimatedIndex = estimatedIndex;
+    this.#estimatedFactor = estimatedFactor ? estimatedFactor : possibleValues.length**(possibleValues.length / 3.3);
+    this.#values = [];
+    this.#weights = this.initWeights();
+
+    if (this.#estimated !== null) {
+      for (let i = 0; i < this.#possibleValues.length - 1; i++) {
+        if (this.#possibleValues[i] > this.#possibleValues[i + 1]) {
+          throw new Error('Possible values array must be sorted if estimated value is set');
+        }
+        if (typeof this.#possibleValues[i] !== 'number') {
+          throw new Error('Possible values must be numbers if estimated value is set');
         }
       }
     }
 
-    if (this.estimatedIndex !== null) {
-      if (this.estimatedIndex < 0 || this.estimatedIndex >= this.possibleValues.length) {
+    if (this.#estimatedIndex !== null) {
+      if (this.#estimatedIndex < 0 || this.#estimatedIndex >= this.#possibleValues.length) {
         throw new Error('Estimated index must be within bounds of possible values array');
       }
     }
@@ -53,17 +76,17 @@ export class Generator {
    */
   initWeights () {
     let weights = [];
-    if (this.estimated) {
+    if (this.#estimated) {
       // Calculate weights
-      for (let i = 0; i < this.possibleValues.length; i++) {
-        const value = this.possibleValues[i];
-        const newWeight = Math.exp(-Math.pow(value - this.estimated, 2) / 2);
+      for (let i = 0; i < this.#possibleValues.length; i++) {
+        const value = this.#possibleValues[i];
+        const newWeight = Math.exp(-Math.pow(value - this.#estimated, 2) / 2);
         weights.push(newWeight);
       }
     } else {
       // All weights are equal if there is no estimated value
-      const weight = 1 / this.possibleValues.length;
-      weights = this.possibleValues.map(() => weight);
+      const weight = 1 / this.#possibleValues.length;
+      weights = this.#possibleValues.map(() => weight);
     }
 
     return weights;
@@ -79,27 +102,27 @@ export class Generator {
 
     let shouldDownscaleWeights = false;
 
-    for (let i = 0; i < this.possibleValues.length; i++) {
+    for (let i = 0; i < this.#possibleValues.length; i++) {
       if (i === newValueIndex) {
-        this.weights[i] = this.weights[i] - this.weights[i] * NEW_VALUE_WEIGHT_DECREASE_SELF_FACTOR;
+        this.#weights[i] = this.#weights[i] - this.#weights[i] * NEW_VALUE_WEIGHT_DECREASE_SELF_FACTOR;
       } else {
-        this.weights[i] = this.weights[i] + this.weights[i] * OTHER_VALUES_WEIGHT_INCREASE_SELF_FACTOR * Math.pow(1 - Math.abs(newValueIndex - i) / this.possibleValues.length, WEIGHT_INCREASE_DISTANCE_DIMINISHING_FACTOR);
+        this.#weights[i] = this.#weights[i] + this.#weights[i] * OTHER_VALUES_WEIGHT_INCREASE_SELF_FACTOR * Math.pow(1 - Math.abs(newValueIndex - i) / this.#possibleValues.length, WEIGHT_INCREASE_DISTANCE_DIMINISHING_FACTOR);
         // somehow we have to add factor of distance till expected value
-        if (this.estimated !== null) {
-          this.weights[i] = this.weights[i] + this.weights[i] * Math.exp(-Math.pow(this.possibleValues[i] - this.estimated, 2) / this.estimatedFactor);
+        if (this.#estimated !== null) {
+          this.#weights[i] = this.#weights[i] + this.#weights[i] * Math.exp(-Math.pow(this.#possibleValues[i] - this.#estimated, 2) / this.#estimatedFactor);
         }
-        if (this.estimatedIndex !== null) {
-          this.weights[i] = this.weights[i] + this.weights[i] * Math.exp(-Math.pow(i - this.estimatedIndex, 2) / this.estimatedFactor);
+        if (this.#estimatedIndex !== null) {
+          this.#weights[i] = this.#weights[i] + this.#weights[i] * Math.exp(-Math.pow(i - this.#estimatedIndex, 2) / this.#estimatedFactor);
         }
       }
-      if (this.weights[i] > 1000) {
+      if (this.#weights[i] > 1000) {
         shouldDownscaleWeights = true;
       }
     }
 
     if (shouldDownscaleWeights) {
-      for (let i = 0; i < this.possibleValues.length; i++) {
-        this.weights[i] = this.weights[i] / 10000;
+      for (let i = 0; i < this.#possibleValues.length; i++) {
+        this.#weights[i] = this.#weights[i] / 10000;
       }
     }
   }
@@ -108,13 +131,13 @@ export class Generator {
   generateNextValue () {
     /** From 0 to sum of all weights */
     const weightsAsLine = [{ index: -1, weight: 0 }];
-    for (let i = 0; i < this.weights.length; i++) {
-      const nextWeight = this.weights[i];
+    for (let i = 0; i < this.#weights.length; i++) {
+      const nextWeight = this.#weights[i];
       weightsAsLine.push({ index: i, weight: nextWeight + weightsAsLine[i].weight });
     }
 
     // Not a random! Predetermined via seed and current position from an array of pseudorandom numbers that are floats from 0 to 1
-    const positionFactor = seedValues[(this.seed + this.values.length) % seedValues.length];
+    const positionFactor = seedValues[(this.#seed + this.#values.length) % seedValues.length];
 
     // The weight of new value - a dot somewhere on the weightsAsLine line
     const newValueWeightPosition = positionFactor * weightsAsLine[weightsAsLine.length - 1].weight;
@@ -126,14 +149,14 @@ export class Generator {
       }
     }
     if (this.logGen) {
-      console.log('newValueIndex', newValueIndex, 'positionFactor', positionFactor, 'newValueWeightPosition', newValueWeightPosition, 'weightsAsLine', weightsAsLine, 'weights', this.weights);
+      console.log('newValueIndex', newValueIndex, 'positionFactor', positionFactor, 'newValueWeightPosition', newValueWeightPosition, 'weightsAsLine', weightsAsLine, 'weights', this.#weights);
     }
     if (newValueIndex === -1) {
       throw new Error('Something went horribly wrong - check generateNextValue weight position');
     }
 
-    const newValue = this.possibleValues[newValueIndex];
-    this.values.push(newValue);
+    const newValue = this.#possibleValues[newValueIndex];
+    this.#values.push(newValue);
     this.recalculateWeights(newValueIndex);
     return newValue;
   }
@@ -165,7 +188,7 @@ export class Generator {
     let maxValueTimes = 0;
     let minValueTimes = 1000000;
 
-    const distribution = this.values.reduce((acc, value) => {
+    const distribution = this.#values.reduce((acc, value) => {
       acc[value] = (acc[value] || 0) + 1;
       return acc;
     }, {});
@@ -181,16 +204,16 @@ export class Generator {
       }
     }
 
-    const columnWidth = canvasWidth / this.possibleValues.length;
+    const columnWidth = canvasWidth / this.#possibleValues.length;
 
-    for (let i = 0; i < this.possibleValues.length; i++) {
+    for (let i = 0; i < this.#possibleValues.length; i++) {
       // Lower part with value names
       ctx.fillStyle = 'rgb(0, 0, 0)';
-      ctx.fillText(this.possibleValues[i], (i * columnWidth) + (columnWidth / 2) - 5, canvasHeight - 5, columnWidth);
+      ctx.fillText(this.#possibleValues[i], (i * columnWidth) + (columnWidth / 2) - 5, canvasHeight - 5, columnWidth);
     }
 
-    for (let i = 0; i < this.possibleValues.length; i++) {
-      const valueName = this.possibleValues[i];
+    for (let i = 0; i < this.#possibleValues.length; i++) {
+      const valueName = this.#possibleValues[i];
       const valueTimes = distribution[valueName];
       const height = valueTimes / maxValueTimes * (canvasHeight - 30);
       ctx.fillRect((i * columnWidth) + 5, canvasHeight - 20 - height, columnWidth - 10, height);
