@@ -2,10 +2,10 @@ import { rgba2hex } from './color';
 
 /**
  * @typedef {import('../index.d.ts').DotterCell} DotterCell
- *
+ * @typedef {import('../index.d.ts').DotterIntermediateCell} DotterIntermediateCell
  * @typedef {import('../index.d.ts').GridParams} GridParams
- * @typedef {import('../index.d.ts').GeneratorParams} GeneratorParams
  * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
+ * @typedef {import('./generator.js').Generator} Generator
  */
 
 /**
@@ -51,13 +51,13 @@ export const drawImage = (image, inputCanvasRef) => {
  * @param {React.MutableRefObject<HTMLCanvasElement>} inputCanvasRef
  * @param {React.MutableRefObject<HTMLCanvasElement>} outputCanvasRef
  * @param {DotterGridParams} gridParams
- * @param {GeneratorParams} generatorParams
+ * @param {Generator | null} generator
  */
 export const drawGridPreview = (
   inputCanvasRef,
   outputCanvasRef,
   gridParams,
-  generatorParams,
+  generator,
 ) => {
   const canvasInput = inputCanvasRef.current;
   const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
@@ -65,16 +65,27 @@ export const drawGridPreview = (
   const canvasOutput = outputCanvasRef.current;
   const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
 
-  const grid = makeColorGrid(contextInput, gridParams, generatorParams);
+  const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, generator));
   drawOutputByGrid(contextOutput, grid, gridParams);
 };
+
+/**
+ * @param {DotterIntermediateCell[][]} grid
+ * @returns {DotterCell[][]}
+ */
+export const mapColorGridToHex = (grid) =>
+  grid.map(
+    (row) => row.map(
+      cell => [cell[0], cell[1], cell[2], rgba2hex(cell[3])]
+    )
+  );
 
 /**
  * Make grid of colored cells from input image
  * @param {CanvasRenderingContext2D} contextInput
  * @param {GridParams} params
- * @param {GeneratorParams} generatorParams
- * @returns {DotterCell[][]}
+ * @param {Generator | null} generator
+ * @returns {DotterIntermediateCell[][]}
  */
 export const makeColorGrid = (
   contextInput,
@@ -83,15 +94,9 @@ export const makeColorGrid = (
     columnsCount,
     ignoreColor
   },
-  // TODO! Implement generator
-  {
-    seed,
-    cellSpan,
-    // mainPalette,
-    // surroundingCells
-  }
+  generator
 ) => {
-  /** @type {DotterCell[][]} */
+  /** @type {DotterIntermediateCell[][]} */
   const grid = [];
   const columnWidth = Math.max(contextInput.canvas.width / columnsCount, 1);
   const rowHeight = Math.max(contextInput.canvas.height / rowsCount, 1);
@@ -100,10 +105,11 @@ export const makeColorGrid = (
   const icGreen = ignoreColor ? hexToInt(ignoreColor.color.substring(3, 5)) : 0;
   const icBlue = ignoreColor ? hexToInt(ignoreColor.color.substring(5, 7)) : 0;
 
+  // First, we handle square cells - every cell span is exactly 1
   for (let row = 0; row < rowsCount; row++) {
-    /** @type {DotterCell[]} */
+    /** @type {DotterIntermediateCell[]} */
     const gridrow = [];
-    for (let column = 0; column < columnsCount; void 0) {
+    for (let column = 0; column < columnsCount; column++) {
       const x = columnWidth * column;
       const y = rowHeight * row;
       const data = contextInput.getImageData(x, y, columnWidth, rowHeight).data;
@@ -115,23 +121,57 @@ export const makeColorGrid = (
         Math.abs(icBlue - color[2]) <= ignoreColor.maxDeviation &&
         color[3] <= ignoreColor.opacityThreshold
       ) {
-        column++; // skip this cell; When I first changed 'for' cycle third param to void 0, I forgot to add this - it was an infinite loop
         continue;
       }
-      let span = 1;
-      // span is random (cellSpanMin .. cellSpanMax) now; TODO fix it - implement generator
-      // span uses seed instead of random
-      if (cellSpan && cellSpan.max > cellSpan.min) {
-        // span = Math.round(Math.random() * (cellSpan.max - cellSpan.min) + cellSpan.min);
-        span = Math.round((row + column + seed * (row / (column + 1))) % (cellSpan.max - cellSpan.min) + cellSpan.min);
-      } else if (cellSpan && cellSpan.max === cellSpan.min) {
-        span = cellSpan.min;
+      gridrow.push([column, row, 1, color]);
+    }
+    grid.push(gridrow);
+  }
+
+  if (generator === null) {
+    return grid;
+  } else {
+    return handleCellSpanGeneration(grid, generator);
+  }
+};
+
+/**
+ * Combines cells based on seed and other cell span generator params
+ * @param {DotterIntermediateCell[][]} monoSpanGrid
+ * @param {Generator} generator
+ * @returns {DotterIntermediateCell[][]}
+ */
+const handleCellSpanGeneration = (
+  monoSpanGrid,
+  generator
+) => {
+  /** @type {DotterIntermediateCell[][]} */
+  const grid = [];
+
+  for (let row = 0; row < monoSpanGrid.length; row++) {
+    const gridrow = [];
+    let column = 0;
+    while (column < monoSpanGrid[row].length) {
+      const { value, valueIndex } = generator.generateNextValue({ recalculateWeights: false, returnValueIndex: true });
+      let span = value;
+      if (column + span > monoSpanGrid[row].length) {
+        span = monoSpanGrid[row].length - column;
+        generator.overridePrevValue({ valueIndex }, { recalculateWeights: false });
       }
-      gridrow.push([column, row, span, rgba2hex(color)]);
+      generator.recalculateWeights(valueIndex);
+      const colorSpanArray = [];
+      for (let i = column; i < column + span; i++) {
+        // Push the spread array to fit the same structure as ImageData["data"]
+        colorSpanArray.push(...monoSpanGrid[row][i][3]);
+      }
+      const newColor = middleweightColor(colorSpanArray);
+      const gridrowColumn = monoSpanGrid[row][column][0];
+      gridrow.push([gridrowColumn, row, span, newColor]);
       column += span;
     }
     grid.push(gridrow);
   }
+
   return grid;
 };
 
@@ -184,10 +224,10 @@ const drawOutputByGrid = (
 
 /**
  * Gets middleweight color of some image part by surrounding pixels
- * @param {ImageData["data"]} data
+ * @param {ImageData["data"]} data - Uint8ClampedArray, structurally same as Array<[number, number, number, number]>
  * @returns {[number, number, number, number]} middleweight color in rgba format
  */
-const middleweightColor = (data) => {
+export const middleweightColor = (data) => {
   let red = 0;
   let green = 0;
   let blue = 0;
@@ -243,6 +283,6 @@ const drawRoundRect = (context, x, y, thickness, length, radius, angle, fill, st
   }
 };
 
-const hexToInt = (hex) => {
+export const hexToInt = (hex) => {
   return parseInt(hex.replace('#', ''), 16);
 };
