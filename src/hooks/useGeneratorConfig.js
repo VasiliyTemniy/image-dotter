@@ -12,7 +12,8 @@ import { useState } from 'react';
 const initialGeneratorConfig = {
   // seed: Math.ceil(Math.random() * 100000),
   seed: 98564,
-  useCellSpan: false,
+  // useCellSpan: false,
+  useCellSpan: true,
   cellSpan: {
     estimated: 2.35,
     min: 2,
