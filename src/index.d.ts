@@ -71,7 +71,7 @@ export interface AnimationConfigState extends AnimationParams {
 
 /**
  * x and y are top-left corner coordinates of a cell
- * { x: number, y: number, span: number, color: string }
+ * [ x: number, y: number, span: number, color: string ]
  */
 export type DotterCell = [
   /** x grid coordinate (column) */
@@ -82,6 +82,23 @@ export type DotterCell = [
   number,
   /** cell color */
   string
+];
+
+type RGBAColor = [number, number, number, number];
+
+/**
+ * Intermediate cell data for easier manipulation
+ * [ x: number, y: number, span: number, color: RGBAColor ]
+ */
+export type DotterIntermediateCell = [
+  /** x grid coordinate (column) */
+  number,
+  /** y grid coordinate (row) */
+  number,
+  /** cell span - number of columns that cell occupies */
+  number,
+  /** cell color in RGBA */
+  RGBAColor
 ];
 
 
