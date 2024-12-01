@@ -8,9 +8,17 @@ export interface LayoutParams {
 export interface LayoutConfigState extends LayoutParams {
 }
 
-export interface GridParams {
+export interface GridCreationParams {
   rowsCount: number;
   columnsCount: number;
+  ignoreColor: {
+    color: string;
+    opacityThreshold: number;
+    maxDeviation: number;
+  } | null;
+}
+
+export interface GridVisualParams {
   radius: number;
   horizontalGapPx: number;
   verticalGapPx: number;
@@ -19,12 +27,26 @@ export interface GridParams {
     color: string;
     width: number;
   } | null;
-  ignoreColor: {
-    color: string;
-    opacityThreshold: number;
-    maxDeviation: number;
-  } | null;
 }
+
+export interface GridParams extends GridCreationParams, GridVisualParams {
+  // rowsCount: number;
+  // columnsCount: number;
+  // radius: number;
+  // horizontalGapPx: number;
+  // verticalGapPx: number;
+  // angle: number;
+  // stroke: {
+  //   color: string;
+  //   width: number;
+  // } | null;
+  // ignoreColor: {
+  //   color: string;
+  //   opacityThreshold: number;
+  //   maxDeviation: number;
+  // } | null;
+}
+
 
 export interface GridConfigState extends GridParams {
   aspectRatioMode: 'image' | 'square' | 'none';
@@ -87,7 +109,8 @@ export type DotterCell = [
 type RGBAColor = [number, number, number, number];
 
 /**
- * Intermediate cell data for easier manipulation
+ * Intermediate cell data for easier manipulation\
+ * Could be used to render dotted image to outputCanvas
  * [ x: number, y: number, span: number, color: RGBAColor ]
  */
 export type DotterIntermediateCell = [
