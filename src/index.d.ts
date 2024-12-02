@@ -66,8 +66,17 @@ export interface GeneratorParams {
   mainPalette: string[] | null;
   surroundingCells: {
     color: string;
-    minDepth: number;
-    maxDepth: number;
+    colorVariation: number;
+    depth: {
+      estimated: number;
+      min: number;
+      max: number;
+    };
+    span: {
+      estimated: number;
+      min: number;
+      max: number;
+    };
   } | null;
 }
 
