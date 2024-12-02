@@ -24,8 +24,17 @@ const initialGeneratorConfig = {
   useSurroundingCells: false,
   surroundingCells: {
     color: '#325e9f80',
-    minDepth: 2,
-    maxDepth: 3
+    colorVariation: 10,
+    depth: {
+      estimated: 2.35,
+      min: 2,
+      max: 3
+    },
+    span: {
+      estimated: 2.35,
+      min: 2,
+      max: 3
+    }
   }
 };
 
@@ -175,28 +184,93 @@ export const useGeneratorConfig = (
     _updateSurroundingCells(newSurroundingCells);
   };
 
+  const updateSurroundingCellsColorVariation = (value) => {
+    const newSurroundingCells = { ...surroundingCells, colorVariation: value };
+    if (!value || !Number.isInteger(value) || value < 0 || value > 255) {
+      showNotification('Surrounding cells color variation must be a positive integer between 0 and 255', 'error');
+      newSurroundingCells.colorVariation = initialGeneratorConfig.surroundingCells.colorVariation;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
+  const updateSurroundingCellsDepthEstimated = (value) => {
+    const newSurroundingCells = { ...surroundingCells, depth: { ...surroundingCells.depth, estimated: value } };
+    if (
+      !value ||
+      isNaN(value) ||
+      value < 1 ||
+      value < surroundingCells.depth.min ||
+      value > surroundingCells.depth.max
+    ) {
+      showNotification('Surrounding cells depth estimated must be a positive float more than 1 and between min and max', 'error');
+      newSurroundingCells.depth.estimated = initialGeneratorConfig.surroundingCells.depth.estimated;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
   const updateSurroundingCellsMinDepth = (value) => {
-    const newSurroundingCells = { ...surroundingCells, minDepth: value };
-    if (value > surroundingCells.maxDepth) {
+    const newSurroundingCells = { ...surroundingCells, depth: { ...surroundingCells.depth, min: value } };
+    if (value > surroundingCells.depth.max) {
       showNotification('Surrounding cells min depth must be less than surrounding cells max depth', 'error');
-      newSurroundingCells.minDepth = surroundingCells.maxDepth;
+      newSurroundingCells.depth.min = surroundingCells.depth.max;
     }
     if (!value || !Number.isInteger(value) || value < 0) {
       showNotification('Surrounding cells min depth must be a positive integer', 'error');
-      newSurroundingCells.minDepth = initialGeneratorConfig.surroundingCells.minDepth;
+      newSurroundingCells.depth.min = initialGeneratorConfig.surroundingCells.depth.min;
     }
     _updateSurroundingCells(newSurroundingCells);
   };
 
   const updateSurroundingCellsMaxDepth = (value) => {
-    const newSurroundingCells = { ...surroundingCells, maxDepth: value };
-    if (value < surroundingCells.minDepth) {
+    const newSurroundingCells = { ...surroundingCells, depth: { ...surroundingCells.depth, max: value } };
+    if (value < surroundingCells.depth.min) {
       showNotification('Surrounding cells max depth must be greater than surrounding cells min depth', 'error');
-      newSurroundingCells.maxDepth = surroundingCells.minDepth;
+      newSurroundingCells.depth.max = surroundingCells.depth.min;
     }
     if (!value || !Number.isInteger(value) || value < 0) {
       showNotification('Surrounding cells max depth must be a positive integer', 'error');
-      newSurroundingCells.maxDepth = initialGeneratorConfig.surroundingCells.maxDepth;
+      newSurroundingCells.depth.max = initialGeneratorConfig.surroundingCells.depth.max;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
+  const updateSurroundingCellsSpanEstimated = (value) => {
+    const newSurroundingCells = { ...surroundingCells, span: { ...surroundingCells.span, estimated: value } };
+    if (
+      !value ||
+      isNaN(value) ||
+      value < 1 ||
+      value < surroundingCells.span.min ||
+      value > surroundingCells.span.max
+    ) {
+      showNotification('Surrounding cells span estimated must be a positive float more than 1 and between min and max', 'error');
+      newSurroundingCells.span.estimated = initialGeneratorConfig.surroundingCells.span.estimated;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
+  const updateSurroundingCellsMinSpan = (value) => {
+    const newSurroundingCells = { ...surroundingCells, span: { ...surroundingCells.span, min: value } };
+    if (value > surroundingCells.span.max) {
+      showNotification('Surrounding cells min span must be less than surrounding cells max span', 'error');
+      newSurroundingCells.span.min = surroundingCells.span.max;
+    }
+    if (!value || !Number.isInteger(value) || value < 0) {
+      showNotification('Surrounding cells min span must be a positive integer', 'error');
+      newSurroundingCells.span.min = initialGeneratorConfig.surroundingCells.span.min;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
+  const updateSurroundingCellsMaxSpan = (value) => {
+    const newSurroundingCells = { ...surroundingCells, span: { ...surroundingCells.span, max: value } };
+    if (value < surroundingCells.span.min) {
+      showNotification('Surrounding cells max span must be greater than surrounding cells min span', 'error');
+      newSurroundingCells.span.max = surroundingCells.span.min;
+    }
+    if (!value || !Number.isInteger(value) || value < 0) {
+      showNotification('Surrounding cells max span must be a positive integer', 'error');
+      newSurroundingCells.span.max = initialGeneratorConfig.surroundingCells.span.max;
     }
     _updateSurroundingCells(newSurroundingCells);
   };
@@ -224,8 +298,17 @@ export const useGeneratorConfig = (
       updateUseSurroundingCells,
       updateSurroundingCells: {
         color: updateSurroundingCellsColor,
-        minDepth: updateSurroundingCellsMinDepth,
-        maxDepth: updateSurroundingCellsMaxDepth
+        colorVariation: updateSurroundingCellsColorVariation,
+        depth: {
+          estimated: updateSurroundingCellsDepthEstimated,
+          min: updateSurroundingCellsMinDepth,
+          max: updateSurroundingCellsMaxDepth
+        },
+        span: {
+          estimated: updateSurroundingCellsSpanEstimated,
+          min: updateSurroundingCellsMinSpan,
+          max: updateSurroundingCellsMaxSpan
+        }
       },
     }
   };

@@ -347,13 +347,63 @@ const Menu = ({
               },
               {
                 tag: 'input',
+                name: 'surrounding-cells-color-variation',
+                label: 'Surrounding cells color variation',
+                type: 'number',
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.colorVariation,
+                updateValue: generatorControls.updateSurroundingCells.colorVariation
+              },
+              {
+                tag: 'input',
+                name: 'surrounding-cells-estimated-span',
+                label: 'Surrounding cells estimated span',
+                type: 'number',
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.span.estimated,
+                updateValue: generatorControls.updateSurroundingCells.span.estimated
+              },
+              {
+                tag: 'input',
+                name: 'surrounding-cells-min-span',
+                label: 'Surrounding cells min span',
+                type: 'number',
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.span.min,
+                updateValue: generatorControls.updateSurroundingCells.span.min
+              },
+              {
+                tag: 'input',
+                name: 'surrounding-cells-max-span',
+                label: 'Surrounding cells max span',
+                type: 'number',
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.span.max,
+                updateValue: generatorControls.updateSurroundingCells.span.max
+              },
+              {
+                tag: 'input',
+                name: 'surrounding-cells-estimated-depth',
+                label: 'Surrounding cells estimated depth',
+                type: 'number',
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.depth.estimated,
+                updateValue: generatorControls.updateSurroundingCells.depth.estimated
+              },
+              {
+                tag: 'input',
                 name: 'surrounding-cells-min-depth',
                 label: 'Surrounding cells min depth',
                 type: 'number',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.minDepth,
-                updateValue: generatorControls.updateSurroundingCells.minDepth
+                value: generatorParams.surroundingCells.depth.min,
+                updateValue: generatorControls.updateSurroundingCells.depth.min
               },
               {
                 tag: 'input',
@@ -362,8 +412,8 @@ const Menu = ({
                 type: 'number',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.maxDepth,
-                updateValue: generatorControls.updateSurroundingCells.maxDepth
+                value: generatorParams.surroundingCells.depth.max,
+                updateValue: generatorControls.updateSurroundingCells.depth.max
               }
             ]}
           />
