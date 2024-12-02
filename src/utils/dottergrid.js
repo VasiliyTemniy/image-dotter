@@ -1,9 +1,11 @@
 import { rgba2hex } from './color';
+import { Generator } from './generator.js';
 
 /**
  * @typedef {import('../index.d.ts').DotterCell} DotterCell
  * @typedef {import('../index.d.ts').DotterIntermediateCell} DotterIntermediateCell
  * @typedef {import('../index.d.ts').GridParams} GridParams
+ * @typedef {import('../index.d.ts').GeneratorParams} GeneratorParams
  * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
  * @typedef {import('./generator.js').Generator} Generator
  */
@@ -51,21 +53,27 @@ export const drawImage = (image, inputCanvasRef) => {
  * @param {React.MutableRefObject<HTMLCanvasElement>} inputCanvasRef
  * @param {React.MutableRefObject<HTMLCanvasElement>} outputCanvasRef
  * @param {DotterGridParams} gridParams
- * @param {Generator | null} generator
+ * @param {GeneratorParams} generatorParams
+//  * @param {Generator | null} spanGenerator
+//  * @param {Generator | null} mainPaletteGenerator
+//  * @param {Generator | null} surroundingCellsDepthGenerator
+//  * @param {Generator | null} surroundingCellsSpanGenerator
  */
 export const drawGridPreview = (
   inputCanvasRef,
   outputCanvasRef,
   gridParams,
-  generator,
+  generatorParams,
+  // spanGenerator,
 ) => {
+
   const canvasInput = inputCanvasRef.current;
   const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
 
   const canvasOutput = outputCanvasRef.current;
   const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
 
-  const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, generator));
+  const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, generatorParams));
   drawOutputByGrid(contextOutput, grid, gridParams);
 };
 
@@ -84,7 +92,8 @@ export const mapColorGridToHex = (grid) =>
  * Make grid of colored cells from input image
  * @param {CanvasRenderingContext2D} contextInput
  * @param {GridParams} params
- * @param {Generator | null} generator
+ * @param {GeneratorParams} generatorParams
+//  * @param {Generator | null} generator
  * @returns {DotterIntermediateCell[][]}
  */
 export const makeColorGrid = (
@@ -94,7 +103,7 @@ export const makeColorGrid = (
     columnsCount,
     ignoreColor
   },
-  generator
+  generatorParams
 ) => {
   /** @type {DotterIntermediateCell[][]} */
   const grid = [];
@@ -128,9 +137,18 @@ export const makeColorGrid = (
     grid.push(gridrow);
   }
 
-  if (generator === null) {
+  if (generatorParams.cellSpan === null) {
     return grid;
   } else {
+    const possibleValues = [];
+    for (let i = generatorParams.cellSpan.min; i <= generatorParams.cellSpan.max; i++) {
+      possibleValues.push(i);
+    }
+    const generator = new Generator({
+      seed: generatorParams.seed,
+      possibleValues: possibleValues,
+      estimated: generatorParams.cellSpan.estimated
+    });
     return handleCellSpanGeneration(grid, generator);
   }
 };
