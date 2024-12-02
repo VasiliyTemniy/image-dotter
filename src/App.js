@@ -3,7 +3,7 @@ import { ImageInit } from './components/ImageInit';
 import { GridOutput } from './components/GridOutput';
 import { Menu } from './components/Menu';
 import { Notification } from './components/Notification';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import './styles/grid-output.css';
 import './styles/nav.css';
 import './styles/button.css';
@@ -20,14 +20,12 @@ import { useGeneratorConfig } from './hooks/useGeneratorConfig.js';
 import { useAnimationConfig } from './hooks/useAnimationConfig.js';
 import { useLayoutConfig } from './hooks/useLayoutConfig.js';
 import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
-import { Generator } from './utils/generator.js';
 
 
 /**
  * @typedef {import('./index.d.ts').GridParams} GridParams
  * @typedef {import('./index.d.ts').GeneratorParams} GeneratorParams
  * @typedef {import('./index.d.ts').AnimationParams} AnimationParams
- * @typedef {import('./utils/generator.js').Generator} Generator
  */
 
 /**
@@ -94,14 +92,13 @@ const App = () => {
           ignoreColor: gridParams.useIgnoreColor ? gridParams.ignoreColor : null,
           ...changedGridParams
         },
-        spanGenerator,
-        // {
-        //   ...generatorParams,
-        //   cellSpan: generatorParams.useCellSpan ? generatorParams.cellSpan : null,
-        //   mainPalette: generatorParams.useMainPalette ? generatorParams.mainPalette : null,
-        //   surroundingCells: generatorParams.useSurroundingCells ? generatorParams.surroundingCells : null,
-        //   ...changedGeneratorParams
-        // },
+        {
+          ...generatorParams,
+          cellSpan: generatorParams.useCellSpan ? generatorParams.cellSpan : null,
+          mainPalette: generatorParams.useMainPalette ? generatorParams.mainPalette : null,
+          surroundingCells: generatorParams.useSurroundingCells ? generatorParams.surroundingCells : null,
+          ...changedGeneratorParams
+        },
       );
     }, 300
   );
@@ -123,22 +120,6 @@ const App = () => {
   const { params: animationParams, controls: animationControls } = useAnimationConfig(
     showNotification
   );
-
-  /** @type {Generator | null} */
-  const spanGenerator = useMemo(() => {
-    if (!generatorParams.useCellSpan) {
-      return null;
-    }
-    const possibleSpanValues = [];
-    for (let i = generatorParams.cellSpan.min; i <= generatorParams.cellSpan.max; i++) {
-      possibleSpanValues.push(i);
-    }
-    return new Generator({
-      seed: generatorParams.seed,
-      possibleValues: possibleSpanValues,
-      estimated: generatorParams.cellSpan.estimated,
-    });
-  }, [generatorParams.cellSpan.min, generatorParams.cellSpan.max, generatorParams.cellSpan.estimated, generatorParams.seed]);
 
   const resizeCanvas = ({
     stretchCanvas = layoutParams.stretchCanvas,
@@ -280,7 +261,7 @@ const App = () => {
     e.preventDefault();
     const canvasInput = inputCanvasRef.current;
     const contextInput = canvasInput.getContext('2d');
-    const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, spanGenerator));
+    const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, generatorParams));
     // TODO!!! Handle changedAnimationParams and those partial grid params
     gridOutputRef.current.handleCreate(
       grid,
