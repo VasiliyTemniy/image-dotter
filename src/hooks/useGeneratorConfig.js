@@ -20,11 +20,21 @@ const initialGeneratorConfig = {
     max: 3
   },
   useMainPalette: false,
-  mainPalette: [],
+  mainPalette: [
+    '#56B3B4FF',
+    '#EA5E5EFF',
+    '#F7BA3EFF',
+    '#BF85BFFF'
+  ],
   useSurroundingCells: false,
   surroundingCells: {
-    color: '#325e9f80',
+    color: '#325E9F80',
     colorVariation: 10,
+    height: {
+      estimated: 1,
+      min: 1,
+      max: 2
+    },
     depth: {
       estimated: 2.35,
       min: 2,
@@ -152,6 +162,10 @@ export const useGeneratorConfig = (
       newMainPalette = mainPalette.map((color, i) => (i === index ? value : color));
       break;
     case 'remove':
+      if (mainPalette.length === 1) {
+        showNotification('You cannot remove the last main palette color - just set "Use main palette" to false', 'error');
+        return;
+      }
       newMainPalette = mainPalette.filter((color, i) => i !== index);
       break;
     }
@@ -189,6 +203,39 @@ export const useGeneratorConfig = (
     if (!value || !Number.isInteger(value) || value < 0 || value > 255) {
       showNotification('Surrounding cells color variation must be a positive integer between 0 and 255', 'error');
       newSurroundingCells.colorVariation = initialGeneratorConfig.surroundingCells.colorVariation;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
+  const updateSurroundingCellsHeightEstimated = (value) => {
+    const newSurroundingCells = { ...surroundingCells, height: { ...surroundingCells.height, estimated: value } };
+    if (
+      !value ||
+      isNaN(value) ||
+      value < 1 ||
+      value < surroundingCells.height.min ||
+      value > surroundingCells.height.max
+    ) {
+      showNotification('Surrounding cells height estimated must be a positive float more than 1 and between min and max', 'error');
+      newSurroundingCells.height.estimated = initialGeneratorConfig.surroundingCells.height.estimated;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
+  const updateSurroundingCellsMinHeight = (value) => {
+    const newSurroundingCells = { ...surroundingCells, height: { ...surroundingCells.height, min: value } };
+    if (value > surroundingCells.height.max) {
+      showNotification('Surrounding cells min height must be less than surrounding cells max height', 'error');
+      newSurroundingCells.height.min = surroundingCells.height.max;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
+  const updateSurroundingCellsMaxHeight = (value) => {
+    const newSurroundingCells = { ...surroundingCells, height: { ...surroundingCells.height, max: value } };
+    if (value < surroundingCells.height.min) {
+      showNotification('Surrounding cells max height must be greater than surrounding cells min height', 'error');
+      newSurroundingCells.height.max = surroundingCells.height.min;
     }
     _updateSurroundingCells(newSurroundingCells);
   };
@@ -299,6 +346,11 @@ export const useGeneratorConfig = (
       updateSurroundingCells: {
         color: updateSurroundingCellsColor,
         colorVariation: updateSurroundingCellsColorVariation,
+        height: {
+          estimated: updateSurroundingCellsHeightEstimated,
+          min: updateSurroundingCellsMinHeight,
+          max: updateSurroundingCellsMaxHeight
+        },
         depth: {
           estimated: updateSurroundingCellsDepthEstimated,
           min: updateSurroundingCellsMinDepth,

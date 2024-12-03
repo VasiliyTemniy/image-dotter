@@ -67,6 +67,11 @@ export interface GeneratorParams {
   surroundingCells: {
     color: string;
     colorVariation: number;
+    height: {
+      estimated: number;
+      min: number;
+      max: number;
+    };
     depth: {
       estimated: number;
       min: number;
@@ -137,6 +142,7 @@ export type DotterIntermediateCell = [
 export interface MenuItem {
   tag: 'input' | 'select' | 'div';
   type: 'text' | 'color' | 'number' | 'checkbox';
+  metaType: 'generator-group' | null;
   name: string;
   value: string;
   label?: string;
