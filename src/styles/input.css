@@ -37,7 +37,7 @@ input:disabled, select:disabled {
   box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25);
 }
 
-.text-input__label, .number-input__label, .select-input__label {
+.text-input__label, .number-input__label, .select-input__label, .input-group-tight-three > label {
   display: block;
   margin-bottom: 0.25rem;
   line-height: 0.5rem;
@@ -45,4 +45,29 @@ input:disabled, select:disabled {
   pointer-events: none;
   border: none;
   padding-left: 0.2rem;
+}
+
+.input-group-tight-three .input-group-tight-three__items {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  margin-top: 0.5rem;
+}
+
+.input-group-tight-three__items > div:nth-child(1) .text-input__field,
+.input-group-tight-three__items > div:nth-child(1) .number-input__field,
+.input-group-tight-three__items > div:nth-child(1) .select-input__field {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.input-group-tight-three__items > div:nth-child(2) .text-input__field,
+.input-group-tight-three__items > div:nth-child(2) .number-input__field,
+.input-group-tight-three__items > div:nth-child(2) .select-input__field {
+  border-radius: 0;
+}
+
+.input-group-tight-three__items > div:nth-child(3) .text-input__field,
+.input-group-tight-three__items > div:nth-child(3) .number-input__field,
+.input-group-tight-three__items > div:nth-child(3) .select-input__field {
+  border-radius: 0 0.25rem 0.25rem 0;
 }

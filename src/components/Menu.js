@@ -281,33 +281,14 @@ const Menu = ({
               },
               {
                 tag: 'input',
-                name: 'cell-span-estimated',
-                label: 'Cell span estimated',
+                name: 'cell-span',
+                label: 'Cell span',
                 type: 'number',
+                metaType: 'generator-group',
                 hidden: !generatorParams.useCellSpan,
                 disabled: !generatorParams.useCellSpan,
-                value: generatorParams.cellSpan.estimated,
-                updateValue: generatorControls.updateCellSpan.estimated
-              },
-              {
-                tag: 'input',
-                name: 'cell-span-min',
-                label: 'Cell span min',
-                type: 'number',
-                hidden: !generatorParams.useCellSpan,
-                disabled: !generatorParams.useCellSpan,
-                value: generatorParams.cellSpan.min,
-                updateValue: generatorControls.updateCellSpan.min
-              },
-              {
-                tag: 'input',
-                name: 'cell-span-max',
-                label: 'Cell span max',
-                type: 'number',
-                hidden: !generatorParams.useCellSpan,
-                disabled: !generatorParams.useCellSpan,
-                value: generatorParams.cellSpan.max,
-                updateValue: generatorControls.updateCellSpan.max
+                value: generatorParams.cellSpan,
+                updateValue: generatorControls.updateCellSpan
               },
               {
                 tag: 'input',
@@ -357,64 +338,37 @@ const Menu = ({
               },
               {
                 tag: 'input',
-                name: 'surrounding-cells-estimated-span',
-                label: 'Surrounding cells estimated span',
+                name: 'surrounding-cells-height',
+                label: 'Surrounding cells height',
                 type: 'number',
+                metaType: 'generator-group',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.span.estimated,
-                updateValue: generatorControls.updateSurroundingCells.span.estimated
+                value: generatorParams.surroundingCells.height,
+                updateValue: generatorControls.updateSurroundingCells.height
               },
               {
                 tag: 'input',
-                name: 'surrounding-cells-min-span',
-                label: 'Surrounding cells min span',
+                name: 'surrounding-cells-span',
+                label: 'Surrounding cells span',
                 type: 'number',
+                metaType: 'generator-group',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.span.min,
-                updateValue: generatorControls.updateSurroundingCells.span.min
+                value: generatorParams.surroundingCells.span,
+                updateValue: generatorControls.updateSurroundingCells.span
               },
               {
                 tag: 'input',
-                name: 'surrounding-cells-max-span',
-                label: 'Surrounding cells max span',
+                name: 'surrounding-cells-depth',
+                label: 'Surrounding cells depth',
                 type: 'number',
+                metaType: 'generator-group',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.span.max,
-                updateValue: generatorControls.updateSurroundingCells.span.max
+                value: generatorParams.surroundingCells.depth,
+                updateValue: generatorControls.updateSurroundingCells.depth
               },
-              {
-                tag: 'input',
-                name: 'surrounding-cells-estimated-depth',
-                label: 'Surrounding cells estimated depth',
-                type: 'number',
-                hidden: !generatorParams.useSurroundingCells,
-                disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.depth.estimated,
-                updateValue: generatorControls.updateSurroundingCells.depth.estimated
-              },
-              {
-                tag: 'input',
-                name: 'surrounding-cells-min-depth',
-                label: 'Surrounding cells min depth',
-                type: 'number',
-                hidden: !generatorParams.useSurroundingCells,
-                disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.depth.min,
-                updateValue: generatorControls.updateSurroundingCells.depth.min
-              },
-              {
-                tag: 'input',
-                name: 'surrounding-cells-max-depth',
-                label: 'Surrounding cells max depth',
-                type: 'number',
-                hidden: !generatorParams.useSurroundingCells,
-                disabled: !generatorParams.useSurroundingCells,
-                value: generatorParams.surroundingCells.depth.max,
-                updateValue: generatorControls.updateSurroundingCells.depth.max
-              }
             ]}
           />
           <MenuItemGroup

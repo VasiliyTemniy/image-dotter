@@ -20,6 +20,10 @@ const MenuInputItem = ({
     return MenuColorPickerItem({ item });
   }
 
+  if (item.metaType === 'generator-group') {
+    return MenuInputGeneratorGroupItem({ item });
+  }
+
   let onChange = (e) => {
     item.updateValue(e.target.value);
   };
@@ -51,6 +55,76 @@ const MenuInputItem = ({
         onChange={onChange}
         disabled={item.disabled}
       />
+    </div>
+  );
+};
+
+const MenuInputGeneratorGroupItem = ({ item }) => {
+  return (
+    <div className='input-group-tight-three'>
+      <label
+        className={`${item.type}-input__label`}
+        title={item.tooltip}
+        style={item.labelStyle}
+      >
+        {item.label}
+      </label>
+      <div className='input-group-tight-three__items'>
+        <div className={`${item.type}-input`}>
+          <label
+            htmlFor={`${item.type}-${item.name}-estimated`}
+            className={`${item.type}-input__label`}
+          >
+            Estimated
+          </label>
+          <input
+            id={`${item.type}-${item.name}-estimated`}
+            type={item.type}
+            name={`${item.type}-${item.name}-estimated`}
+            className={`${item.type}-input__field`}
+            style={item.style}
+            value={item.value.estimated}
+            onChange={(e) => item.updateValue.estimated(Number(e.target.value))}
+            disabled={item.disabled}
+          />
+        </div>
+        <div className={`${item.type}-input`}>
+          <label
+            htmlFor={`${item.type}-${item.name}-min`}
+            className={`${item.type}-input__label`}
+          >
+            Min
+          </label>
+          <input
+            id={`${item.type}-${item.name}-min`}
+            type={item.type}
+            name={`${item.type}-${item.name}-min`}
+            className={`${item.type}-input__field`}
+            style={item.style}
+            value={item.value.min}
+            onChange={(e) => item.updateValue.min(Number(e.target.value))}
+            disabled={item.disabled}
+          />
+        </div>
+        <div className={`${item.type}-input`}>
+          <label
+            htmlFor={`${item.type}-${item.name}-max`}
+            className={`${item.type}-input__label`}
+          >
+            Max
+          </label>
+          <input
+            id={`${item.type}-${item.name}-max`}
+            type={item.type}
+            name={`${item.type}-${item.name}-max`}
+            className={`${item.type}-input__field`}
+            style={item.style}
+            value={item.value.max}
+            onChange={(e) => item.updateValue.max(Number(e.target.value))}
+            disabled={item.disabled}
+          />
+        </div>
+      </div>
     </div>
   );
 };
