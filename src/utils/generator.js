@@ -143,6 +143,12 @@ export class Generator {
    * @returns {any | { value: any, valueIndex: number }} - typeof this.#possibleValues[number] | { value: typeof this.#possibleValues[number], valueIndex: number }
    */
   generateNextValue (options = {}) {
+    if (this.#possibleValues.length === 0) {
+      throw new Error('Possible values array is empty');
+    }
+    if (this.#possibleValues.length === 1) {
+      return this.#possibleValues[0];
+    }
     const { recalculateWeights = true, returnValueIndex = false } = options;
     /** From 0 to sum of all weights */
     const weightsAsLine = [{ index: -1, weight: 0 }];
@@ -185,26 +191,41 @@ export class Generator {
   /**
    * Override prev value if needed
    * @param {{ value?: any, valueIndex?: number }} param - value is typeof this.#possibleValues[number], while valueIndex represents index of this.#possibleValues
-   * @param {{ recalculateWeights?: boolean }} options - recalculateWeights - set it to false to handle recalculation in parent method
-   * @returns {void}
+   * @param {{ recalculateWeights?: boolean, returnValueIndex?: boolean }} options - recalculateWeights - set it to false to handle recalculation in parent method, returnValueIndex - set it to true to return { valueIndex: number }
+   * @returns {void | { valueIndex: number }}
    */
   overridePrevValue ({ value = null, valueIndex = null }, options = {}) {
-    const { recalculateWeights = true } = options;
+    const { recalculateWeights = true, returnValueIndex = false } = options;
 
     if (valueIndex !== null) {
       this.#values[this.#values.length - 1] = this.#possibleValues[valueIndex];
       if (recalculateWeights) {
         this.recalculateWeights(valueIndex);
       }
+      if (returnValueIndex) {
+        return { valueIndex: valueIndex };
+      }
       return;
     } else {
-      const valueIndex = this.#possibleValues.indexOf(value);
-      if (valueIndex === -1) {
+      let closestValueIndex = -1;
+      let closestValueDistance = Infinity;
+      for (let i = 0; i < this.#possibleValues.length; i++) {
+        const currentValue = this.#possibleValues[i];
+        const currentValueDistance = Math.abs(currentValue - value);
+        if (currentValueDistance < closestValueDistance) {
+          closestValueIndex = i;
+          closestValueDistance = currentValueDistance;
+        }
+      }
+      if (closestValueIndex === -1) {
         throw new Error('Value not found in possibleValues');
       }
-      this.#values[this.#values.length - 1] = value;
+      this.#values[this.#values.length - 1] = this.#possibleValues[closestValueIndex];
       if (recalculateWeights) {
-        this.recalculateWeights(valueIndex);
+        this.recalculateWeights(closestValueIndex);
+      }
+      if (returnValueIndex) {
+        return { valueIndex: closestValueIndex };
       }
       return;
     }
