@@ -28,8 +28,8 @@ const initialGeneratorConfig = {
   ],
   useSurroundingCells: false,
   surroundingCells: {
-    color: '#325E9F80',
-    colorVariation: 10,
+    color: '#325E9F3D',
+    colorVariation: 4,
     height: {
       estimated: 1,
       min: 1,
