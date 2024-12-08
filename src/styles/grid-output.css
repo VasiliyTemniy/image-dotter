@@ -3,17 +3,17 @@
 }
 
 .grid-output__background {
-  margin-top: 1rem;
   background-color: #1c1e21;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .grid-output__container {
+  width: fit-content;
+  height: fit-content;
   position: relative;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  justify-content: center;
-  align-items: center;
 }
 
 .show {
