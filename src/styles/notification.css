@@ -1,5 +1,5 @@
 #notification {
-  position: absolute;
+  position: fixed;
   z-index: 10100;
   top: 1rem;
   left: 50%;
