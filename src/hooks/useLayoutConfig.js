@@ -48,7 +48,7 @@ export const useLayoutConfig = (
 
     resizeCanvas({ stretchCanvas: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {});
+    redrawGridPreview({});
   };
 
   const updateScreenOverflow = (value) => {
@@ -68,7 +68,7 @@ export const useLayoutConfig = (
 
     resizeCanvas({ screenOverflow: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {});
+    redrawGridPreview({});
   };
 
   const updateFitBothCanvasInOneRow = (value) => {
@@ -80,7 +80,7 @@ export const useLayoutConfig = (
 
     resizeCanvas({ fitBothCanvasInOneRow: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {});
+    redrawGridPreview({});
   };
 
   const updateShiftMainByMenu = (value) => {
@@ -92,7 +92,7 @@ export const useLayoutConfig = (
 
     resizeCanvas({ shiftMainByMenu: value }, {});
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {});
+    redrawGridPreview({});
   };
 
   return {
