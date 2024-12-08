@@ -7,9 +7,11 @@ import { MenuItemGroup } from './MenuItemGroup';
  * @typedef {import('../index.d.ts').GridParams} GridParams
  * @typedef {import('../index.d.ts').GeneratorParams} GeneratorParams
  * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
+ * @typedef {import('../hooks/useGridHtmlConfig.js').GridHtmlVisualParams} GridHtmlVisualParams
  * @typedef {import('../hooks/useGridConfig.js').GridConfigControls} GridConfigControls
  * @typedef {import('../hooks/useGeneratorConfig.js').GeneratorConfigControls} GeneratorConfigControls
  * @typedef {import('../hooks/useAnimationConfig.js').AnimationConfigControls} AnimationConfigControls
+ * @typedef {import('../hooks/useGridHtmlConfig.js').GridHtmlConfigControls} GridHtmlConfigControls
  */
 
 /**
@@ -18,7 +20,7 @@ import { MenuItemGroup } from './MenuItemGroup';
  *   updateMenuOpen: (value: boolean) => void,
  *   menuRef: React.RefObject<HTMLNavElement>,
  *   handleFileSelection: (e: React.ChangeEvent<HTMLInputElement>) => void,
- *   handleRedrawGrid: () => void,
+ *   handleRedrawGridHtmlPreview: () => void,
  *   handleSaveClick: () => void,
  *   handleRedrawGridPreview: (params: {
  *     gridParams: GridParams,
@@ -30,6 +32,8 @@ import { MenuItemGroup } from './MenuItemGroup';
  *   generatorControls: GeneratorConfigControls,
  *   animationParams: AnimationConfigState,
  *   animationControls: AnimationConfigControls,
+ *   gridHtmlParams: GridHtmlVisualParams,
+ *   gridHtmlControls: GridHtmlConfigControls,
  *   values: any,
  *   valueHandlers: any,
  *  }} params
@@ -39,7 +43,7 @@ const Menu = ({
   updateMenuOpen,
   menuRef,
   handleFileSelection,
-  handleRedrawGrid,
+  handleRedrawGridHtmlPreview,
   handleSaveClick,
   handleRedrawGridPreview,
   gridParams,
@@ -48,6 +52,8 @@ const Menu = ({
   generatorControls,
   animationParams,
   animationControls,
+  gridHtmlParams,
+  gridHtmlControls,
   values,
   valueHandlers,
   refs,
@@ -127,11 +133,11 @@ const Menu = ({
               },
               {
                 tag: 'input',
-                name: 'radius',
-                label: 'Radius',
+                name: 'borderRadius',
+                label: 'Cell border radius',
                 type: 'number',
-                value: gridParams.radius,
-                updateValue: gridControls.updateRadius
+                value: gridParams.borderRadius,
+                updateValue: gridControls.updateBorderRadius
               },
               {
                 tag: 'input',
@@ -450,26 +456,105 @@ const Menu = ({
               }
             ]}
           />
+          <MenuItemGroup
+            title="Html grid params"
+            tag='li'
+            foldable={true}
+            defaultFolded={true}
+            style={{ width: '18rem' }}
+            items={[
+              // monoCellSize: 8,
+              // overrideBorderRadius: initialGridConfig.borderRadius,
+              // overrideHorizontalGapPx: initialGridConfig.horizontalGapPx,
+              // overrideVerticalGapPx: initialGridConfig.verticalGapPx
+              {
+                tag: 'input',
+                name: 'mono-cell-size',
+                label: 'Mono cell size',
+                type: 'number',
+                value: gridHtmlParams.monoCellSize,
+                updateValue: gridHtmlControls.updateMonoCellSize
+              },
+              {
+                tag: 'input',
+                name: 'override-border-radius',
+                label: 'Override border radius',
+                type: 'number',
+                value: gridHtmlParams.overrideBorderRadius,
+                updateValue: gridHtmlControls.updateOverrideBorderRadius
+              },
+              {
+                tag: 'input',
+                name: 'override-horizontal-gap-px',
+                label: 'Override horizontal gap px',
+                type: 'number',
+                value: gridHtmlParams.overrideHorizontalGapPx,
+                updateValue: gridHtmlControls.updateOverrideHorizontalGapPx
+              },
+              {
+                tag: 'input',
+                name: 'override-vertical-gap-px',
+                label: 'Override vertical gap px',
+                type: 'number',
+                value: gridHtmlParams.overrideVerticalGapPx,
+                updateValue: gridHtmlControls.updateOverrideVerticalGapPx
+              }
+            ]}
+          />
           <li>
             <input
-              id="always-redraw"
+              id="always-recalc"
               type="checkbox"
-              name="always-redraw"
+              name="always-recalc"
               className="checkbox-input__field"
-              checked={values.alwaysRedraw}
-              onChange={(e) => valueHandlers.updateAlwaysRedraw(e.target.checked)}
+              checked={values.alwaysRecalcGrid}
+              onChange={(e) => valueHandlers.updateAlwaysRecalcGrid(e.target.checked)}
             />
             <label
-              htmlFor="always-redraw"
+              htmlFor="always-recalc"
+              className="checkbox-input__label"
+              title="Should recalculate grid on inputs change"
+            >
+              Always recalculate grid on params change
+            </label>
+          </li>
+          <li>
+            <input
+              id="always-redraw-canvas"
+              type="checkbox"
+              name="always-redraw-canvas"
+              className="checkbox-input__field"
+              checked={values.alwaysRedrawCanvas}
+              onChange={(e) => valueHandlers.updateAlwaysRedrawCanvas(e.target.checked)}
+            />
+            <label
+              htmlFor="always-redraw-canvas"
               className="checkbox-input__label"
               title="Should redraw preview on inputs change"
             >
-              Always redraw preview on params change
+              Always redraw canvas preview after recalc
+            </label>
+          </li>
+          <li>
+            <input
+              id="always-redraw-html"
+              type="checkbox"
+              name="always-redraw-html"
+              className="checkbox-input__field"
+              checked={values.alwaysRedrawHtml}
+              onChange={(e) => valueHandlers.updateAlwaysRedrawHtml(e.target.checked)}
+            />
+            <label
+              htmlFor="always-redraw-html"
+              className="checkbox-input__label"
+              title="Should redraw preview on inputs change"
+            >
+              Always redraw html preview after recalc
             </label>
           </li>
           <li className="button-container">
             <button className="button" onClick={handleRedrawGridPreview}>Redraw canvas preview</button>
-            <button className="button" onClick={handleRedrawGrid}>Redraw html preview</button>
+            <button className="button" onClick={handleRedrawGridHtmlPreview}>Redraw html preview</button>
             <button className="button" onClick={handleSaveClick}>Save output</button>
           </li>
           <li className="color-input">
