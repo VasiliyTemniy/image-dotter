@@ -136,7 +136,7 @@ export const useGridConfig = (
 
   const updateBorderRadius = (value) => {
     let newBorderRadius = value;
-    if (!value || !Number.isInteger(value) || value < 0) {
+    if (value === null || value === undefined || !Number.isInteger(value) || value < 0) {
       showNotification('Radius must be a positive integer', 'error');
       newBorderRadius = initialGridConfig.borderRadius;
     }
@@ -150,7 +150,7 @@ export const useGridConfig = (
 
   const updateHorizontalGapPx = (value) => {
     let newHorizontalGapPx = value;
-    if (!value || !Number.isInteger(value) || value < 0) {
+    if (value === null || value === undefined || !Number.isInteger(value) || value < 0) {
       showNotification('Horizontal gap must be a positive integer or 0', 'error');
       newHorizontalGapPx = initialGridConfig.horizontalGapPx;
     }
@@ -164,7 +164,7 @@ export const useGridConfig = (
 
   const updateVerticalGapPx = (value) => {
     let newVerticalGapPx = value;
-    if (!value || !Number.isInteger(value) || value < 0) {
+    if (value === null || value === undefined || !Number.isInteger(value) || value < 0) {
       showNotification('Vertical gap must be a positive integer or 0', 'error');
       newVerticalGapPx = initialGridConfig.verticalGapPx;
     }
@@ -205,7 +205,7 @@ export const useGridConfig = (
   // Additional grid params
   const updateAngle = (value) => {
     let newAngle = value;
-    if (!value || !Number.isInteger(value) || value < 0 || value > 360) {
+    if (value === null || value === undefined || !Number.isInteger(value) || value < 0 || value > 360) {
       showNotification('Angle must be a positive integer between 0 and 360', 'error');
       newAngle = initialGridConfig.angle;
     }
@@ -239,7 +239,7 @@ export const useGridConfig = (
 
   const updateStrokeWidth = (value) => {
     const newStroke = { ...stroke, width: value };
-    if (!value || !Number.isInteger(value) || value < 1) {
+    if (value === null || value === undefined || !Number.isInteger(value) || value < 1) {
       showNotification('Stroke width must be a positive integer', 'error');
       newStroke.width = initialGridConfig.stroke.width;
     }
@@ -269,7 +269,7 @@ export const useGridConfig = (
 
   const updateIgnoreColorOpacityThreshold = (value) => {
     const newIgnoreColor = { ...ignoreColor, opacityThreshold: value };
-    if (!value || !Number.isInteger(value) || value < 0 || value > 255) {
+    if (value === null || value === undefined || !Number.isInteger(value) || value < 0 || value > 255) {
       showNotification('Ignore color opacity threshold must be a positive integer between 0 and 255', 'error');
       newIgnoreColor.opacityThreshold = initialGridConfig.ignoreColor.opacityThreshold;
     }
@@ -278,7 +278,7 @@ export const useGridConfig = (
 
   const updateIgnoreColorMaxDeviation = (value) => {
     const newIgnoreColor = { ...ignoreColor, maxDeviation: value };
-    if (!value || !Number.isInteger(value) || value < 0 || value > 255) {
+    if (value === null || value === undefined || !Number.isInteger(value) || value < 0 || value > 255) {
       showNotification('Ignore color max deviation must be a positive integer between 0 and 255', 'error');
       newIgnoreColor.maxDeviation = initialGridConfig.ignoreColor.maxDeviation;
     }

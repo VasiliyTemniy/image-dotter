@@ -109,6 +109,11 @@ export const useGeneratorConfig = (
     ) {
       showNotification('Cell span estimated must be a positive float more than 1 and between min and max', 'error');
       newCellSpan.estimated = initialGeneratorConfig.cellSpan.estimated;
+      if (newCellSpan.estimated < cellSpan.min) {
+        newCellSpan.estimated = cellSpan.min;
+      } else if (newCellSpan.estimated > cellSpan.max) {
+        newCellSpan.estimated = cellSpan.max;
+      }
     }
     _updateCellSpan(newCellSpan);
   };
@@ -218,6 +223,11 @@ export const useGeneratorConfig = (
     ) {
       showNotification('Surrounding cells height estimated must be a positive float more than 1 and between min and max', 'error');
       newSurroundingCells.height.estimated = initialGeneratorConfig.surroundingCells.height.estimated;
+      if (surroundingCells.height.estimated < surroundingCells.height.min) {
+        newSurroundingCells.height.estimated = surroundingCells.height.min;
+      } else if (surroundingCells.height.estimated > surroundingCells.height.max) {
+        newSurroundingCells.height.estimated = surroundingCells.height.max;
+      }
     }
     _updateSurroundingCells(newSurroundingCells);
   };
@@ -251,6 +261,11 @@ export const useGeneratorConfig = (
     ) {
       showNotification('Surrounding cells depth estimated must be a positive float more than 1 and between min and max', 'error');
       newSurroundingCells.depth.estimated = initialGeneratorConfig.surroundingCells.depth.estimated;
+      if (surroundingCells.depth.estimated < surroundingCells.depth.min) {
+        newSurroundingCells.depth.estimated = surroundingCells.depth.min;
+      } else if (surroundingCells.depth.estimated > surroundingCells.depth.max) {
+        newSurroundingCells.depth.estimated = surroundingCells.depth.max;
+      }
     }
     _updateSurroundingCells(newSurroundingCells);
   };
@@ -292,6 +307,11 @@ export const useGeneratorConfig = (
     ) {
       showNotification('Surrounding cells span estimated must be a positive float more than 1 and between min and max', 'error');
       newSurroundingCells.span.estimated = initialGeneratorConfig.surroundingCells.span.estimated;
+      if (surroundingCells.span.estimated < surroundingCells.span.min) {
+        newSurroundingCells.span.estimated = surroundingCells.span.min;
+      } else if (surroundingCells.span.estimated > surroundingCells.span.max) {
+        newSurroundingCells.span.estimated = surroundingCells.span.max;
+      }
     }
     _updateSurroundingCells(newSurroundingCells);
   };
