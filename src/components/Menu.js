@@ -22,6 +22,7 @@ import { MenuItemGroup } from './MenuItemGroup';
  *   handleFileSelection: (e: React.ChangeEvent<HTMLInputElement>) => void,
  *   handleRedrawGridHtmlPreview: () => void,
  *   handleSaveClick: () => void,
+ *   handleRecalcGrid: () => void,
  *   handleRedrawGridPreview: (params: {
  *     gridParams: GridParams,
  *     generatorParams: GeneratorParams
@@ -43,6 +44,7 @@ const Menu = ({
   updateMenuOpen,
   menuRef,
   handleFileSelection,
+  handleRecalcGrid,
   handleRedrawGridHtmlPreview,
   handleSaveClick,
   handleRedrawGridPreview,
@@ -553,6 +555,7 @@ const Menu = ({
             </label>
           </li>
           <li className="button-container">
+            <button className="button" onClick={handleRecalcGrid}>Recalculate grid</button>
             <button className="button" onClick={handleRedrawGridPreview}>Redraw canvas preview</button>
             <button className="button" onClick={handleRedrawGridHtmlPreview}>Redraw html preview</button>
             <button className="button" onClick={handleSaveClick}>Save output</button>

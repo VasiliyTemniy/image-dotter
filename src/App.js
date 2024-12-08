@@ -263,13 +263,15 @@ const App = () => {
   );
 
   const { params: animationParams, controls: animationControls } = useAnimationConfig(
-    showNotification
+    showNotification,
+    redrawGridHtmlPreview,
+    alwaysRedrawHtml
   );
 
   const { params: gridHtmlParams, controls: gridHtmlControls } = useGridHtmlConfig(
     showNotification,
-    // redrawGridHtmlPreview,
-    // alwaysRedrawHtml
+    redrawGridHtmlPreview,
+    alwaysRedrawHtml
   );
 
   const resizeCanvas = ({
@@ -461,6 +463,7 @@ const App = () => {
         updateMenuOpen={updateMenuOpen}
         menuRef={menuRef}
         handleFileSelection={handleFileSelection}
+        handleRecalcGrid={recalcGrid}
         handleRedrawGridHtmlPreview={redrawGridHtmlPreview}
         handleSaveClick={handleSaveClick}
         handleRedrawGridPreview={redrawGridPreview}

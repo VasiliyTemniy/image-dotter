@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 /**
  * @typedef {import('../index.d.ts').AnimationConfigState} AnimationConfigState
+ * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
+ * @typedef {import('../index.d.ts').GridHtmlVisualParams} GridHtmlVisualParams
  */
 
 /**
@@ -21,11 +23,16 @@ const initialAnimationConfig = {
 /**
  *
  * @param {(message: string) => void} showNotification
-//  * @param {boolean} alwaysRedraw
+ * @param {(
+ *  changedHtmlGridParams: GridHtmlVisualParams,
+ *  changedAnimationParams: AnimationParams
+ * ) => void} redrawGridHtmlPreview
+ * @param {boolean} alwaysRedraw
  */
 export const useAnimationConfig = (
   showNotification,
-  // alwaysRedraw
+  redrawGridHtmlPreview,
+  alwaysRedrawHtml
 ) => {
 
   const [type, setType] = useState(initialAnimationConfig.type);
@@ -43,7 +50,10 @@ export const useAnimationConfig = (
       newType = initialAnimationConfig.type;
     }
     setType(newType);
-    // Maybe redraw the html grid output?
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({}, { type: newType });
+    }
   };
 
   const updateDirection = (value) => {
@@ -56,7 +66,10 @@ export const useAnimationConfig = (
       newDirection = initialAnimationConfig.direction;
     }
     setDirection(newDirection);
-    // Maybe redraw the html grid output?
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({}, { direction: newDirection });
+    }
   };
 
   const updateDuration = (value) => {
@@ -66,12 +79,18 @@ export const useAnimationConfig = (
       newDuration = initialAnimationConfig.duration;
     }
     setDuration(newDuration);
-    // Maybe redraw the html grid output?
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({}, { duration: newDuration });
+    }
   };
 
   const _updateDelay = (newDelay) => {
     setDelay(newDelay);
-    // Maybe redraw the html grid output?
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({}, { delay: newDelay });
+    }
   };
 
   const updateDelayMin = (value) => {
@@ -99,7 +118,10 @@ export const useAnimationConfig = (
       newEasing = initialAnimationConfig.easing;
     }
     setEasing(newEasing);
-    // Maybe redraw the html grid output?
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({}, { easing: newEasing });
+    }
   };
 
   return {

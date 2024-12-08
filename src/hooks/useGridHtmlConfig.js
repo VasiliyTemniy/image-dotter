@@ -19,10 +19,9 @@ const initialGridHtmlPreviewConfig = {
  *
  * @param {(message: string) => void} showNotification
  * @param {(
- *  changedGridParams: GridParams,
- *  changedGridHtmlParams: GridHtmlVisualParams,
- *  changedGeneratorParams: GeneratorParams
- * ) => void} redrawGridHtmlPreview
+*  changedHtmlGridParams: GridHtmlVisualParams,
+*  changedAnimationParams: AnimationParams
+* ) => void} redrawGridHtmlPreview
  * @param {boolean} alwaysRedrawHtml
  */
 export const useGridHtmlConfig = (
@@ -43,7 +42,10 @@ export const useGridHtmlConfig = (
       newMonoCellSize = initialGridHtmlPreviewConfig.monoCellSize;
     }
     setMonoCellSize(newMonoCellSize);
-    redrawGridHtmlPreview(null, { monoCellSize: newMonoCellSize }, null);
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({ monoCellSize: newMonoCellSize }, {});
+    }
   };
 
   const updateOverrideBorderRadius = (value) => {
@@ -53,7 +55,10 @@ export const useGridHtmlConfig = (
       newOverrideBorderRadius = initialGridHtmlPreviewConfig.overrideBorderRadius;
     }
     setOverrideBorderRadius(newOverrideBorderRadius);
-    redrawGridHtmlPreview(null, null, { overrideBorderRadius: newOverrideBorderRadius });
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({ overrideBorderRadius: newOverrideBorderRadius }, {});
+    }
   };
 
   const updateOverrideHorizontalGapPx = (value) => {
@@ -63,7 +68,10 @@ export const useGridHtmlConfig = (
       newOverrideHorizontalGapPx = initialGridHtmlPreviewConfig.overrideHorizontalGapPx;
     }
     setOverrideHorizontalGapPx(newOverrideHorizontalGapPx);
-    redrawGridHtmlPreview(null, null, { overrideHorizontalGapPx: newOverrideHorizontalGapPx });
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({ overrideHorizontalGapPx: newOverrideHorizontalGapPx }, {});
+    }
   };
 
   const updateOverrideVerticalGapPx = (value) => {
@@ -73,7 +81,10 @@ export const useGridHtmlConfig = (
       newOverrideVerticalGapPx = initialGridHtmlPreviewConfig.overrideVerticalGapPx;
     }
     setOverrideVerticalGapPx(newOverrideVerticalGapPx);
-    redrawGridHtmlPreview(null, null, { overrideVerticalGapPx: newOverrideVerticalGapPx });
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({ overrideVerticalGapPx: newOverrideVerticalGapPx }, {});
+    }
   };
 
   return {
