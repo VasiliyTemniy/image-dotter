@@ -51,13 +51,13 @@ const initialGeneratorConfig = {
 /**
  *
  * @param {(message: string) => void} showNotification
- * @param {(changedGridParams: GridParams, changedGeneratorParams: GeneratorParams) => void} redrawGridPreview
- * @param {boolean} alwaysRedraw
+ * @param {(changedGridParams: GridParams, changedGeneratorParams: GeneratorParams) => void} recalcGrid
+ * @param {boolean} alwaysRecalc
  */
 export const useGeneratorConfig = (
   showNotification,
-  redrawGridPreview,
-  alwaysRedraw
+  recalcGrid,
+  alwaysRecalc
 ) => {
 
   // Generator params
@@ -77,24 +77,24 @@ export const useGeneratorConfig = (
     }
     setSeed(value);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({}, { seed: value });
+    if (alwaysRecalc) {
+      recalcGrid({}, { seed: value });
     }
   };
 
   const updateUseCellSpan = (value) => {
     setUseCellSpan(value);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({}, { cellSpan: value ? cellSpan : null });
+    if (alwaysRecalc) {
+      recalcGrid({}, { cellSpan: value ? cellSpan : null });
     }
   };
 
   const _updateCellSpan = (newCellSpan) => {
     setCellSpan(newCellSpan);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({}, { cellSpan: useCellSpan ? newCellSpan : null });
+    if (alwaysRecalc) {
+      recalcGrid({}, { cellSpan: useCellSpan ? newCellSpan : null });
     }
   };
 
@@ -142,8 +142,8 @@ export const useGeneratorConfig = (
   const updateUseMainPalette = (value) => {
     setUseMainPalette(value);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({}, { mainPalette: value ? mainPalette : null });
+    if (alwaysRecalc) {
+      recalcGrid({}, { mainPalette: value ? mainPalette : null });
     }
   };
 
@@ -172,24 +172,24 @@ export const useGeneratorConfig = (
 
     setMainPalette(newMainPalette);
 
-    if (alwaysRedraw && useMainPalette) {
-      redrawGridPreview({}, { mainPalette: newMainPalette });
+    if (alwaysRecalc && useMainPalette) {
+      recalcGrid({}, { mainPalette: newMainPalette });
     }
   };
 
   const updateUseSurroundingCells = (value) => {
     setUseSurroundingCells(value);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({}, { surroundingCells: value ? surroundingCells : null });
+    if (alwaysRecalc) {
+      recalcGrid({}, { surroundingCells: value ? surroundingCells : null });
     }
   };
 
   const _updateSurroundingCells = (newSurroundingCells) => {
     setSurroundingCells(newSurroundingCells);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({}, { surroundingCells: useSurroundingCells ? newSurroundingCells : null });
+    if (alwaysRecalc) {
+      recalcGrid({}, { surroundingCells: useSurroundingCells ? newSurroundingCells : null });
     }
   };
 

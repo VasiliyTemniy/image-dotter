@@ -9,10 +9,10 @@ import { useState } from 'react';
 /**
  * @type {GridConfigState}
  */
-const initialGridConfig = {
+export const initialGridConfig = {
   rowsCount: 42,
   columnsCount: 100,
-  radius: 10,
+  borderRadius: 10,
   horizontalGapPx: 1,
   verticalGapPx: 1,
   angle: 0,
@@ -37,21 +37,21 @@ const MAX_CELLS = 100000;
  * @param {(message: string) => void} showNotification
  * @param {number} canvasHeight
  * @param {number} canvasWidth
- * @param {(changedGridParams: GridParams, changedGeneratorParams: GeneratorParams) => void} redrawGridPreview
- * @param {boolean} alwaysRedraw
+ * @param {(changedGridParams: GridParams, changedGeneratorParams: GeneratorParams) => void} recalcGrid
+ * @param {boolean} alwaysRecalc
  */
 export const useGridConfig = (
   showNotification,
   canvasHeight,
   canvasWidth,
-  redrawGridPreview,
-  alwaysRedraw
+  recalcGrid,
+  alwaysRecalc
 ) => {
 
   // Main grid params
   const [rowsCount, setRowsCount] = useState(initialGridConfig.rowsCount);
   const [columnsCount, setColumnsCount] = useState(initialGridConfig.columnsCount);
-  const [radius, setRadius] = useState(initialGridConfig.radius);
+  const [borderRadius, setRadius] = useState(initialGridConfig.borderRadius);
   const [horizontalGapPx, setHorizontalGapPx] = useState(initialGridConfig.horizontalGapPx);
   const [verticalGapPx, setVerticalGapPx] = useState(initialGridConfig.verticalGapPx);
   const [aspectRatioMode, setAspectRatioMode] = useState(initialGridConfig.aspectRatioMode);
@@ -94,8 +94,8 @@ export const useGridConfig = (
       break;
     }
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
     }
   };
 
@@ -129,22 +129,22 @@ export const useGridConfig = (
       break;
     }
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
     }
   };
 
-  const updateRadius = (value) => {
-    let newRadius = value;
+  const updateBorderRadius = (value) => {
+    let newBorderRadius = value;
     if (!value || !Number.isInteger(value) || value < 0) {
       showNotification('Radius must be a positive integer', 'error');
-      newRadius = initialGridConfig.radius;
+      newBorderRadius = initialGridConfig.borderRadius;
     }
-    setRadius(newRadius);
+    setRadius(newBorderRadius);
 
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ radius: newRadius }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ borderRadius: newBorderRadius }, {});
     }
   };
 
@@ -157,8 +157,8 @@ export const useGridConfig = (
     setHorizontalGapPx(newHorizontalGapPx);
 
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ horizontalGapPx: newHorizontalGapPx }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ horizontalGapPx: newHorizontalGapPx }, {});
     }
   };
 
@@ -171,8 +171,8 @@ export const useGridConfig = (
     setVerticalGapPx(newVerticalGapPx);
 
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ verticalGapPx: newVerticalGapPx }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ verticalGapPx: newVerticalGapPx }, {});
     }
   };
 
@@ -197,8 +197,8 @@ export const useGridConfig = (
       break;
     }
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {});
     }
   };
 
@@ -211,24 +211,24 @@ export const useGridConfig = (
     }
     setAngle(newAngle);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ angle: newAngle }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ angle: newAngle }, {});
     }
   };
 
   const updateUseStroke = (value) => {
     setUseStroke(value);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ stroke: value ? stroke : null }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ stroke: value ? stroke : null }, {});
     }
   };
 
   const _updateStroke = (newStroke) => {
     setStroke(newStroke);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ stroke: useStroke ? newStroke : null }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ stroke: useStroke ? newStroke : null }, {});
     }
   };
 
@@ -249,16 +249,16 @@ export const useGridConfig = (
   const updateUseIgnoreColor = (value) => {
     setUseIgnoreColor(value);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ ignoreColor: value ? ignoreColor : null }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ ignoreColor: value ? ignoreColor : null }, {});
     }
   };
 
   const _updateIgnoreColor = (newIgnoreColor) => {
     setIgnoreColor(newIgnoreColor);
 
-    if (alwaysRedraw) {
-      redrawGridPreview({ ignoreColor: useIgnoreColor ? newIgnoreColor : null }, {});
+    if (alwaysRecalc) {
+      recalcGrid({ ignoreColor: useIgnoreColor ? newIgnoreColor : null }, {});
     }
   };
 
@@ -289,7 +289,7 @@ export const useGridConfig = (
     params: {
       rowsCount,
       columnsCount,
-      radius,
+      borderRadius,
       horizontalGapPx,
       verticalGapPx,
       aspectRatioMode,
@@ -302,7 +302,7 @@ export const useGridConfig = (
     controls: {
       updateRowsCount,
       updateColumnsCount,
-      updateRadius,
+      updateBorderRadius,
       updateHorizontalGapPx,
       updateVerticalGapPx,
       updateAspectRatioMode,
