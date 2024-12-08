@@ -12,7 +12,8 @@ const initialGridHtmlPreviewConfig = {
   monoCellSize: 8,
   overrideBorderRadius: initialGridConfig.borderRadius,
   overrideHorizontalGapPx: initialGridConfig.horizontalGapPx,
-  overrideVerticalGapPx: initialGridConfig.verticalGapPx
+  overrideVerticalGapPx: initialGridConfig.verticalGapPx,
+  overrideSpanWidthFactor: 1
 };
 
 /**
@@ -34,10 +35,11 @@ export const useGridHtmlConfig = (
   const [overrideBorderRadius, setOverrideBorderRadius] = useState(initialGridHtmlPreviewConfig.overrideBorderRadius);
   const [overrideHorizontalGapPx, setOverrideHorizontalGapPx] = useState(initialGridHtmlPreviewConfig.overrideHorizontalGapPx);
   const [overrideVerticalGapPx, setOverrideVerticalGapPx] = useState(initialGridHtmlPreviewConfig.overrideVerticalGapPx);
+  const [overrideSpanWidthFactor, setOverrideSpanWidthFactor] = useState(initialGridHtmlPreviewConfig.overrideSpanWidthFactor);
 
   const updateMonoCellSize = (value) => {
     let newMonoCellSize = value;
-    if (!value || value < 1) {
+    if (value === null || value === undefined || value < 1) {
       showNotification('Please select a valid mono cell size', 'error');
       newMonoCellSize = initialGridHtmlPreviewConfig.monoCellSize;
     }
@@ -50,7 +52,7 @@ export const useGridHtmlConfig = (
 
   const updateOverrideBorderRadius = (value) => {
     let newOverrideBorderRadius = value;
-    if (!value || value < 0) {
+    if (value === null || value === undefined || value < 0) {
       showNotification('Please select a valid override border radius', 'error');
       newOverrideBorderRadius = initialGridHtmlPreviewConfig.overrideBorderRadius;
     }
@@ -63,7 +65,7 @@ export const useGridHtmlConfig = (
 
   const updateOverrideHorizontalGapPx = (value) => {
     let newOverrideHorizontalGapPx = value;
-    if (!value || value < 0) {
+    if (value === null || value === undefined || value < 0) {
       showNotification('Please select a valid override horizontal gap', 'error');
       newOverrideHorizontalGapPx = initialGridHtmlPreviewConfig.overrideHorizontalGapPx;
     }
@@ -76,7 +78,7 @@ export const useGridHtmlConfig = (
 
   const updateOverrideVerticalGapPx = (value) => {
     let newOverrideVerticalGapPx = value;
-    if (!value || value < 0) {
+    if (value === null || value === undefined || value < 0) {
       showNotification('Please select a valid override vertical gap', 'error');
       newOverrideVerticalGapPx = initialGridHtmlPreviewConfig.overrideVerticalGapPx;
     }
@@ -87,18 +89,33 @@ export const useGridHtmlConfig = (
     }
   };
 
+  const updateOverrideSpanWidthFactor = (value) => {
+    let newOverrideSpanWidthFactor = value;
+    if (value === null || value === undefined || value < 0) {
+      showNotification('Please select a valid override span width factor', 'error');
+      newOverrideSpanWidthFactor = initialGridHtmlPreviewConfig.overrideSpanWidthFactor;
+    }
+    setOverrideSpanWidthFactor(newOverrideSpanWidthFactor);
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({ overrideSpanWidthFactor: newOverrideSpanWidthFactor }, {});
+    }
+  };
+
   return {
     params: {
       monoCellSize,
       overrideBorderRadius,
       overrideHorizontalGapPx,
       overrideVerticalGapPx,
+      overrideSpanWidthFactor
     },
     controls: {
       updateMonoCellSize,
       updateOverrideBorderRadius,
       updateOverrideHorizontalGapPx,
-      updateOverrideVerticalGapPx
+      updateOverrideVerticalGapPx,
+      updateOverrideSpanWidthFactor
     }
   };
 
