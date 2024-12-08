@@ -55,8 +55,9 @@ const App = () => {
 
   const [menuOpen, setMenuOpen] = useState(true);
 
-  // Other params
-  const [backgroundColor, setBackgroundColor] = useState('#1c1e21ff');
+  const [backgroundColorsBound, setBackgroundColorsBound] = useState(true);
+  const [htmlBackgroundColor, setHtmlBackgroundColor] = useState('#1C1E21FF');
+  const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#FFFFFFFF');
 
   const [alwaysRecalcGrid, setAlwaysRecalcGrid] = useState(true);
   const [alwaysRedrawCanvas, setAlwaysRedrawCanvas] = useState(true);
@@ -128,6 +129,7 @@ const App = () => {
         {
           // Some renamings and mappings here...
           // Top to bottom: preferred param -> least preferred param
+          ...gridHtmlParams,
           monoCellSize:
             changedGridHtmlParams.monoCellSize ??
             gridHtmlParams.monoCellSize,
@@ -145,6 +147,7 @@ const App = () => {
             gridParams.verticalGapPx,
           angle: gridParams.angle,
           stroke: gridParams.useStroke ? gridParams.stroke : null,
+          ...changedGridHtmlParams
         },
         {
           ...animationParams,
@@ -223,6 +226,7 @@ const App = () => {
         {
           // Some renamings and mappings here...
           // Top to bottom: preferred param -> least preferred param
+          ...gridHtmlParams,
           monoCellSize:
             gridHtmlParams.monoCellSize,
           borderRadius:
@@ -362,11 +366,27 @@ const App = () => {
     redrawGridPreview,
   );
 
-  const updateBackgroundColor = (hex) => {
-    setBackgroundColor(hex);
-    // TODO: DECIDE maybe update output canvas color too?
+  const updateBackgroundColorsBound = (value) => {
+    setBackgroundColorsBound(value);
+    // Question is - which one of two will be the preferred one?
+  };
+
+  const updateCanvasBackgroundColor = (hex, selfCall = false) => {
+    setCanvasBackgroundColor(hex);
+    const background = outputCanvasRef.current;
+    background.style.backgroundColor = hex;
+    if (backgroundColorsBound && !selfCall) {
+      updateHtmlBackgroundColor(hex, true);
+    }
+  };
+
+  const updateHtmlBackgroundColor = (hex, selfCall = false) => {
+    setHtmlBackgroundColor(hex);
     const background = gridOutputRef.current.backgroundRef.current;
     background.style.backgroundColor = hex;
+    if (backgroundColorsBound && !selfCall) {
+      updateCanvasBackgroundColor(hex, true);
+    }
   };
 
   const updatePipetteColor = (rgba) => {
@@ -476,13 +496,17 @@ const App = () => {
         gridHtmlParams={gridHtmlParams}
         gridHtmlControls={gridHtmlControls}
         values={{
-          backgroundColor,
+          backgroundColorsBound,
+          canvasBackgroundColor,
+          htmlBackgroundColor,
           alwaysRecalcGrid,
           alwaysRedrawCanvas,
           alwaysRedrawHtml
         }}
         valueHandlers={{
-          updateBackgroundColor,
+          updateBackgroundColorsBound,
+          updateCanvasBackgroundColor,
+          updateHtmlBackgroundColor,
           updateAlwaysRecalcGrid,
           updateAlwaysRedrawCanvas,
           updateAlwaysRedrawHtml
