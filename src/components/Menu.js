@@ -465,10 +465,6 @@ const Menu = ({
             defaultFolded={true}
             style={{ width: '18rem' }}
             items={[
-              // monoCellSize: 8,
-              // overrideBorderRadius: initialGridConfig.borderRadius,
-              // overrideHorizontalGapPx: initialGridConfig.horizontalGapPx,
-              // overrideVerticalGapPx: initialGridConfig.verticalGapPx
               {
                 tag: 'input',
                 name: 'mono-cell-size',
@@ -500,6 +496,49 @@ const Menu = ({
                 type: 'number',
                 value: gridHtmlParams.overrideVerticalGapPx,
                 updateValue: gridHtmlControls.updateOverrideVerticalGapPx
+              },
+              {
+                tag: 'input',
+                name: 'override-span-width-factor',
+                label: 'Override span width factor',
+                type: 'number',
+                value: gridHtmlParams.overrideSpanWidthFactor,
+                updateValue: gridHtmlControls.updateOverrideSpanWidthFactor
+              }
+            ]}
+          />
+          <MenuItemGroup
+            title="Preview background params"
+            tag='li'
+            foldable={true}
+            defaultFolded={true}
+            style={{ width: '18rem' }}
+            items={[
+              {
+                tag: 'input',
+                name: 'background-colors-bound',
+                label: 'Background colors bound',
+                type: 'checkbox',
+                value: values.backgroundColorsBound,
+                updateValue: valueHandlers.updateBackgroundColorsBound
+              },
+              {
+                tag: 'input',
+                name: 'canvas-background-color',
+                label: ' Canvas background color',
+                type: 'color',
+                defaultFolded: true,
+                value: values.canvasBackgroundColor,
+                updateValue: valueHandlers.updateCanvasBackgroundColor
+              },
+              {
+                tag: 'input',
+                name: 'html-background-color',
+                label: ' Html background color',
+                type: 'color',
+                defaultFolded: true,
+                value: values.htmlBackgroundColor,
+                updateValue: valueHandlers.updateHtmlBackgroundColor
               }
             ]}
           />
@@ -559,22 +598,6 @@ const Menu = ({
             <button className="button" onClick={handleRedrawGridPreview}>Redraw canvas preview</button>
             <button className="button" onClick={handleRedrawGridHtmlPreview}>Redraw html preview</button>
             <button className="button" onClick={handleSaveClick}>Save output</button>
-          </li>
-          <li className="color-input">
-            <input
-              id="output-background-color"
-              type="color"
-              name="output-background-color"
-              value={values.backgroundColor}
-              onChange={(e) => valueHandlers.updateBackgroundColor(e.target.value)}
-            />
-            <label
-              htmlFor="output-background-color"
-              className="color-input__label"
-              title="Changes background color for react output preview"
-            >
-              Background
-            </label>
           </li>
         </ul>
       </nav>
