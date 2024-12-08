@@ -3,7 +3,7 @@ import { useState } from 'react';
 const MenuColorPickerItem = ({ item }) => {
 
   const [tempColor, setTempColor] = useState(item.value);
-  const [folded, setFolded] = useState(false);
+  const [folded, setFolded] = useState(item.defaultFolded);
 
   const foldSymbol = folded ? ' ▾' : ' ▴';
 
@@ -31,7 +31,7 @@ const MenuColorPickerItem = ({ item }) => {
   return (
     <div
       className='container padding-1rem border-black-1px width-fit-content bg-lightgray color-picker foldable'
-      style={{ marginBottom: '1rem' }}
+      style={{ width: '100%', marginBottom: '1rem' }}
     >
       <div className="title" onClick={() => setFolded(!folded)} style={item.labelStyle}>
         <span className='color-picker__sample' style={{ backgroundColor: item.value }}/>
