@@ -19,7 +19,7 @@ export interface GridCreationParams {
 }
 
 export interface GridVisualParams {
-  radius: number;
+  borderRadius: number;
   horizontalGapPx: number;
   verticalGapPx: number;
   angle: number;
@@ -32,7 +32,7 @@ export interface GridVisualParams {
 export interface GridParams extends GridCreationParams, GridVisualParams {
   // rowsCount: number;
   // columnsCount: number;
-  // radius: number;
+  // borderRadius: number;
   // horizontalGapPx: number;
   // verticalGapPx: number;
   // angle: number;
@@ -45,6 +45,13 @@ export interface GridParams extends GridCreationParams, GridVisualParams {
   //   opacityThreshold: number;
   //   maxDeviation: number;
   // } | null;
+}
+
+export interface GridHtmlVisualParams extends GridVisualParams {
+  monoCellSize: number;
+  overrideBorderRadius: number;
+  overrideHorizontalGapPx: number;
+  overrideVerticalGapPx: number;
 }
 
 
