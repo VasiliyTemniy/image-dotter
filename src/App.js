@@ -1,4 +1,10 @@
-import { drawGridPreview, drawImage, makeColorGrid, mapColorGridToHex, readImage } from './utils/dottergrid';
+import {
+  drawGridInCanvas,
+  drawImage,
+  makeColorGrid,
+  mapColorGridToHex,
+  readImage
+} from './utils/dottergrid';
 import { ImageInit } from './components/ImageInit';
 import { GridOutput } from './components/GridOutput';
 import { Menu } from './components/Menu';
@@ -20,22 +26,25 @@ import { useGeneratorConfig } from './hooks/useGeneratorConfig.js';
 import { useAnimationConfig } from './hooks/useAnimationConfig.js';
 import { useLayoutConfig } from './hooks/useLayoutConfig.js';
 import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
+import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
 
 
 /**
  * @typedef {import('./index.d.ts').GridParams} GridParams
+ * @typedef {import('./index.d.ts').GridHtmlVisualParams} GridHtmlVisualParams
  * @typedef {import('./index.d.ts').GeneratorParams} GeneratorParams
  * @typedef {import('./index.d.ts').AnimationParams} AnimationParams
+ * @typedef {import('./index.d.ts').DotterCell} DotterCell
  */
 
 /**
  * TODO!!!
  * 1.DONE. Better input CSS
- * 2. Add generator - make seed-procedural-generation-based cell generator; optional color generator, optional size (horizontal span) generator
+ * 2.DONE. Add generator - make seed-procedural-generation-based cell generator; optional color generator, optional size (horizontal span) generator
  * 3. Add animation control and options.
  * 4.DONE. Make grid settings in menu dropdownable, at least those additional settings, generator settings, animation settings
  * 5. Save as HTML + CSS instead of json. Leave json as an option. For json, though, change structure -
- *    some common options like radius and gaps should be handled separately from the grid
+ *    some common options like borderRadius and gaps should be handled separately from the grid
  *
  *
  * TO_POSSIBLY_NOT_DO:
@@ -49,7 +58,9 @@ const App = () => {
   // Other params
   const [backgroundColor, setBackgroundColor] = useState('#1c1e21ff');
 
-  const [alwaysRedraw, setAlwaysRedraw] = useState(true);
+  const [alwaysRecalcGrid, setAlwaysRecalcGrid] = useState(true);
+  const [alwaysRedrawCanvas, setAlwaysRedrawCanvas] = useState(true);
+  const [alwaysRedrawHtml, setAlwaysRedrawHtml] = useState(true);
 
   const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
 
@@ -74,7 +85,83 @@ const App = () => {
   const pipetteRGBARef = useRef();
   const pipetteHexRef = useRef();
 
+  /** @type {DotterCell[][] | null} */
+  let grid = null;
+  /** @type {React.Dispatch<React.SetStateAction<never[]>> | null} */
+  let setGrid = null;
+  if (gridOutputRef.current) {
+    ({ grid, setGrid } = gridOutputRef.current);
+  }
+
   const redrawGridPreview = useDebouncedCallback(
+    /**
+     * @param {Partial<GridParams>} changedGridParams
+     */
+    (changedGridParams, _image = image) => {
+      if (!_image) {
+        return;
+      }
+      const contextOutput = outputCanvasRef.current.getContext('2d', { willReadFrequently: true });
+      drawGridInCanvas(
+        contextOutput,
+        grid,
+        {
+          ...gridParams,
+          stroke: gridParams.useStroke ? gridParams.stroke : null,
+          ignoreColor: gridParams.useIgnoreColor ? gridParams.ignoreColor : null,
+          ...changedGridParams
+        }
+      );
+    }, 300
+  );
+
+  const redrawGridHtmlPreview = useDebouncedCallback(
+    /**
+     * @param {Partial<GridHtmlVisualParams>} changedGridHtmlParams
+     * @param {Partial<AnimationParams>} changedAnimationParams
+     */
+    (changedGridHtmlParams, changedAnimationParams, _image = image) => {
+      if (!_image) {
+        return;
+      }
+      drawGridHtmlPreview(
+        {
+          // Some renamings and mappings here...
+          // Top to bottom: preferred param -> least preferred param
+          monoCellSize:
+            changedGridHtmlParams.monoCellSize ??
+            gridHtmlParams.monoCellSize,
+          borderRadius:
+            changedGridHtmlParams.overrideBorderRadius ??
+            gridHtmlParams.overrideBorderRadius ??
+            gridParams.borderRadius,
+          horizontalGapPx:
+            changedGridHtmlParams.overrideHorizontalGapPx ??
+            gridHtmlParams.overrideHorizontalGapPx ??
+            gridParams.horizontalGapPx,
+          verticalGapPx:
+            changedGridHtmlParams.overrideVerticalGapPx ??
+            gridHtmlParams.overrideVerticalGapPx ??
+            gridParams.verticalGapPx,
+          angle: gridParams.angle,
+          stroke: gridParams.useStroke ? gridParams.stroke : null,
+        },
+        {
+          ...animationParams,
+          delay: animationParams.type === 'slide' ? {
+            min: animationParams.delay.min,
+            max: animationParams.delay.max,
+          } : null,
+          ...changedAnimationParams
+        }
+      );
+    }, 300
+  );
+
+  /**
+   * Debounced recalculation of the grid
+   */
+  const recalcGrid = useDebouncedCallback(
     /**
      * @param {Partial<GridParams>} changedGridParams
      * @param {Partial<GeneratorParams>} changedGeneratorParams
@@ -83,9 +170,7 @@ const App = () => {
       if (!_image) {
         return;
       }
-      drawGridPreview(
-        inputCanvasRef,
-        outputCanvasRef,
+      calcGrid(
         {
           ...gridParams,
           stroke: gridParams.useStroke ? gridParams.stroke : null,
@@ -99,26 +184,92 @@ const App = () => {
           surroundingCells: generatorParams.useSurroundingCells ? generatorParams.surroundingCells : null,
           ...changedGeneratorParams
         },
+        _image
       );
     }, 300
   );
+
+  /**
+   * Calculates the grid
+   * @param {GridParams} changedGridParams
+   * @param {GeneratorParams} changedGeneratorParams
+   * @param {HTMLImageElement} _image
+   */
+  const calcGrid = (gridParams, generatorParams, _image = image) => {
+    if (!_image || !inputCanvasRef.current || !outputCanvasRef.current) {
+      return;
+    }
+    if (grid === null || setGrid === null) {
+      return;
+    }
+    const contextInput = inputCanvasRef.current.getContext('2d', { willReadFrequently: true });
+    const contextOutput = outputCanvasRef.current.getContext('2d', { willReadFrequently: true });
+    const newGrid = mapColorGridToHex(makeColorGrid(
+      contextInput, gridParams, generatorParams
+    ));
+
+    setGrid(newGrid);
+
+    if (alwaysRedrawCanvas) {
+      drawGridInCanvas(
+        contextOutput,
+        newGrid,
+        gridParams
+      );
+    }
+
+    if (alwaysRedrawHtml) {
+      drawGridHtmlPreview(
+        {
+          // Some renamings and mappings here...
+          // Top to bottom: preferred param -> least preferred param
+          monoCellSize:
+            gridHtmlParams.monoCellSize,
+          borderRadius:
+            gridHtmlParams.overrideBorderRadius ??
+            gridParams.borderRadius,
+          horizontalGapPx:
+            gridHtmlParams.overrideHorizontalGapPx ??
+            gridParams.horizontalGapPx,
+          verticalGapPx:
+            gridHtmlParams.overrideVerticalGapPx ??
+            gridParams.verticalGapPx,
+          angle: gridParams.angle,
+          stroke: gridParams.useStroke ? gridParams.stroke : null,
+        },
+        {
+          ...animationParams,
+          delay: animationParams.type === 'slide' ? {
+            min: animationParams.delay.min,
+            max: animationParams.delay.max,
+          } : null,
+        }
+      );
+    }
+  };
 
   const { params: gridParams, controls: gridControls, setters: gridSetters } = useGridConfig(
     showNotification,
     inputCanvasRef.current ? inputCanvasRef.current.height : 0,
     inputCanvasRef.current ? inputCanvasRef.current.width : 0,
-    redrawGridPreview,
-    alwaysRedraw
+    recalcGrid,
+    alwaysRecalcGrid
   );
 
   const { params: generatorParams, controls: generatorControls } = useGeneratorConfig(
     showNotification,
-    redrawGridPreview,
-    alwaysRedraw
+    recalcGrid,
+    alwaysRecalcGrid
   );
 
   const { params: animationParams, controls: animationControls } = useAnimationConfig(
     showNotification
+  );
+
+  const { params: gridHtmlParams, controls: gridHtmlControls } = useGridHtmlConfig(
+    showNotification,
+    // redrawGridHtmlPreview,
+    // alwaysRedrawHtml
   );
 
   const resizeCanvas = ({
@@ -225,8 +376,16 @@ const App = () => {
     pipetteHexRef.current.innerHTML = `<pre>Hex: ${pipetteHexText(rgba)}</pre>`;
   };
 
-  const updateAlwaysRedraw = (value) => {
-    setAlwaysRedraw(value);
+  const updateAlwaysRecalcGrid = (value) => {
+    setAlwaysRecalcGrid(value);
+  };
+
+  const updateAlwaysRedrawCanvas = (value) => {
+    setAlwaysRedrawCanvas(value);
+  };
+
+  const updateAlwaysRedrawHtml = (value) => {
+    setAlwaysRedrawHtml(value);
   };
 
   const updateMenuOpen = (value) => {
@@ -237,7 +396,7 @@ const App = () => {
 
     resizeCanvas({}, { localMenuOpen: value });
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({}, {});
+    redrawGridPreview({});
   };
 
   const handleFileSelection = async (e) => {
@@ -257,46 +416,16 @@ const App = () => {
     });
 
     drawImage(image, inputCanvasRef);
-    redrawGridPreview({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, image);
+    recalcGrid({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, image);
   };
 
-  const handleRedrawGrid = (e) => {
-    e.preventDefault();
-    const canvasInput = inputCanvasRef.current;
-    const contextInput = canvasInput.getContext('2d');
-    const grid = mapColorGridToHex(makeColorGrid(
-      contextInput,
-      {
-        ...gridParams,
-        stroke: gridParams.useStroke ? gridParams.stroke : null,
-        ignoreColor: gridParams.useIgnoreColor ? gridParams.ignoreColor : null
-      },
-      {
-        ...generatorParams,
-        cellSpan: generatorParams.useCellSpan ? generatorParams.cellSpan : null,
-        mainPalette: generatorParams.useMainPalette ? generatorParams.mainPalette : null,
-        surroundingCells: generatorParams.useSurroundingCells ? generatorParams.surroundingCells : null
-      },
-    ));
+  const drawGridHtmlPreview = (
+    gridHtmlParams,
+    animationParams,
+  ) => {
     gridOutputRef.current.drawHtmlPreview(
-      grid,
-      {
-        radius: gridParams.radius,
-        horizontalGapPx: gridParams.horizontalGapPx,
-        verticalGapPx: gridParams.verticalGapPx,
-        angle: gridParams.angle,
-        stroke: gridParams.useStroke ? gridParams.stroke : null,
-      },
-      {
-        type: animationParams.type,
-        direction: animationParams.direction,
-        duration: animationParams.duration,
-        delay: animationParams.type === 'slide' ? {
-          min: animationParams.delay.min,
-          max: animationParams.delay.max,
-        } : null,
-        easing: animationParams.easing,
-      }
+      gridHtmlParams,
+      animationParams
     );
   };
 
@@ -332,7 +461,7 @@ const App = () => {
         updateMenuOpen={updateMenuOpen}
         menuRef={menuRef}
         handleFileSelection={handleFileSelection}
-        handleRedrawGrid={handleRedrawGrid}
+        handleRedrawGridHtmlPreview={redrawGridHtmlPreview}
         handleSaveClick={handleSaveClick}
         handleRedrawGridPreview={redrawGridPreview}
         gridParams={gridParams}
@@ -341,13 +470,19 @@ const App = () => {
         generatorControls={generatorControls}
         animationParams={animationParams}
         animationControls={animationControls}
+        gridHtmlParams={gridHtmlParams}
+        gridHtmlControls={gridHtmlControls}
         values={{
           backgroundColor,
-          alwaysRedraw
+          alwaysRecalcGrid,
+          alwaysRedrawCanvas,
+          alwaysRedrawHtml
         }}
         valueHandlers={{
           updateBackgroundColor,
-          updateAlwaysRedraw
+          updateAlwaysRecalcGrid,
+          updateAlwaysRedrawCanvas,
+          updateAlwaysRedrawHtml
         }}
         refs={{
           pipetteRGBARef,
