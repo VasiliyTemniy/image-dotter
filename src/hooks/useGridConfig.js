@@ -10,7 +10,7 @@ import { useState } from 'react';
  * @type {GridConfigState}
  */
 const initialGridConfig = {
-  rowsCount: 20,
+  rowsCount: 42,
   columnsCount: 100,
   radius: 10,
   horizontalGapPx: 1,
