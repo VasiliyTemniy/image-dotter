@@ -28,11 +28,11 @@ export const useAnimationConfig = (
   // alwaysRedraw
 ) => {
 
-  const [type, setType] = useState('slide');
-  const [direction, setDirection] = useState('h-sides');
-  const [duration, setDuration] = useState(1000);
-  const [delay, setDelay] = useState(0);
-  const [easing, setEasing] = useState('ease-out');
+  const [type, setType] = useState(initialAnimationConfig.type);
+  const [direction, setDirection] = useState(initialAnimationConfig.direction);
+  const [duration, setDuration] = useState(initialAnimationConfig.duration);
+  const [delay, setDelay] = useState(initialAnimationConfig.delay);
+  const [easing, setEasing] = useState(initialAnimationConfig.easing);
 
   // Animation params
 
