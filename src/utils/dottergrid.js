@@ -49,30 +49,6 @@ export const drawImage = (image, inputCanvasRef) => {
 };
 
 /**
- * Make color grid and draw grid preview in canvas
- * @param {React.MutableRefObject<HTMLCanvasElement>} inputCanvasRef
- * @param {React.MutableRefObject<HTMLCanvasElement>} outputCanvasRef
- * @param {DotterGridParams} gridParams
- * @param {GeneratorParams} generatorParams
- */
-export const drawGridPreview = (
-  inputCanvasRef,
-  outputCanvasRef,
-  gridParams,
-  generatorParams,
-) => {
-
-  const canvasInput = inputCanvasRef.current;
-  const contextInput = canvasInput.getContext('2d', { willReadFrequently: true });
-
-  const canvasOutput = outputCanvasRef.current;
-  const contextOutput = canvasOutput.getContext('2d', { willReadFrequently: true });
-
-  const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, generatorParams));
-  drawOutputByGrid(contextOutput, grid, gridParams);
-};
-
-/**
  * @param {DotterIntermediateCell[][]} grid
  * @returns {DotterCell[][]}
  */
@@ -640,15 +616,15 @@ const adjustSpanForAvailableSpace = (x, y, dx, maxX, maxY, span, occupiedSpaces)
  * Draws output to canvas
  * @param {CanvasRenderingContext2D} contextOutput
  * @param {DotterCell[][]} grid
- * @param {DotterGridParams} params
+ * @param {GridParams} params
  */
-const drawOutputByGrid = (
+export const drawGridInCanvas = (
   contextOutput,
   grid,
   {
     rowsCount,
     columnsCount,
-    radius,
+    borderRadius,
     horizontalGapPx,
     verticalGapPx,
     angle,
@@ -658,7 +634,7 @@ const drawOutputByGrid = (
   contextOutput.clearRect(0, 0, contextOutput.canvas.width, contextOutput.canvas.height);
   const columnWidth = Math.max(contextOutput.canvas.width / columnsCount, 1);
   const rowHeight = Math.max(contextOutput.canvas.height / rowsCount, 1);
-  const effectiveRadius = Math.min(Math.floor(Math.min(columnWidth, rowHeight) / 2), radius);
+  const effectiveRadius = Math.min(Math.floor(Math.min(columnWidth, rowHeight) / 2), borderRadius);
 
   for (const row of grid) {
     for (const cell of row) {
@@ -714,12 +690,12 @@ export const middleweightColor = (data) => {
  * @param {number} y
  * @param {number} thickness
  * @param {number} length
- * @param {number} radius
+ * @param {number} borderRadius
  * @param {number} angle
  * @param {string} fill
  * @param {{ color: string; width: number } | null} stroke
  */
-const drawRoundRect = (context, x, y, thickness, length, radius, angle, fill, stroke) => {
+const drawRoundRect = (context, x, y, thickness, length, borderRadius, angle, fill, stroke) => {
   context.beginPath();
   // Might not seem obvious about 'thickness', 'length' being used instead of 'width' and 'height', but
   // we store only length in cell data, while thickness is actually more of a calculated value
@@ -727,10 +703,10 @@ const drawRoundRect = (context, x, y, thickness, length, radius, angle, fill, st
     context.save();
     context.translate(x + length / 2, y + thickness / 2);
     context.rotate((-angle * Math.PI) / 180);
-    context.roundRect(-length / 2, -thickness / 2, length, thickness, [radius]);
+    context.roundRect(-length / 2, -thickness / 2, length, thickness, [borderRadius]);
     context.restore();
   } else {
-    context.roundRect(x, y, length, thickness, [radius]);
+    context.roundRect(x, y, length, thickness, [borderRadius]);
   }
 
   if (fill) {
