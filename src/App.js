@@ -3,7 +3,7 @@ import { ImageInit } from './components/ImageInit';
 import { GridOutput } from './components/GridOutput';
 import { Menu } from './components/Menu';
 import { Notification } from './components/Notification';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './styles/grid-output.css';
 import './styles/nav.css';
 import './styles/button.css';
@@ -188,6 +188,9 @@ const App = () => {
     outputCanvasRef.current.width = inputCanvasRef.current.width;
     outputCanvasRef.current.height = inputCanvasRef.current.height;
 
+    // Do the same with html grid
+    gridOutputRef.current.setSize(inputCanvasRef.current.width, inputCanvasRef.current.height);
+
     let localRowsCount = gridParams.rowsCount;
     let localColumnsCount = gridParams.columnsCount;
 
@@ -261,31 +264,39 @@ const App = () => {
     e.preventDefault();
     const canvasInput = inputCanvasRef.current;
     const contextInput = canvasInput.getContext('2d');
-    const grid = mapColorGridToHex(makeColorGrid(contextInput, gridParams, generatorParams));
-    // TODO!!! Handle changedAnimationParams and those partial grid params
-    gridOutputRef.current.handleCreate(
+    const grid = mapColorGridToHex(makeColorGrid(
+      contextInput,
+      {
+        ...gridParams,
+        stroke: gridParams.useStroke ? gridParams.stroke : null,
+        ignoreColor: gridParams.useIgnoreColor ? gridParams.ignoreColor : null
+      },
+      {
+        ...generatorParams,
+        cellSpan: generatorParams.useCellSpan ? generatorParams.cellSpan : null,
+        mainPalette: generatorParams.useMainPalette ? generatorParams.mainPalette : null,
+        surroundingCells: generatorParams.useSurroundingCells ? generatorParams.surroundingCells : null
+      },
+    ));
+    gridOutputRef.current.drawHtmlPreview(
       grid,
-      // {
-      //   radius,
-      //   horizontalGapPx,
-      //   verticalGapPx,
-      //   angle,
-      //   stroke: useStroke ? {
-      //     color: strokeColor,
-      //     width: strokeWidth,
-      //   } : null,
-      // },
-      // {
-      //   type: animationType,
-      //   direction: animationDirection,
-      //   duration: animationDuration,
-      //   delay: animationType === 'slide' ? {
-      //     min: animationDelayMin,
-      //     max: animationDelayMax,
-      //   } : null,
-      //   easing: animationEasing,
-      //   // ...changedAnimationParams
-      // }
+      {
+        radius: gridParams.radius,
+        horizontalGapPx: gridParams.horizontalGapPx,
+        verticalGapPx: gridParams.verticalGapPx,
+        angle: gridParams.angle,
+        stroke: gridParams.useStroke ? gridParams.stroke : null,
+      },
+      {
+        type: animationParams.type,
+        direction: animationParams.direction,
+        duration: animationParams.duration,
+        delay: animationParams.type === 'slide' ? {
+          min: animationParams.delay.min,
+          max: animationParams.delay.max,
+        } : null,
+        easing: animationParams.easing,
+      }
     );
   };
 
@@ -308,6 +319,10 @@ const App = () => {
 
   // Set to true to test and debug the generator
   const generatorTest = false;
+
+  useEffect(() => {
+    resizeCanvas({}, {});
+  }, []);
 
   return (
     <>
