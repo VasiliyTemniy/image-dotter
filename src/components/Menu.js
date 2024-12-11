@@ -504,6 +504,22 @@ const Menu = ({
                 type: 'number',
                 value: gridHtmlParams.overrideSpanWidthFactor,
                 updateValue: gridHtmlControls.updateOverrideSpanWidthFactor
+              },
+              {
+                tag: 'input',
+                name: 'left-correction-px',
+                label: 'Left correction px',
+                type: 'number',
+                value: gridHtmlParams.leftCorrectionPx,
+                updateValue: gridHtmlControls.updateLeftCorrectionPx
+              },
+              {
+                tag: 'input',
+                name: 'top-correction-px',
+                label: 'Top correction px',
+                type: 'number',
+                value: gridHtmlParams.topCorrectionPx,
+                updateValue: gridHtmlControls.updateTopCorrectionPx
               }
             ]}
           />
