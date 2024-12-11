@@ -16,6 +16,12 @@
   overflow: hidden;
 }
 
+.grid-output__container > .grid {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .show {
   opacity: 0;
   animation: ani 2.5s forwards;
@@ -37,8 +43,4 @@
 @keyframes ani {
   0% {opacity: 0;}
   100% {opacity: 1;}
-}
-
-.row {
-  display: flex;
 }
