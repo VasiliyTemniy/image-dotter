@@ -19,14 +19,16 @@ const initialGeneratorConfig = {
     min: 2,
     max: 3
   },
-  useMainPalette: false,
+  // useMainPalette: false,
+  useMainPalette: true,
   mainPalette: [
     '#56B3B4FF',
     '#EA5E5EFF',
     '#F7BA3EFF',
     '#BF85BFFF'
   ],
-  useSurroundingCells: false,
+  // useSurroundingCells: false,
+  useSurroundingCells: true,
   surroundingCells: {
     color: '#325E9F3D',
     colorVariation: 4,
