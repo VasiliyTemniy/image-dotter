@@ -13,7 +13,9 @@ const initialGridHtmlPreviewConfig = {
   overrideBorderRadius: initialGridConfig.borderRadius,
   overrideHorizontalGapPx: initialGridConfig.horizontalGapPx,
   overrideVerticalGapPx: initialGridConfig.verticalGapPx,
-  overrideSpanWidthFactor: 1
+  overrideSpanWidthFactor: 1,
+  leftCorrectionPx: 0,
+  topCorrectionPx: 0
 };
 
 /**
@@ -36,6 +38,8 @@ export const useGridHtmlConfig = (
   const [overrideHorizontalGapPx, setOverrideHorizontalGapPx] = useState(initialGridHtmlPreviewConfig.overrideHorizontalGapPx);
   const [overrideVerticalGapPx, setOverrideVerticalGapPx] = useState(initialGridHtmlPreviewConfig.overrideVerticalGapPx);
   const [overrideSpanWidthFactor, setOverrideSpanWidthFactor] = useState(initialGridHtmlPreviewConfig.overrideSpanWidthFactor);
+  const [leftCorrectionPx, setLeftCorrectionPx] = useState(0);
+  const [topCorrectionPx, setTopCorrectionPx] = useState(0);
 
   const updateMonoCellSize = (value) => {
     let newMonoCellSize = value;
@@ -102,20 +106,50 @@ export const useGridHtmlConfig = (
     }
   };
 
+  const updateLeftCorrectionPx = (value) => {
+    let newLeftCorrectionPx = value;
+    if (value === null || value === undefined || !Number.isInteger(value)) {
+      showNotification('Please select a valid left correction', 'error');
+      newLeftCorrectionPx = initialGridHtmlPreviewConfig.leftCorrectionPx;
+    }
+    setLeftCorrectionPx(newLeftCorrectionPx);
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({ leftCorrectionPx: newLeftCorrectionPx }, {});
+    }
+  };
+
+  const updateTopCorrectionPx = (value) => {
+    let newTopCorrectionPx = value;
+    if (value === null || value === undefined || !Number.isInteger(value)) {
+      showNotification('Please select a valid top correction', 'error');
+      newTopCorrectionPx = initialGridHtmlPreviewConfig.topCorrectionPx;
+    }
+    setTopCorrectionPx(newTopCorrectionPx);
+
+    if (alwaysRedrawHtml) {
+      redrawGridHtmlPreview({ topCorrectionPx: newTopCorrectionPx }, {});
+    }
+  };
+
   return {
     params: {
       monoCellSize,
       overrideBorderRadius,
       overrideHorizontalGapPx,
       overrideVerticalGapPx,
-      overrideSpanWidthFactor
+      overrideSpanWidthFactor,
+      leftCorrectionPx,
+      topCorrectionPx
     },
     controls: {
       updateMonoCellSize,
       updateOverrideBorderRadius,
       updateOverrideHorizontalGapPx,
       updateOverrideVerticalGapPx,
-      updateOverrideSpanWidthFactor
+      updateOverrideSpanWidthFactor,
+      updateLeftCorrectionPx,
+      updateTopCorrectionPx
     }
   };
 

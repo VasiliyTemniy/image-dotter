@@ -52,6 +52,9 @@ export interface GridHtmlVisualParams extends GridVisualParams {
   overrideBorderRadius: number;
   overrideHorizontalGapPx: number;
   overrideVerticalGapPx: number;
+  overrideSpanWidthFactor: number;
+  leftCorrectionPx: number;
+  topCorrectionPx: number;
 }
 
 
