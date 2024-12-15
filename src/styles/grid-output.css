@@ -42,15 +42,14 @@
   opacity: 1;
   animation-direction: reverse;
 }
-/* Opacity-related group END */
 
 @keyframes opacity-animation {
   0% {opacity: 0;}
   100% {opacity: 1;}
 }
+/* Opacity-related group END */
 
 /* Slide-related group START */
-
 .slide > .grid > .row:nth-child(2n-1) {
   --offset: 550%;
 }
