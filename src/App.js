@@ -371,6 +371,7 @@ const App = () => {
     inputCanvasRef,
     resizeCanvas,
     redrawGridPreview,
+    redrawGridHtmlPreview
   );
 
   const updateBackgroundColorsBound = (value) => {

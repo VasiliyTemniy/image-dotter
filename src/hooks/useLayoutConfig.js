@@ -4,6 +4,10 @@ import { useState } from 'react';
 
 /**
  * @typedef {import('../index.d.ts').LayoutParams} LayoutParams
+ * @typedef {import('../index.d.ts').GridParams} GridParams
+ * @typedef {import('../index.d.ts').GeneratorParams} GeneratorParams
+ * @typedef {import('../index.d.ts').GridHtmlVisualParams} GridHtmlVisualParams
+ * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
  */
 
 /**
@@ -26,12 +30,17 @@ const layoutParams = getLocalStorageMap('image-dotter-layout-settings', {
  *   localMenuOpen: boolean
  * }) => { localRowsCount: number, localColumnsCount: number }} resizeCanvas
  * @param {(changedGridParams: GridParams, changedGeneratorParams: GeneratorParams) => void} redrawGridPreview
+ * @param {(
+ *  changedHtmlGridParams: GridHtmlVisualParams,
+ *  changedAnimationParams: AnimationParams
+ * ) => void} redrawGridHtmlPreview
  */
 export const useLayoutConfig = (
   image,
   inputCanvasRef,
   resizeCanvas,
   redrawGridPreview,
+  redrawGridHtmlPreview
 ) => {
 
   const [stretchCanvas, setStretchCanvas] = useState(layoutParams.stretchCanvas);
@@ -49,6 +58,7 @@ export const useLayoutConfig = (
     resizeCanvas({ stretchCanvas: value }, {});
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
+    redrawGridHtmlPreview({}, {});
   };
 
   const updateScreenOverflow = (value) => {
@@ -69,6 +79,7 @@ export const useLayoutConfig = (
     resizeCanvas({ screenOverflow: value }, {});
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
+    redrawGridHtmlPreview({}, {});
   };
 
   const updateFitBothCanvasInOneRow = (value) => {
@@ -81,6 +92,7 @@ export const useLayoutConfig = (
     resizeCanvas({ fitBothCanvasInOneRow: value }, {});
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
+    redrawGridHtmlPreview({}, {});
   };
 
   const updateShiftMainByMenu = (value) => {
@@ -93,6 +105,7 @@ export const useLayoutConfig = (
     resizeCanvas({ shiftMainByMenu: value }, {});
     drawImage(image, inputCanvasRef);
     redrawGridPreview({});
+    redrawGridHtmlPreview({}, {});
   };
 
   return {
