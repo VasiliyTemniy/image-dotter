@@ -47,6 +47,13 @@ import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
  *    some common options like borderRadius and gaps should be handled separately from the grid
  *
  *
+ * Some thoughts for the future:
+ * 1. Add mouse guided controlls over canvas previewed cells
+ * 1.1. Add ability to hover over and select a cell
+ * 1.2. Add ability to delete, edit, recombine, etc.
+ * 1.3. Add ability to move cells around (swap with another cell, for example - swap colors...)
+ * 2. Fix dottergrid.js -> handleCellSpanGeneration - Combine cells whose span is less than minimum span
+ *
  * TO_POSSIBLY_NOT_DO:
  * 1. Rewrite grid handling from functions to gridHandler class. Could be more efficient, could be hemorroidal to handle it together with React
  */
