@@ -198,22 +198,26 @@ export const makeColorGrid = (
 /**
  * Combines cells based on seed and other cell span generator params
  * @param {DotterIntermediateCell[][]} monoSpanGrid
- * @param {Generator} generator
+ * @param {Generator} spanGenerator
+ * @param {Generator} trueFalseGenerator
  * @returns {DotterIntermediateCell[][]}
  */
 const handleCellSpanGeneration = (
   monoSpanGrid,
-  generator
+  spanGenerator,
+  trueFalseGenerator
 ) => {
   /** @type {DotterIntermediateCell[][]} */
   const grid = [];
+
+  const generatorPossibleValues = spanGenerator.getPossibleValues();
 
   for (let row = 0; row < monoSpanGrid.length; row++) {
     const gridrow = [];
     let monoSpanGridColumn = 0;
     while (monoSpanGridColumn < monoSpanGrid[row].length) {
       let span, valueIndex;
-      ({ value: span, valueIndex } = generator
+      ({ value: span, valueIndex } = spanGenerator
         .generateNextValue({ recalculateWeights: false, returnValueIndex: true })
       );
 
@@ -227,15 +231,23 @@ const handleCellSpanGeneration = (
         availableSpan++;
       }
 
-      // Adjust span if it would exceed available space
-      if (span > availableSpan) {
-        span = availableSpan;
-        ({ valueIndex } = generator
+      const adjustedSpan = adjustSpanByAvailableSpace(
+        span,
+        generatorPossibleValues,
+        availableSpan,
+        trueFalseGenerator
+      );
+
+      const isSpanAdjusted = span === adjustedSpan;
+      span = adjustedSpan;
+
+      if (isSpanAdjusted) {
+        ({ valueIndex } = spanGenerator
           .overridePrevValue({ value: span }, { recalculateWeights: false, returnValueIndex: true })
         );
       }
 
-      generator.recalculateWeights(valueIndex);
+      spanGenerator.recalculateWeights(valueIndex);
       const colorSpanArray = [];
       for (let i = monoSpanGridColumn; i < monoSpanGridColumn + span; i++) {
         colorSpanArray.push(...monoSpanGrid[row][i][3]);
@@ -251,6 +263,174 @@ const handleCellSpanGeneration = (
   }
 
   return grid;
+};
+
+/**
+ * Adjusts span for available space
+ * @param {number} generatedSpan
+ * @param {number[]} possibleValues
+ * @param {number} availableSpan
+ * @param {Generator} trueFalseGenerator
+ * @returns {number}
+ */
+const adjustSpanByAvailableSpace = (
+  generatedSpan,
+  possibleValues,
+  availableSpan,
+  trueFalseGenerator
+) => {
+  // Most early return - will be called if everything below have already failed
+  // Adjust span if it would exceed available space
+  if (generatedSpan > availableSpan) {
+    return availableSpan;
+  }
+
+  // If the next minimal span would not exceed available space
+  if (generatedSpan + possibleValues[0] <= availableSpan) {
+    return generatedSpan;
+  }
+
+  let span = generatedSpan;
+  /** @type {boolean} */
+  const tryRecombineFirst = trueFalseGenerator.generateNextValue();
+
+  if (tryRecombineFirst) {
+    span = tryRecombineCells(
+      generatedSpan,
+      possibleValues,
+      availableSpan,
+      trueFalseGenerator,
+      true // Deep call
+    );
+  } else { // try reduce first
+    span = tryReduceSpan(
+      generatedSpan,
+      possibleValues,
+      availableSpan,
+      trueFalseGenerator,
+      true // Deep call
+    );
+  }
+
+  // If things above have made span too big somehow or just failed -
+  // Adjust span if it would exceed available space
+  if (span > availableSpan) {
+    span = availableSpan;
+  }
+
+  return span;
+};
+
+/**
+ * Try to recombine cells
+ *
+ * Assumes that checks for if (baseSpan + possibleValues[0] > availableSpan) are already positively done
+ * @param {number} baseSpan
+ * @param {number[]} possibleValues
+ * @param {number} availableSpan
+ * @param {Generator} trueFalseGenerator
+ * @param {boolean} [deep] default: false
+ * @returns {number}
+ */
+const tryRecombineCells = (
+  baseSpan,
+  possibleValues,
+  availableSpan,
+  trueFalseGenerator,
+  deep = false
+) => {
+  let span = baseSpan;
+  // Adjust span if the next minimal span would exceed available space
+  // Assume that checks for if (baseSpan + possibleValues[0] > availableSpan) are already positively done
+  span = availableSpan;
+  // If after trying to recombine cells span is bigger than the biggest possible value
+  if (span > possibleValues[possibleValues.length - 1]) {
+    // If we are not in deep mode
+    if (!deep) {
+      // Then this function was called by try to reduce span - 100% failure
+      return baseSpan;
+    }
+    // Span is more than the biggest possible value - 100% try to reduce span
+    return tryReduceSpan(baseSpan, possibleValues, availableSpan, trueFalseGenerator);
+  } else if (span === possibleValues[possibleValues.length - 1]) {
+    // If we are not in deep mode
+    if (!deep) {
+      // Then this function was called by try to reduce span,
+      // so return as is - this particular cell will be of the biggest possible value
+      return span;
+    }
+    // If after trying to recombine cells the result is the biggest possible value
+    // Then flip a coin - try reduce cell or return possibleValues[possibleValues.length - 1] as result
+    const shouldTryReduce = trueFalseGenerator.generateNextValue();
+    if (shouldTryReduce) {
+      return tryReduceSpan(baseSpan, possibleValues, availableSpan, trueFalseGenerator);
+    } else { // should not try reduce
+      return span;
+    }
+  }
+
+  // The only case that is left -
+  // if (span < possibleValues[possibleValues.length - 1])
+  // Just return as is - it's all good
+
+  return span;
+};
+
+/**
+ * Try to reduce this cells' span to give some space for the next one
+ *
+ * Assumes that checks for if (baseSpan + possibleValues[0] > availableSpan) are already positively done
+ * @param {number} baseSpan
+ * @param {number[]} possibleValues
+ * @param {number} availableSpan
+ * @param {Generator} trueFalseGenerator
+ * @param {boolean} [deep] default: false
+ * @returns {number}
+ */
+const tryReduceSpan = (
+  baseSpan,
+  possibleValues,
+  availableSpan,
+  trueFalseGenerator,
+  deep = false
+) => {
+  let span = baseSpan;
+  // Adjust span if the next minimal span would exceed available space
+  // Assume that checks for if (baseSpan + possibleValues[0] > availableSpan) are already positively done
+  // Try to leave the least possible space for the next cell
+  span = availableSpan - possibleValues[0];
+  if (span < possibleValues[0]) {
+    // If we are not in deep mode
+    if (!deep) {
+      // Then this function was called by try to recombine - 100% failure
+      return baseSpan;
+    }
+    // Span is less than least possible value - 100% try to recombine
+    return tryRecombineCells(baseSpan, possibleValues, availableSpan, trueFalseGenerator);
+  } else if (span === possibleValues[0]) {
+    // If we are not in deep mode
+    if (!deep) {
+      // Then this function was called by try to recombine,
+      // so return as is - two cells will be with the same span eq to possibleValues[0]
+      return span;
+    }
+    // If after trying to reduce span by least possible value, it would be the smallest possible value
+    // Then flip a coin - try recombine or return possibleValues[0] as result
+    const shouldTryRecombine = trueFalseGenerator.generateNextValue();
+    if (shouldTryRecombine) {
+      return tryRecombineCells(baseSpan, possibleValues, availableSpan, trueFalseGenerator);
+    } else { // should not try recombine
+      return span;
+    }
+  }
+
+  // if (span > possibleValues[0])
+  // Flip a coin to see if we should try to reduce a bit more than by least possible value
+  while (trueFalseGenerator.generateNextValue() && span !== possibleValues[0]) {
+    span--;
+  }
+
+  return span;
 };
 
 /**
