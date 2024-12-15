@@ -48,7 +48,7 @@ import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
  * 4.DONE. Make grid settings in menu dropdownable, at least those additional settings, generator settings, animation settings
  * 5.DONE. Save as HTML + CSS instead of json. Leave json as an option. For json, though, change structure -
  *    some common options like borderRadius and gaps should be handled separately from the grid
- * 6. Add theming
+ * 6.DONE. Add theming
  * 7. Add translation to Russian language with i18n
  * 8. Add manual in md format + md reader engine
  *
