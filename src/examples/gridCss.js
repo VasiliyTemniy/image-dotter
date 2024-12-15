@@ -1,3 +1,10 @@
+/**
+ * This is needed to save as a CSS example file
+ *
+ * If you know how to use .css file at runtime to create such text on the fly without too much effort, please let me know
+ * @type {string}
+ */
+export const gridCss = `
 .grid-output__background {
   background-color: #1c1e21;
   display: flex;
@@ -64,3 +71,4 @@
   }
 }
 /* Slide-related group END */
+`;

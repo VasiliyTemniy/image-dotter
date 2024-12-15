@@ -27,6 +27,7 @@ import { useAnimationConfig } from './hooks/useAnimationConfig.js';
 import { useLayoutConfig } from './hooks/useLayoutConfig.js';
 import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
 import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
+import { gridCss } from './examples/gridCss.js';
 
 
 /**
@@ -43,10 +44,11 @@ import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
  * 2.DONE. Add generator - make seed-procedural-generation-based cell generator; optional color generator, optional size (horizontal span) generator
  * 3.DONE. Add animation control and options.
  * 4.DONE. Make grid settings in menu dropdownable, at least those additional settings, generator settings, animation settings
- * 5. Save as HTML + CSS instead of json. Leave json as an option. For json, though, change structure -
+ * 5.DONE. Save as HTML + CSS instead of json. Leave json as an option. For json, though, change structure -
  *    some common options like borderRadius and gaps should be handled separately from the grid
- * 6. Add translation to Russian language with i18n
- * 7. Add manual in md format + md reader engine
+ * 6. Add theming
+ * 7. Add translation to Russian language with i18n
+ * 8. Add manual in md format + md reader engine
  *
  *
  * Some thoughts for the future:
@@ -501,12 +503,12 @@ const App = () => {
     gridOutputRef.current.playAnimation();
   };
 
-  const handleSaveClick = async (e) => {
+  const handleSaveJSONClick = async (e) => {
     e.preventDefault();
     const handle = await window.showSaveFilePicker({
       suggestedName: 'grid.json',
       types: [{
-        description: 'Output grid',
+        description: 'Output grid as JSON',
         accept: { 'application/json': ['.json'] },
       }],
     });
@@ -525,6 +527,45 @@ const App = () => {
     };
 
     const blob = new Blob([JSON.stringify(content)], { type: 'application/json' });
+
+    const writableStream = await handle.createWritable();
+    await writableStream.write(blob);
+    await writableStream.close();
+  };
+
+  const handleSaveHTMLClick = async (e) => {
+    e.preventDefault();
+    const handle = await window.showSaveFilePicker({
+      suggestedName: 'grid.html',
+      types: [{
+        description: 'Output grid HTML',
+        accept: { 'text/html': ['.html'] },
+      }],
+    });
+
+    const innerHTML = gridOutputRef.current.backgroundRef.current.innerHTML;
+
+    const blob = new Blob([innerHTML], { type: 'application/json' });
+
+    const writableStream = await handle.createWritable();
+    await writableStream.write(blob);
+    await writableStream.close();
+  };
+
+  const handleSaveCSSClick = async (e) => {
+    e.preventDefault();
+    const handle = await window.showSaveFilePicker({
+      suggestedName: 'grid.css',
+      types: [{
+        description: 'Output grid CSS',
+        accept: { 'text/css': ['.css'] },
+      }],
+    });
+
+    // Sorry for this longpaste
+    const content = gridCss;
+
+    const blob = new Blob([content], { type: 'application/json' });
 
     const writableStream = await handle.createWritable();
     await writableStream.write(blob);
@@ -550,7 +591,9 @@ const App = () => {
         handleRedrawGridPreview={redrawGridPreview}
         handleRedrawGridHtmlPreview={redrawGridHtmlPreview}
         handlePlayAnimation={playHtmlAnimation}
-        handleSaveClick={handleSaveClick}
+        handleSaveJSONClick={handleSaveJSONClick}
+        handleSaveHTMLClick={handleSaveHTMLClick}
+        handleSaveCSSClick={handleSaveCSSClick}
         gridParams={gridParams}
         gridControls={gridControls}
         generatorParams={generatorParams}

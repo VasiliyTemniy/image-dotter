@@ -24,7 +24,9 @@ import { MenuItemGroup } from './MenuItemGroup';
  *   handleRedrawGridPreview: () => void,
  *   handleRedrawGridHtmlPreview: () => void,
  *   handlePlayAnimation: () => void,
- *   handleSaveClick: () => void,
+ *   handleSaveJSONClick: () => void,
+ *   handleSaveHTMLClick: () => void,
+ *   handleSaveCSSClick: () => void,
  *   gridParams: GridConfigState,
  *   gridControls: GridConfigControls,
  *   generatorParams: GeneratorConfigState,
@@ -46,7 +48,9 @@ const Menu = ({
   handleRedrawGridPreview,
   handleRedrawGridHtmlPreview,
   handlePlayAnimation,
-  handleSaveClick,
+  handleSaveJSONClick,
+  handleSaveHTMLClick,
+  handleSaveCSSClick,
   gridParams,
   gridControls,
   generatorParams,
@@ -623,7 +627,9 @@ const Menu = ({
             <button className="button" onClick={handleRedrawGridPreview}>Redraw canvas preview</button>
             <button className="button" onClick={handleRedrawGridHtmlPreview}>Redraw html preview</button>
             <button className="button" onClick={handlePlayAnimation}>Play animation</button>
-            <button className="button" onClick={handleSaveClick}>Save output</button>
+            <button className="button" onClick={handleSaveJSONClick}>Save output as JSON</button>
+            <button className="button" onClick={handleSaveHTMLClick}>Save output as HTML</button>
+            <button className="button" onClick={handleSaveCSSClick}>Save CSS example</button>
           </li>
         </ul>
       </nav>
