@@ -112,7 +112,7 @@ const App = () => {
       const contextOutput = outputCanvasRef.current.getContext('2d', { willReadFrequently: true });
       drawGridInCanvas(
         contextOutput,
-        grid,
+        gridOutputRef.current.grid ?? [],
         {
           ...gridParams,
           stroke: gridParams.useStroke ? gridParams.stroke : null,
@@ -512,9 +512,9 @@ const App = () => {
         menuRef={menuRef}
         handleFileSelection={handleFileSelection}
         handleRecalcGrid={recalcGrid}
+        handleRedrawGridPreview={redrawGridPreview}
         handleRedrawGridHtmlPreview={redrawGridHtmlPreview}
         handleSaveClick={handleSaveClick}
-        handleRedrawGridPreview={redrawGridPreview}
         gridParams={gridParams}
         gridControls={gridControls}
         generatorParams={generatorParams}
