@@ -32,6 +32,7 @@ const initialGeneratorConfig = {
   surroundingCells: {
     color: '#325E9F3D',
     colorVariation: 4,
+    alphaVariation: 4,
     height: {
       estimated: 1,
       min: 1,
@@ -214,6 +215,15 @@ export const useGeneratorConfig = (
     _updateSurroundingCells(newSurroundingCells);
   };
 
+  const updateSurroundingCellsAlphaVariation = (value) => {
+    const newSurroundingCells = { ...surroundingCells, alphaVariation: value };
+    if (!value || !Number.isInteger(value) || value < 0 || value > 255) {
+      showNotification('Surrounding cells alpha variation must be a positive integer between 0 and 255', 'error');
+      newSurroundingCells.alphaVariation = initialGeneratorConfig.surroundingCells.alphaVariation;
+    }
+    _updateSurroundingCells(newSurroundingCells);
+  };
+
   const updateSurroundingCellsHeightEstimated = (value) => {
     const newSurroundingCells = { ...surroundingCells, height: { ...surroundingCells.height, estimated: value } };
     if (
@@ -368,6 +378,7 @@ export const useGeneratorConfig = (
       updateSurroundingCells: {
         color: updateSurroundingCellsColor,
         colorVariation: updateSurroundingCellsColorVariation,
+        alphaVariation: updateSurroundingCellsAlphaVariation,
         height: {
           estimated: updateSurroundingCellsHeightEstimated,
           min: updateSurroundingCellsMinHeight,

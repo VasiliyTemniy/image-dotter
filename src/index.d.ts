@@ -77,6 +77,7 @@ export interface GeneratorParams {
   surroundingCells: {
     color: string;
     colorVariation: number;
+    alphaVariation: number;
     height: {
       estimated: number;
       min: number;

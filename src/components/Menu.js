@@ -346,6 +346,16 @@ const Menu = ({
               },
               {
                 tag: 'input',
+                name: 'surrounding-cells-alpha-variation',
+                label: 'Surrounding cells alpha variation',
+                type: 'number',
+                hidden: !generatorParams.useSurroundingCells,
+                disabled: !generatorParams.useSurroundingCells,
+                value: generatorParams.surroundingCells.alphaVariation,
+                updateValue: generatorControls.updateSurroundingCells.alphaVariation
+              },
+              {
+                tag: 'input',
                 name: 'surrounding-cells-height',
                 label: 'Surrounding cells height',
                 type: 'number',

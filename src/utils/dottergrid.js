@@ -177,8 +177,19 @@ export const makeColorGrid = (
     }
     const surroundingCellsColorVariationGenerator = new Generator({
       seed: generatorParams.seed,
-      possibleValues: possibleColorVariationValues,
-      estimated: generatorParams.surroundingCells.colorVariation.estimated
+      possibleValues: possibleColorVariationValues
+    });
+    const possibleAlphaVariationValues = [];
+    for (
+      let i = -generatorParams.surroundingCells.alphaVariation;
+      i <= generatorParams.surroundingCells.alphaVariation;
+      i++
+    ) {
+      possibleAlphaVariationValues.push(i);
+    }
+    const surroundingCellsAlphaVariationGenerator = new Generator({
+      seed: generatorParams.seed,
+      possibleValues: possibleAlphaVariationValues
     });
     grid = handleSurroundingCellsGeneration(
       grid,
@@ -186,6 +197,7 @@ export const makeColorGrid = (
       surroundingCellsDepthGenerator,
       surroundingCellsSpanGenerator,
       surroundingCellsColorVariationGenerator,
+      surroundingCellsAlphaVariationGenerator,
       generatorParams.surroundingCells.color,
       columnsCount,
       rowsCount
@@ -440,6 +452,7 @@ const tryReduceSpan = (
  * @param {Generator} surroundingCellsDepthGenerator
  * @param {Generator} surroundingCellsSpanGenerator
  * @param {Generator} surroundingCellsColorVariationGenerator
+ * @param {Generator} surroundingCellsAlphaVariationGenerator
  * @param {string} surroundingCellsBaseColor
  * @param {number} maxX
  * @param {number} maxY
@@ -451,6 +464,7 @@ const handleSurroundingCellsGeneration = (
   surroundingCellsDepthGenerator,
   surroundingCellsSpanGenerator,
   surroundingCellsColorVariationGenerator,
+  surroundingCellsAlphaVariationGenerator,
   surroundingCellsBaseColor,
   maxX,
   maxY
@@ -552,7 +566,11 @@ const handleSurroundingCellsGeneration = (
           );
 
           // Generate color variation
-          const newColor = generateSurroundingCellColor(surroundingCellsColorVariationGenerator, surroundingCellsBaseColor);
+          const newColor = generateSurroundingCellColor(
+            surroundingCellsColorVariationGenerator,
+            surroundingCellsAlphaVariationGenerator,
+            surroundingCellsBaseColor
+          );
 
           const newCell = [newX, newY, span, newColor];
 
@@ -633,7 +651,11 @@ const handleSurroundingCellsGeneration = (
           const span = generateSurroundingCellSpan(surroundingCellsSpanGenerator, newX, newY, dx, maxX, maxY, occupiedSpaces);
 
           // Generate color variation
-          const newColor = generateSurroundingCellColor(surroundingCellsColorVariationGenerator, surroundingCellsBaseColor);
+          const newColor = generateSurroundingCellColor(
+            surroundingCellsColorVariationGenerator,
+            surroundingCellsAlphaVariationGenerator,
+            surroundingCellsBaseColor
+          );
 
           // Add new cell in that direction
           // Span adjustement - if dx > 0 then newX is the cell start; else - new cell start is newX - (span - 1)
@@ -725,16 +747,21 @@ const generateSurroundingCellSpan = (
  *
  * Attention! Mutates generator internal state
  * @param {Generator} surroundingCellsColorVariationGenerator
+ * @param {Generator} surroundingCellsAlphaVariationGenerator
  * @param {string} surroundingCellsBaseColor
  * @returns {[number, number, number, number]} - rgba
  */
-const generateSurroundingCellColor = (surroundingCellsColorVariationGenerator, surroundingCellsBaseColor) => {
+const generateSurroundingCellColor = (
+  surroundingCellsColorVariationGenerator,
+  surroundingCellsAlphaVariationGenerator,
+  surroundingCellsBaseColor
+) => {
   // No need to recalculate weights manually, because there is no way colorVar cannot be correct
   const redColorVar = surroundingCellsColorVariationGenerator.generateNextValue();
   const greenColorVar = surroundingCellsColorVariationGenerator.generateNextValue();
   const blueColorVar = surroundingCellsColorVariationGenerator.generateNextValue();
   // Consider preventing opacity color variation
-  const opacityColorVar = surroundingCellsColorVariationGenerator.generateNextValue();
+  const opacityColorVar = surroundingCellsAlphaVariationGenerator.generateNextValue();
   // New color is surroundingCellsBaseColor with variations without overflow
   return [
     Math.max(0, Math.min(hexToInt(surroundingCellsBaseColor.substring(1, 3)) + redColorVar, 255)),
