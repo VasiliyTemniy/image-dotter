@@ -535,7 +535,7 @@ const generateSurroundingCellSpan = (
   ({ value: spanValue, valueIndex: spanValueIndex } = surroundingCellsSpanGenerator
     .generateNextValue({ recalculateWeights: false, returnValueIndex: true })
   );
-  const span = adjustSpanForAvailableSpace(newX, newY, dx, maxX, maxY, spanValue, occupiedSpaces);
+  const span = adjustSpanByOccupiedSpace(newX, newY, dx, maxX, maxY, spanValue, occupiedSpaces);
   ({ valueIndex: spanValueIndex } = surroundingCellsSpanGenerator
     .overridePrevValue({ value: span }, { recalculateWeights: false, returnValueIndex: true })
   );
@@ -597,7 +597,7 @@ const isSpaceAvailable = (x, y, maxX, maxY, occupiedSpaces) => {
  * @param {Set<string>} occupiedSpaces
  * @returns {number}
  */
-const adjustSpanForAvailableSpace = (x, y, dx, maxX, maxY, span, occupiedSpaces) => {
+const adjustSpanByOccupiedSpace = (x, y, dx, maxX, maxY, span, occupiedSpaces) => {
   let adjustedSpan = span;
   for (let i = 1; i <= span; i++) {
     if (
