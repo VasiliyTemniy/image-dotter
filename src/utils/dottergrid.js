@@ -85,15 +85,6 @@ export const makeColorGrid = (
   const icGreen = ignoreColor ? hexToInt(ignoreColor.color.substring(3, 5)) : 0;
   const icBlue = ignoreColor ? hexToInt(ignoreColor.color.substring(5, 7)) : 0;
 
-  /** @type {Generator | null} */
-  let mainPaletteGenerator = null;
-  if (generatorParams.mainPalette !== null) {
-    mainPaletteGenerator = new Generator({
-      seed: generatorParams.seed,
-      possibleValues: generatorParams.mainPalette
-    });
-  }
-
   // First, we handle square cells - every cell span is exactly 1
   for (let row = 0; row < rowsCount; row++) {
     /** @type {DotterIntermediateCell[]} */
@@ -115,14 +106,6 @@ export const makeColorGrid = (
       ) {
         continue;
       }
-      if (mainPaletteGenerator !== null) {
-        const generatedColor = mainPaletteGenerator.generateNextValue();
-        const gcRed = hexToInt(generatedColor.substring(1, 3));
-        const gcGreen = hexToInt(generatedColor.substring(3, 5));
-        const gcBlue = hexToInt(generatedColor.substring(5, 7));
-        const gcOpacity = hexToInt(generatedColor.substring(7, 9));
-        color = [gcRed, gcGreen, gcBlue, gcOpacity];
-      }
       gridrow.push([column, row, 1, color]);
     }
     if (gridrow.length > 0) {
@@ -140,7 +123,20 @@ export const makeColorGrid = (
       possibleValues: possibleValues,
       estimated: generatorParams.cellSpan.estimated
     });
-    grid = handleCellSpanGeneration(grid, spanGenerator);
+    const trueFalseGenerator = new Generator({
+      seed: generatorParams.seed,
+      possibleValues: [true, false]
+    });
+    grid = handleCellSpanGeneration(grid, spanGenerator, trueFalseGenerator);
+  }
+
+  if (generatorParams.mainPalette !== null) {
+    const mainPaletteGenerator = new Generator({
+      seed: generatorParams.seed,
+      possibleValues: generatorParams.mainPalette
+    });
+
+    grid = handleColorGeneration(grid, mainPaletteGenerator);
   }
 
   if (generatorParams.surroundingCells !== null) {
@@ -610,6 +606,40 @@ const adjustSpanByOccupiedSpace = (x, y, dx, maxX, maxY, span, occupiedSpaces) =
     }
   }
   return adjustedSpan;
+};
+
+/**
+ * Maps the grid, generates color for each grid cell based on mainPaletteGenerator
+ * @param {DotterIntermediateCell[][]} baseGrid
+ * @param {Generator} generator mainPaletteGenerator
+ * @returns {DotterIntermediateCell[][]}
+ */
+const handleColorGeneration = (baseGrid, generator) => {
+  const grid = [];
+  for (let i = 0; i < baseGrid.length; i++) {
+    const gridRow = [];
+    for (let j = 0; j < baseGrid[i].length; j++) {
+      const newColor = generateCellColor(generator);
+      const cell = baseGrid[i][j];
+      gridRow.push([cell[0], cell[1], cell[2], newColor]);
+    }
+    grid.push(gridRow);
+  }
+  return grid;
+};
+
+/**
+ * Generates color based on main palette generator
+ * @param {Generator} generator
+ * @returns {[number, number, number, number]} - rgba
+ */
+const generateCellColor = (generator) => {
+  const generatedColor = generator.generateNextValue();
+  const gcRed = hexToInt(generatedColor.substring(1, 3));
+  const gcGreen = hexToInt(generatedColor.substring(3, 5));
+  const gcBlue = hexToInt(generatedColor.substring(5, 7));
+  const gcOpacity = hexToInt(generatedColor.substring(7, 9));
+  return [gcRed, gcGreen, gcBlue, gcOpacity];
 };
 
 /**
