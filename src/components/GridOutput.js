@@ -116,7 +116,6 @@ const GridOutput = forwardRef((props, refs) => {
       <div id="background" className="grid-output__background" ref={backgroundRef}>
         <div id="container" className="grid-output__container" ref={containerRef}>
           {MemoizedGrid}
-          {/* <MemoizedGrid grid={grid} gridHtmlParams={gridHtmlParams} containerRef={containerRef}/> */}
         </div>
       </div>
     </div>
