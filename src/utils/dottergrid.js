@@ -591,6 +591,14 @@ const handleVerticalSurroundingCellsGeneration = (
           // Surrounding cells coordinates
           const newY = baseCellY + step * dy;
 
+          // Early return if some cell is already directly in the way
+          for (let spanIndex = 0; spanIndex < baseCellSpan; spanIndex++) {
+            if (!isSpaceAvailable(baseCellX + spanIndex, newY, maxX, maxY, occupiedSpaces)) {
+              resultHeight = step - 1;
+              break; // Stop in this direction if blocked
+            }
+          }
+
           // Roll for left side of this new surrounding cell. At this point, it's a preferred newX
           let newX = baseCellX
             - surroundingCellsSpanGenerator.generateNextValue()
