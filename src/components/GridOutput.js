@@ -7,17 +7,6 @@ import { switchClasses } from '../utils/html';
  * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
  */
 
-/**
- * @type {React.ForwardRefExoticComponent<React.RefAttributes<{
- *   drawHtmlPreview: (gridHtmlParams: GridHtmlVisualParams, animationParams: AnimationParams) => void,
- *   setSize: (width: number, height: number) => void,
- *   backgroundRef: React.MutableRefObject<HTMLDivElement>,
- *   grid: DotterCell[][],
- *   setGrid: React.Dispatch<React.SetStateAction<DotterCell[][]>>,
- *   setForceRerender: React.Dispatch<React.SetStateAction<boolean>>,
- *   playAnimation: () => void
- * }>>}
- */
 const GridOutput = forwardRef((props, refs) => {
   const [grid, setGrid] = useState([]);
   const [gridHtmlParams, setGridHtmlParams] = useState({});
