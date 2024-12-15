@@ -302,6 +302,7 @@ const App = () => {
     const canvasStyle = window.getComputedStyle(inputCanvasRef.current);
     const canvasContainerStyle = window.getComputedStyle(inputCanvasRef.current.parentElement);
 
+    // It is somewhat ok-ish now for fitBothCanvasInOneRow, handling the exact unavailable for this case space would take too much boilerplate
     unavailableWidth += Number(canvasStyle.borderLeftWidth.replace('px', ''));
     unavailableWidth += Number(canvasStyle.borderRightWidth.replace('px', ''));
     unavailableWidth += Number(canvasStyle.paddingLeft.replace('px', ''));
@@ -316,6 +317,7 @@ const App = () => {
     unavailableWidth += Number(canvasContainerStyle.marginRight.replace('px', ''));
 
     let availableScreenWidth = windowWidth - unavailableWidth;
+    let availableHtmlScreenWidth = windowWidth - unavailableWidth;
 
     if (fitBothCanvasInOneRow) {
       availableScreenWidth = Math.floor((availableScreenWidth - unavailableWidth) / 2);
@@ -327,33 +329,51 @@ const App = () => {
       } else {
         availableScreenWidth -= menuRef.current.offsetWidth;
       }
+      availableHtmlScreenWidth -= menuRef.current.offsetWidth;
     }
 
+    let newCanvasWidth;
+    let newCanvasHeight;
+    let newHtmlContainerWidth;
+    let newHtmlContainerHeight;
+
     if (stretchCanvas && localWidth <= availableScreenWidth) {
-      inputCanvasRef.current.width = availableScreenWidth;
-      inputCanvasRef.current.height = Math.floor(localHeight * (availableScreenWidth / localWidth));
+      newCanvasWidth = availableScreenWidth;
+      newCanvasHeight = Math.floor(localHeight * (availableScreenWidth / localWidth));
+      newHtmlContainerWidth = availableHtmlScreenWidth;
+      newHtmlContainerHeight = Math.floor(localHeight * (availableHtmlScreenWidth / localWidth));
     } else if (!stretchCanvas && localWidth <= availableScreenWidth) {
-      inputCanvasRef.current.width = localWidth;
-      inputCanvasRef.current.height = localHeight;
+      newCanvasWidth = localWidth;
+      newCanvasHeight = localHeight;
+      newHtmlContainerWidth = localWidth;
+      newHtmlContainerHeight = localHeight;
     } else if (screenOverflow && localWidth > availableScreenWidth) {
       if (!inputCanvasRef.current.parentElement.classList.contains('overflow-x-scroll')) {
         inputCanvasRef.current.parentElement.classList.add('overflow-x-scroll');
       }
-      inputCanvasRef.current.width = localWidth;
-      inputCanvasRef.current.height = localHeight;
+      newCanvasWidth = localWidth;
+      newCanvasHeight = localHeight;
+      newHtmlContainerWidth = localWidth;
+      newHtmlContainerHeight = localHeight;
     } else if (!screenOverflow && localWidth > availableScreenWidth) {
-      inputCanvasRef.current.width = availableScreenWidth;
-      inputCanvasRef.current.height = Math.floor(localHeight * (availableScreenWidth / localWidth));
+      newCanvasWidth = availableScreenWidth;
+      newCanvasHeight = Math.floor(localHeight * (availableScreenWidth / localWidth));
+      newHtmlContainerWidth = availableHtmlScreenWidth;
+      newHtmlContainerHeight = Math.floor(localHeight * (availableHtmlScreenWidth / localWidth));
     } else {
-      inputCanvasRef.current.width = localWidth;
-      inputCanvasRef.current.height = localHeight;
+      newCanvasWidth = localWidth;
+      newCanvasHeight = localHeight;
+      newHtmlContainerWidth = localWidth;
+      newHtmlContainerHeight = localHeight;
     }
 
-    outputCanvasRef.current.width = inputCanvasRef.current.width;
-    outputCanvasRef.current.height = inputCanvasRef.current.height;
+    inputCanvasRef.current.width = newCanvasWidth;
+    inputCanvasRef.current.height = newCanvasHeight;
+    outputCanvasRef.current.width = newCanvasWidth;
+    outputCanvasRef.current.height = newCanvasHeight;
 
     // Do the same with html grid
-    gridOutputRef.current.setSize(inputCanvasRef.current.width, inputCanvasRef.current.height);
+    gridOutputRef.current.setSize(newHtmlContainerWidth, newHtmlContainerHeight);
 
     let localRowsCount = gridParams.rowsCount;
     let localColumnsCount = gridParams.columnsCount;
