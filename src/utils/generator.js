@@ -80,6 +80,14 @@ export class Generator {
   }
 
   /**
+   * Returns possible values
+   * @returns {any[]}
+   */
+  getPossibleValues () {
+    return this.#possibleValues;
+  }
+
+  /**
    * Calculates initial weights based on estimated value
    * @returns {number[]} new weights
    */
