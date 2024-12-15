@@ -1,4 +1,7 @@
+import { MenuInputItem } from './MenuInputItem.js';
 import { MenuItemGroup } from './MenuItemGroup';
+import { LightSvg } from '../assets/light.js';
+import { DarkSvg } from '../assets/dark.js';
 
 /**
  * @typedef {import('../index.d.ts').GridConfigState} GridConfigState
@@ -73,6 +76,19 @@ const Menu = ({
           <span>I</span><span style={{ color: '#ff0000' }}>Dotter</span>
         </h2>
         <ul className='container flex column gap-05rem' style={{ paddingTop: '1rem' }}>
+          <MenuInputItem
+            item={{
+              type: 'switch',
+              name: 'theme',
+              label: 'Theme',
+              value: values.theme === 'dark',
+              updateValue: valueHandlers.toggleTheme,
+              textLeft: 'LI',
+              textRight: 'DK',
+              svgLeft: LightSvg,
+              svgRight: DarkSvg,
+            }}
+          />
           <li className="file-input">
             <label
               htmlFor="file-input"

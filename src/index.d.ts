@@ -152,7 +152,7 @@ export type DotterIntermediateCell = [
 
 export interface MenuItem {
   tag: 'input' | 'select' | 'div';
-  type: 'text' | 'color' | 'number' | 'checkbox';
+  type: 'text' | 'color' | 'number' | 'checkbox' | 'switch';
   metaType: 'generator-group' | null;
   name: string;
   value: string;
@@ -168,4 +168,8 @@ export interface MenuItem {
     value: string;
     label: string;
   }[];
+  textLeft?: string;
+  svgLeft?: React.FC<React.SVGProps<SVGSVGElement>>;
+  textRight?: string;
+  svgRight?: React.FC<React.SVGProps<SVGSVGElement>>;
 };

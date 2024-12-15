@@ -19,6 +19,7 @@ import './styles/flex.css';
 import './styles/container.css';
 import './styles/main.css';
 import './styles/color-picker.css';
+import './styles/switch.css';
 import { pipetteHexText, pipetteRGBAText } from './utils/color';
 import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 import { useGridConfig } from './hooks/useGridConfig.js';
@@ -28,6 +29,7 @@ import { useLayoutConfig } from './hooks/useLayoutConfig.js';
 import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
 import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
 import { gridCss } from './examples/gridCss.js';
+import { getLocalStorageMap } from './utils/storage.js';
 
 
 /**
@@ -64,6 +66,13 @@ import { gridCss } from './examples/gridCss.js';
  * 1. Rewrite grid handling from functions to gridHandler class. Could be more efficient, could be hemorroidal to handle it together with React
  */
 
+/**
+ * @type {'light' | 'dark'}
+ */
+const storageTheme = getLocalStorageMap('image-dotter-theme', {
+  theme: 'light'
+}).theme;
+
 const App = () => {
 
   const [menuOpen, setMenuOpen] = useState(true);
@@ -79,6 +88,8 @@ const App = () => {
   const [message, setMessage] = useState({ text : null, type : null, timeoutId : null, shown : false });
 
   const [image, setImage] = useState(null);
+
+  const [theme, setTheme] = useState(storageTheme);
 
   const showNotification = (text, type) => {
     if (message.timeoutId) {
@@ -466,6 +477,10 @@ const App = () => {
     redrawGridPreview({});
   };
 
+  const toggleTheme = (_value) => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
   const handleFileSelection = async (e) => {
     e.preventDefault();
     if (!e.target.files || !e.target.files[0]) {
@@ -608,7 +623,8 @@ const App = () => {
           htmlBackgroundColor,
           alwaysRecalcGrid,
           alwaysRedrawCanvas,
-          alwaysRedrawHtml
+          alwaysRedrawHtml,
+          theme
         }}
         valueHandlers={{
           updateBackgroundColorsBound,
@@ -616,7 +632,8 @@ const App = () => {
           updateHtmlBackgroundColor,
           updateAlwaysRecalcGrid,
           updateAlwaysRedrawCanvas,
-          updateAlwaysRedrawHtml
+          updateAlwaysRedrawHtml,
+          toggleTheme
         }}
         refs={{
           pipetteRGBARef,

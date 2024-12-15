@@ -1,0 +1,119 @@
+.switch-input {
+  width: 3.4rem;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  user-select: none;
+  text-align: left;
+  overflow: hidden;
+  --width: 3.2rem;
+  --height: 1.5rem;
+  --font-size: 1rem;
+  --svg-size: 1rem;
+}
+
+.switch-input.disabled, .switch-input.disabled::before {
+  cursor: not-allowed;
+}
+
+.switch-input .switch-input__field {
+  display: none;
+}
+
+.switch-input .switch-input__label {
+  display: block;
+  width: var(--width);
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 20px;
+  margin: 0;
+  border: 1px solid gray;
+  background: #E3E3E3;
+}
+
+.switch-input .switch-input__label__inner {
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 200ms ease-in-out 0s;
+}
+
+.switch-input .switch-input__label__inner::before,
+.switch-input .switch-input__label__inner::after {
+  display: block;
+  float: left;
+  width: 50%;
+  height: var(--height);
+  padding: 0;
+  line-height: var(--height);
+  font-size: var(--font-size);
+  font-weight: bold;
+  box-sizing: border-box;
+}
+
+.switch-input .switch-input__label__inner::before {
+  content: attr(data-textleft);
+  text-transform: uppercase;
+  padding-left: calc(var(--height) * 0.3);
+}
+
+.switch-input .switch-input__label__left {
+  position: absolute;
+  top: 50%;
+  /* left: calc(var(--svg-size) * 0.5); */
+  left: calc(var(--svg-size) * 0.5 - 3px); /* 3px correction for particular svg */
+  width: var(--svg-size);
+  height: var(--svg-size);
+  transform: translateY(-50%);
+  margin: 0 -2rem;
+  transition: margin 200ms ease-in-out 0s;
+}
+
+.switch-input .switch-input__label__inner::after {
+  content: attr(data-textright);
+  text-transform: uppercase;
+  padding-right: calc(var(--height) * 0.3);
+  text-align: right;
+}
+
+.switch-input .switch-input__label__right {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--svg-size) * 0.5);
+  width: var(--svg-size);
+  height: var(--svg-size);
+  transform: translateY(-50%);
+  margin: 0 0;
+  transition: margin 200ms ease-in-out 0s;
+}
+
+.switch-input .switch-input__label__thumb {
+  --thumb-size: calc(var(--height) * 0.7);
+  display: block;
+  height: var(--thumb-size);
+  width: var(--thumb-size);
+  position: absolute;
+  top: calc((var(--height) - var(--thumb-size)) * 0.5);
+  bottom: 0;
+  left: calc((var(--height) - var(--thumb-size)) * 0.5);
+  border-radius: calc(var(--height) * 0.6);
+  transition: left 200ms ease-in-out, right 200ms ease-in-out;
+  border: 1px solid gray;
+  background: #FCFCFC;
+}
+
+.switch-input .switch-input__field:checked + .switch-input__label .switch-input__label__inner {
+  margin-left: 0;
+}
+
+.switch-input .switch-input__field:checked + .switch-input__label .switch-input__label__left {
+  margin: 0 0;
+}
+
+.switch-input .switch-input__field:checked + .switch-input__label .switch-input__label__right {
+  margin: 0 -2rem;
+}
+
+.switch-input .switch-input__field:checked + .switch-input__label .switch-input__label__thumb {
+  left: calc(var(--width) - (var(--height) + var(--thumb-size)) * 0.5);
+}
