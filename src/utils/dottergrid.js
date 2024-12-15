@@ -469,7 +469,10 @@ const handleSurroundingCellsGeneration = (
   maxX,
   maxY
 ) => {
-  // Track occupied coordinates
+  /**
+   * Tracks occupied coordinates
+   * @type {Set<string>}
+   */
   const occupiedSpaces = new Set();
 
   // Initialize occupied spaces from original grid
@@ -479,25 +482,83 @@ const handleSurroundingCellsGeneration = (
     }
   }
 
+  const { baseVAppendedGrid, vAppendedCellsMap } = handleVerticalSurroundingCellsGeneration(
+    baseGrid,
+    occupiedSpaces,
+    surroundingCellsHeightGenerator,
+    surroundingCellsSpanGenerator,
+    surroundingCellsColorVariationGenerator,
+    surroundingCellsAlphaVariationGenerator,
+    surroundingCellsBaseColor,
+    maxX,
+    maxY
+  );
+
+  const { baseHAppendedGrid, hAppendedCellsMap } = handleHorizontalSurroundingCellsGeneration(
+    baseVAppendedGrid,
+    occupiedSpaces,
+    vAppendedCellsMap,
+    surroundingCellsDepthGenerator,
+    surroundingCellsSpanGenerator,
+    surroundingCellsColorVariationGenerator,
+    surroundingCellsAlphaVariationGenerator,
+    surroundingCellsBaseColor,
+    maxX,
+    maxY
+  );
+
+  // Then, fill in the gaps that could happen between baseGrid and all those surrounding cells because of skipped small span cells
+  return fillGridGaps(
+    baseHAppendedGrid,
+    vAppendedCellsMap,
+    hAppendedCellsMap,
+    surroundingCellsSpanGenerator.getPossibleValues()[0]
+  );
+};
+
+/**
+ * Handles the vertical part of surrounding cells generation\
+ * Best used before the horizontal part
+ *
+ * Attention! Mutates the provided occupied spaces set and all the generators internal state
+ * @param {DotterIntermediateCell[][]} baseGrid
+ * @param {Set<string>} occupiedSpaces
+ * @param {Generator} surroundingCellsHeightGenerator
+ * @param {Generator} surroundingCellsSpanGenerator
+ * @param {Generator} surroundingCellsColorVariationGenerator
+ * @param {Generator} surroundingCellsAlphaVariationGenerator
+ * @param {string} surroundingCellsBaseColor
+ * @param {number} maxX
+ * @param {number} maxY
+ * @returns {{ baseVAppendedGrid: DotterIntermediateCell[][], vAppendedCellsMap: Map<DotterIntermediateCell, number> }}
+ */
+const handleVerticalSurroundingCellsGeneration = (
+  baseGrid,
+  occupiedSpaces,
+  surroundingCellsHeightGenerator,
+  surroundingCellsSpanGenerator,
+  surroundingCellsColorVariationGenerator,
+  surroundingCellsAlphaVariationGenerator,
+  surroundingCellsBaseColor,
+  maxX,
+  maxY,
+) => {
   /** @type {DotterIntermediateCell[][]} */
   const grid = [];
-
-  /** @type {DotterIntermediateCell[][]} */
-  const baseVAppendedGrid = [];
   for (let i = 0; i < maxY + 1; i++) {
-    baseVAppendedGrid.push([]);
+    grid.push([]);
   }
   /**
    * Map: key represents vertically appended cell,
    * value represents vertical depth
    * @type {Map<DotterIntermediateCell, number>}
    */
-  const verticalAppendedCellsMap = new Map();
+  const vAppendedCellsMap = new Map();
 
-  // Directions: left, right
-  const directions = [
-    -1, 1
-  ];
+  /** up, down @type {[-1, 1]} */
+  const directions = [-1, 1];
+
+  const possibleSpanValues = surroundingCellsSpanGenerator.getPossibleValues();
 
   for (let row = 0; row < baseGrid.length; row++) {
     const baseGridRow = baseGrid[row];
@@ -506,7 +567,7 @@ const handleSurroundingCellsGeneration = (
       const [baseCellX, baseCellY, baseCellSpan, _baseCellColor] = baseCell;
 
       // BaseCellY must exist here
-      baseVAppendedGrid[baseCellY].push(baseCell);
+      grid[baseCellY].push(baseCell);
 
       // Try each direction
       for (const dy of directions) {
@@ -562,8 +623,15 @@ const handleSurroundingCellsGeneration = (
             1, // In this case, dx is always 1 - right direction
             maxX,
             maxY,
-            occupiedSpaces
+            occupiedSpaces,
+            possibleSpanValues
           );
+
+          // If some cell was generated with a span less than possible value
+          if (span === 0) {
+            resultHeight = step - 1;
+            break;
+          }
 
           // Generate color variation
           const newColor = generateSurroundingCellColor(
@@ -575,13 +643,13 @@ const handleSurroundingCellsGeneration = (
           const newCell = [newX, newY, span, newColor];
 
           // BaseCellY must exist here
-          baseVAppendedGrid[newY].push(newCell);
+          grid[newY].push(newCell);
 
           // Add to occupied spaces
           appendOccupiedSpaces(occupiedSpaces, newCell);
 
           // Add to vertical appended cells map
-          verticalAppendedCellsMap.set(newCell, step); // Consider changing step -> step * dy... is it needed?
+          vAppendedCellsMap.set(newCell, step); // Consider changing step -> step * dy... is it needed?
         }
 
         ({ valueIndex: heightValueIndex } = surroundingCellsHeightGenerator
@@ -593,12 +661,57 @@ const handleSurroundingCellsGeneration = (
   }
 
   // Sort the vertically appended base grid rows by x coordinate
-  for (let row = 0; row < baseVAppendedGrid.length; row++) {
-    baseVAppendedGrid[row].sort((a, b) => a[0] - b[0]);
+  for (let row = 0; row < grid.length; row++) {
+    grid[row].sort((a, b) => a[0] - b[0]);
   }
 
-  for (let row = 0; row < baseVAppendedGrid.length; row++) {
-    const baseGridRow = baseVAppendedGrid[row];
+  return { baseVAppendedGrid: grid, vAppendedCellsMap };
+};
+
+/**
+ * Handles the horizontal part of surrounding cells generation\
+ * Best used after the vertical part
+ *
+ * Attention! Mutates the provided occupied spaces set and all the generators internal state
+ * @param {DotterIntermediateCell[][]} baseGrid
+ * @param {Set<string>} occupiedSpaces
+ * @param {Map<DotterIntermediateCell, number>} vAppendedCellsMap
+ * @param {Generator} surroundingCellsDepthGenerator
+ * @param {Generator} surroundingCellsSpanGenerator
+ * @param {Generator} surroundingCellsColorVariationGenerator
+ * @param {Generator} surroundingCellsAlphaVariationGenerator
+ * @param {string} surroundingCellsBaseColor
+ * @param {number} maxX
+ * @param {number} maxY
+ * @returns {DotterIntermediateCell[][]} baseHAppendedGrid
+ */
+const handleHorizontalSurroundingCellsGeneration = (
+  baseGrid,
+  occupiedSpaces,
+  vAppendedCellsMap,
+  surroundingCellsDepthGenerator,
+  surroundingCellsSpanGenerator,
+  surroundingCellsColorVariationGenerator,
+  surroundingCellsAlphaVariationGenerator,
+  surroundingCellsBaseColor,
+  maxX,
+  maxY,
+) => {
+  /** @type {DotterIntermediateCell[][]} */
+  const grid = [];
+  /**
+   * Map: key represents horizontally appended cell,
+   * value represents horizontal depth
+   * @type {Map<DotterIntermediateCell, number>}
+   */
+  const hAppendedCellsMap = new Map();
+
+  const possibleSpanValues = surroundingCellsSpanGenerator.getPossibleValues();
+  /** left, right @type {[-1, 1]} */
+  const directions = [-1, 1];
+
+  for (let row = 0; row < baseGrid.length; row++) {
+    const baseGridRow = baseGrid[row];
     if (baseGridRow.length === 0) {
       continue;
     }
@@ -617,8 +730,8 @@ const handleSurroundingCellsGeneration = (
         );
 
         // If this cell was vertically added to the original baseGrid, subtract its (height level from original) from depth
-        if (verticalAppendedCellsMap.has(baseCell)) {
-          depthValue -= verticalAppendedCellsMap.get(baseCell);
+        if (vAppendedCellsMap.has(baseCell)) {
+          depthValue -= vAppendedCellsMap.get(baseCell);
         }
 
         if (depthValue <= 0) {
@@ -648,7 +761,22 @@ const handleSurroundingCellsGeneration = (
           }
 
           // Generate span
-          const span = generateSurroundingCellSpan(surroundingCellsSpanGenerator, newX, newY, dx, maxX, maxY, occupiedSpaces);
+          const span = generateSurroundingCellSpan(
+            surroundingCellsSpanGenerator,
+            newX,
+            newY,
+            dx,
+            maxX,
+            maxY,
+            occupiedSpaces,
+            possibleSpanValues
+          );
+
+          // If some cell was generated with a span less than possible value
+          if (span === 0) {
+            resultDepth = step - 1;
+            break;
+          }
 
           // Generate color variation
           const newColor = generateSurroundingCellColor(
@@ -673,6 +801,7 @@ const handleSurroundingCellsGeneration = (
             cellSurroundResult.unshift(newSurroundingCell);
           }
           appendOccupiedSpaces(occupiedSpaces, newSurroundingCell);
+          hAppendedCellsMap.set(newSurroundingCell, step);
 
           // newX for the next surrounding cell. Adjusted here because it's the only place where
           // A. span is known and B. newX can be already overridden
@@ -685,6 +814,90 @@ const handleSurroundingCellsGeneration = (
         surroundingCellsDepthGenerator.recalculateWeights(depthValueIndex);
       }
       gridRow.push(...cellSurroundResult);
+    }
+
+    grid.push(gridRow);
+  }
+
+  return { baseHAppendedGrid: grid, hAppendedCellsMap };
+};
+
+/**
+ * Traverses through the base grid, fills gaps between base cells and appended surrounding cells
+ *
+ * @param {DotterIntermediateCell[][]} baseGrid
+ * @param {Map<DotterIntermediateCell, number>} hAppendedCellsMap
+ * @param {Map<DotterIntermediateCell, number>} vAppendedCellsMap
+ * @param {number} minSpan
+ * @returns {DotterIntermediateCell[][]}
+ */
+const fillGridGaps = (baseGrid, hAppendedCellsMap, vAppendedCellsMap, minSpan) => {
+  /** @type {DotterIntermediateCell[][]} */
+  const grid = [];
+  /** @type {DotterIntermediateCell[][]} */
+  const baseRFilledGrid = [];
+
+  // First iter - fill all the gaps on the right side
+  for (let i = 0; i < baseGrid.length; i++) {
+    const gridRow = [];
+    for (let j = 0; j < baseGrid[i].length; j++) {
+      const cell = baseGrid[i][j];
+
+      if (
+        // If the cell is not 'surrounding' cell that was appended to the base grid
+        (!hAppendedCellsMap.has(cell) && !vAppendedCellsMap.has(cell)) ||
+        // Or if its the end of the row
+        j === baseGrid[i].length - 1
+      ) {
+        gridRow.push(cell);
+        continue;
+      }
+
+      const nextCell = baseGrid[i][j + 1];
+      const [cellX, cellY, cellSpan, cellColor] = cell;
+
+      const rightGap = nextCell[0] - (cellX + cellSpan);
+      // If there is a gap between the current cell and the next one that is equal to minSpan or less
+      if (rightGap <= minSpan) { // same as if (cellX + cellSpan + minSpan >= nextCell[0])
+        // Then we fill the gap by increasing this cells' span by the gap
+        gridRow.push([cellX, cellY, cellSpan + rightGap, cellColor]);
+      } else {
+        gridRow.push(cell);
+      }
+    }
+    baseRFilledGrid.push(gridRow);
+  }
+
+  // Second iter - fill all the gaps on the left side
+  for (let i = 0; i < baseRFilledGrid.length; i++) {
+    const gridRow = [];
+    for (let j = 0; j < baseRFilledGrid[i].length; j++) {
+      /** Base cell is needed here to check if it's one of the appended cells */
+      const baseCell = baseGrid[i][j];
+      const cell = baseRFilledGrid[i][j];
+
+      if (
+        // If its the start of the row
+        j === 0 ||
+        // Or if the cell is not 'surrounding' cell that was appended to the base grid
+        (!hAppendedCellsMap.has(baseCell) && !vAppendedCellsMap.has(baseCell))
+      ) {
+        // While we've checked by the base cell ref, we add the cell from already edited array
+        gridRow.push(cell);
+        continue;
+      }
+
+      const [cellX, cellY, cellSpan, cellColor] = cell;
+
+      const prevCell = baseRFilledGrid[i][j - 1];
+      // If the gap between the current cell and the previous one is equal to minSpan or less
+      const leftGap = cellX - (prevCell[0] + prevCell[2]);
+      if (leftGap <= minSpan) {
+        // Then we fill the gap by increasing this cells' span and moving it to the left by the gap
+        gridRow.push([cellX - leftGap, cellY, cellSpan + leftGap, cellColor]);
+      } else {
+        gridRow.push(cell);
+      }
     }
 
     grid.push(gridRow);
@@ -717,6 +930,7 @@ const appendOccupiedSpaces = (occupiedSpaces, cell) => {
  * @param {number} maxX
  * @param {number} maxY
  * @param {Set<string>} occupiedSpaces
+ * @param {number[]} possibleSpanValues
  * @returns {number}
  */
 const generateSurroundingCellSpan = (
@@ -726,7 +940,8 @@ const generateSurroundingCellSpan = (
   dx,
   maxX,
   maxY,
-  occupiedSpaces
+  occupiedSpaces,
+  possibleSpanValues
 ) => {
   // Generate span and adjust if needed
   let spanValue, spanValueIndex;
@@ -734,6 +949,10 @@ const generateSurroundingCellSpan = (
     .generateNextValue({ recalculateWeights: false, returnValueIndex: true })
   );
   const span = adjustSpanByOccupiedSpace(newX, newY, dx, maxX, maxY, spanValue, occupiedSpaces);
+  if (span < possibleSpanValues[0]) {
+    // Just return 0 to skip it, recombine after the main generation loop
+    return 0;
+  }
   ({ valueIndex: spanValueIndex } = surroundingCellsSpanGenerator
     .overridePrevValue({ value: span }, { recalculateWeights: false, returnValueIndex: true })
   );
