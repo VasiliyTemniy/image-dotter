@@ -17,7 +17,7 @@ const MenuColorPickerItem = ({ item }) => {
   if (folded) {
     return (
       <div
-        className='container padding-1rem border-black-1px bg-lightgray color-picker foldable folded'
+        className='container padding-1rem border-black-1px bg-secondary color-picker foldable folded'
         style={{ width: '100%', marginBottom: '1.5rem' }}
       >
         <div className="title" onClick={() => setFolded(!folded)} style={item.labelStyle}>
@@ -30,7 +30,7 @@ const MenuColorPickerItem = ({ item }) => {
 
   return (
     <div
-      className='container padding-1rem border-black-1px width-fit-content bg-lightgray color-picker foldable'
+      className='container padding-1rem border-black-1px width-fit-content bg-secondary color-picker foldable'
       style={{ width: '100%', marginBottom: '1rem' }}
     >
       <div className="title" onClick={() => setFolded(!folded)} style={item.labelStyle}>

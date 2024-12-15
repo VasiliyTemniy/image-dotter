@@ -109,7 +109,7 @@ const GridOutput = forwardRef((props, refs) => {
   , [grid, gridHtmlParams, containerRef, forceRerender]);
 
   return (
-    <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
+    <div className='container padding-1rem border-black-1px width-fit-content bg-main margin-1rem'>
       <div className='title'>
         HTML Output
       </div>

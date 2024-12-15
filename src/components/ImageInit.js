@@ -113,7 +113,7 @@ const ImageInit = ({
         </div>
       </div>
       <div className={`container ${layoutParams.fitBothCanvasInOneRow ? 'flex wrap' : 'flex column'}`}>
-        <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
+        <div className='container padding-1rem border-black-1px width-fit-content bg-main margin-1rem'>
           <div className='title'>
             Input image canvas
           </div>
@@ -127,7 +127,7 @@ const ImageInit = ({
             Your browser does not support the HTML5 canvas tag.
           </canvas>
         </div>
-        <div className='container padding-1rem border-black-1px width-fit-content bg-white margin-1rem'>
+        <div className='container padding-1rem border-black-1px width-fit-content bg-main margin-1rem'>
           <div className='title'>
             Output grid preview canvas
           </div>

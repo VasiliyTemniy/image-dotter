@@ -32,7 +32,7 @@
 }
 
 .container.border-black-1px {
-  border: 1px solid black;
+  border: 1px solid var(--border-color);
   border-radius: 0.25rem;
 }
 
@@ -41,21 +41,21 @@
   top: -0.8rem;
   padding: 0 0.25rem;
   left: 1rem;
-  border: 1px solid black;
+  border: 1px solid var(--border-color);
   border-radius: 0.25rem;
 }
 
-.container.bg-white,
-.container.bg-white > .title {
-  background: white;
+.container.bg-main,
+.container.bg-main > .title {
+  background: var(--background-color);
 }
 
-.container.bg-lightgray {
-  background: #e3e3e380;
+.container.bg-secondary {
+  background: var(--background-secondary-color);
 }
 
-.container.bg-lightgray > .title {
-  background: #e3e3e3;
+.container.bg-secondary > .title {
+  background: var(--accent-color);
 }
 
 .container.foldable > .title {
@@ -64,7 +64,7 @@
 }
 
 .container.foldable > .title:hover {
-  color: blue;
+  color: var(--deep-accent-color);
 }
 
 .container.folded {

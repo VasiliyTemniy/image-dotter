@@ -81,12 +81,13 @@ const Menu = ({
               type: 'switch',
               name: 'theme',
               label: 'Theme',
-              value: values.theme === 'dark',
+              value: values.theme === 'light',
               updateValue: valueHandlers.toggleTheme,
               textLeft: 'LI',
               textRight: 'DK',
               svgLeft: LightSvg,
               svgRight: DarkSvg,
+              style: { marginBottom: '0.5rem' },
             }}
           />
           <li className="file-input">

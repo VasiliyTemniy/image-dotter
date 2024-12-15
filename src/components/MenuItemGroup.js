@@ -38,7 +38,7 @@ const MenuItemGroup = ({
     tag === 'div'
       ? <div
         className={
-          'container flex column gap-1rem bg-lightgray padding-1rem border-black-1px' +
+          'container flex column gap-1rem bg-secondary padding-1rem border-black-1px' +
           (foldable ? ' foldable' : '') +
           (folded ? ' folded' : '')
         }
@@ -52,7 +52,7 @@ const MenuItemGroup = ({
       </div>
       : <li
         className={
-          'container flex column gap-1rem bg-lightgray padding-1rem border-black-1px' +
+          'container flex column gap-1rem bg-secondary padding-1rem border-black-1px' +
           (foldable ? ' foldable' : '') +
           (folded ? ' folded' : '')
         }

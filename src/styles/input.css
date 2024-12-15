@@ -6,9 +6,13 @@ input[type="text"], input[type="number"], select {
   margin: 0;
 }
 
+input[type="checkbox"], input[type="radio"] {
+  accent-color: var(--deep-accent-color);
+}
+
 input:disabled, select:disabled {
   cursor: not-allowed;
-  color: #00000080;
+  color: var(--text-color-disabled);
 }
 
 .text-input__field, .number-input__field, .select-input__field {
@@ -21,18 +25,18 @@ input:disabled, select:disabled {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #212529;
-  background-color: #fff;
+  color: var(--text-accent-color);
+  background-color: var(--background-color);
   background-clip: padding-box;
-  border: 1px solid #bdbdbd;
+  border: 1px solid var(--border-accent-color);
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .text-input__field:focus, .number-input__field:focus, .select-input__field:focus {
-  color: #212529;
-  background-color: #fff;
-  border-color: #bdbdbd;
+  color: var(--text-accent-color);
+  background-color: var(--background-color);
+  border-color: var(--border-color);
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25);
 }

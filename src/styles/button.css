@@ -16,10 +16,10 @@
 
 .button,
 .file-input__label {
-  background-color:#e3e3e3;
-  color: #222;
+  background-color:var(--accent-color);
+  color: var(--text-accent-color);
   padding: 0.5rem 1rem;
-  border: 1px solid #bdbdbd;
+  border: 1px solid var(--border-accent-color);
   border-radius: 0.25rem;
   outline: none;
   position: relative;
@@ -34,7 +34,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border: 2px solid #e3e3e3;
+  border: 2px solid var(--accent-color);
   transition: top, left, right, bottom, 100ms ease-in-out;
 }
 

@@ -195,37 +195,39 @@ const MenuCheckboxItem = ({ item }) => {
  */
 const MenuSwitchItem = ({ item }) => {
   return (
-    <div className={`${item.type}-input`}>
-      <input
-        id={`${item.type}-${item.name}`}
-        type="checkbox"
-        name={`${item.type}-${item.name}`}
-        className={`${item.type}-input__field`}
-        ref={item.ref}
-        style={item.style}
-        defaultChecked={item.value}
-        disabled={item.disabled}
-      />
-      <label
-        className={`${item.type}-input__label`}
-        htmlFor={`${item.type}-${item.name}`}
-        onClick={(e) => item.updateValue(e.target.checked)}
-      >
-        {
-          item.svgLeft &&
-          <item.svgLeft className={`${item.type}-input__label__left`} />
-        }
-        {
-          item.svgRight &&
-          <item.svgRight className={`${item.type}-input__label__right`} />
-        }
-        <span
-          className={`${item.type}-input__label__inner`}
-          data-textleft={!item.svgLeft ? item.textLeft : ''}
-          data-textright={!item.svgRight ? item.textRight : ''}
+    <div style={item.style} className={`${item.type}-input-wrapper`}>
+      <span style={{ marginRight: '0.5rem' }}>{item.label}</span>
+      <div className={`${item.type}-input`}>
+        <input
+          id={`${item.type}-${item.name}`}
+          type="checkbox"
+          name={`${item.type}-${item.name}`}
+          className={`${item.type}-input__field`}
+          ref={item.ref}
+          defaultChecked={item.value}
+          disabled={item.disabled}
         />
-        <span className={`${item.type}-input__label__thumb`} />
-      </label>
+        <label
+          className={`${item.type}-input__label`}
+          htmlFor={`${item.type}-${item.name}`}
+          onClick={(e) => item.updateValue(e.target.checked)}
+        >
+          {
+            item.svgLeft &&
+          <item.svgLeft className={`${item.type}-input__label__left`} />
+          }
+          {
+            item.svgRight &&
+          <item.svgRight className={`${item.type}-input__label__right`} />
+          }
+          <span
+            className={`${item.type}-input__label__inner`}
+            data-textleft={!item.svgLeft ? item.textLeft : ''}
+            data-textright={!item.svgRight ? item.textRight : ''}
+          />
+          <span className={`${item.type}-input__label__thumb`} />
+        </label>
+      </div>
     </div>
   );
 };

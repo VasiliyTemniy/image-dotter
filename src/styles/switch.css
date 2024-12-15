@@ -27,8 +27,8 @@
   cursor: pointer;
   border-radius: 20px;
   margin: 0;
-  border: 1px solid gray;
-  background: #E3E3E3;
+  border: 1px solid var(--border-accent-color);
+  background: var(--accent-color);
 }
 
 .switch-input .switch-input__label__inner {
@@ -98,8 +98,8 @@
   left: calc((var(--height) - var(--thumb-size)) * 0.5);
   border-radius: calc(var(--height) * 0.6);
   transition: left 200ms ease-in-out, right 200ms ease-in-out;
-  border: 1px solid gray;
-  background: #FCFCFC;
+  border: 1px solid var(--border-accent-color);
+  background: var(--thumb-color);
 }
 
 .switch-input .switch-input__field:checked + .switch-input__label .switch-input__label__inner {

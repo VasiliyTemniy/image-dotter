@@ -29,7 +29,7 @@ import { useLayoutConfig } from './hooks/useLayoutConfig.js';
 import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
 import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
 import { gridCss } from './examples/gridCss.js';
-import { getLocalStorageMap } from './utils/storage.js';
+import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
 
 
 /**
@@ -478,7 +478,15 @@ const App = () => {
   };
 
   const toggleTheme = (_value) => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    const prevTheme = theme;
+    const newTheme = prevTheme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    setLocalStorageMap('image-dotter-theme', {
+      theme: newTheme
+    });
+
+    document.body.classList.remove(prevTheme);
+    document.body.classList.add(newTheme);
   };
 
   const handleFileSelection = async (e) => {
@@ -592,6 +600,9 @@ const App = () => {
 
   useEffect(() => {
     resizeCanvas({}, {});
+    document.body.classList.remove('light');
+    document.body.classList.remove('dark');
+    document.body.classList.add(storageTheme);
   }, []);
 
   return (
