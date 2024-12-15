@@ -45,6 +45,8 @@ import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
  * 4.DONE. Make grid settings in menu dropdownable, at least those additional settings, generator settings, animation settings
  * 5. Save as HTML + CSS instead of json. Leave json as an option. For json, though, change structure -
  *    some common options like borderRadius and gaps should be handled separately from the grid
+ * 6. Add translation to Russian language with i18n
+ * 7. Add manual in md format + md reader engine
  *
  *
  * Some thoughts for the future:
@@ -54,6 +56,7 @@ import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
  * 1.3. Add ability to move cells around (swap with another cell, for example - swap colors...)
  * 2.DONE. Fix dottergrid.js -> handleCellSpanGeneration - Combine cells whose span is less than minimum span
  * 3. Implement all the animation params handling for slide; Add moar animation types
+ * 4. Make it accept .png files (omg it doesn't...)
  *
  * TO_POSSIBLY_NOT_DO:
  * 1. Rewrite grid handling from functions to gridHandler class. Could be more efficient, could be hemorroidal to handle it together with React
