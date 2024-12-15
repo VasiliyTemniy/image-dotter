@@ -33,7 +33,7 @@ const MenuSelectItem = ({
         disabled={item.disabled}
       >
         {item.options.map((option) => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value} disabled={option.disabled}>{option.label}</option>
         ))}
       </select>
     </div>

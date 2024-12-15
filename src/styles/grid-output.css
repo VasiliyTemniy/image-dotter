@@ -22,25 +22,50 @@
   transform: translateX(-50%);
 }
 
-.show {
-  opacity: 0;
-  animation: ani 2.5s forwards;
-}
-
-.hide {
-  opacity: 1;
-  animation: ani 2.5s reverse;
-}
-
+/* Opacity-related group START */
 .shown {
   opacity: 1;
 }
-
 .hidden {
   opacity: 0;
 }
 
-@keyframes ani {
+.shown.animated, .hidden.animated {
+  animation-name: opacity-animation;
+}
+
+.shown.animated {
+  opacity: 0;
+  animation-direction: forwards;
+}
+.hidden.animated {
+  opacity: 1;
+  animation-direction: reverse;
+}
+/* Opacity-related group END */
+
+@keyframes opacity-animation {
   0% {opacity: 0;}
   100% {opacity: 1;}
 }
+
+/* Slide-related group START */
+
+.slide > .grid > .row:nth-child(2n-1) {
+  --offset: 550%;
+}
+.slide > .grid > .row:nth-child(2n) {
+  --offset: -500%;
+}
+
+.slide > .grid > .row.animated {
+  translate: var(--offset);
+  animation-name: slide-animation;
+}
+
+@keyframes slide-animation {
+  100% {
+    translate: 0;
+  }
+}
+/* Slide-related group END */

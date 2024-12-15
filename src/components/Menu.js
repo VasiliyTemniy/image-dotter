@@ -20,13 +20,11 @@ import { MenuItemGroup } from './MenuItemGroup';
  *   updateMenuOpen: (value: boolean) => void,
  *   menuRef: React.RefObject<HTMLNavElement>,
  *   handleFileSelection: (e: React.ChangeEvent<HTMLInputElement>) => void,
- *   handleRedrawGridHtmlPreview: () => void,
- *   handleSaveClick: () => void,
  *   handleRecalcGrid: () => void,
- *   handleRedrawGridPreview: (params: {
- *     gridParams: GridParams,
- *     generatorParams: GeneratorParams
- *   }) => void,
+ *   handleRedrawGridPreview: () => void,
+ *   handleRedrawGridHtmlPreview: () => void,
+ *   handlePlayAnimation: () => void,
+ *   handleSaveClick: () => void,
  *   gridParams: GridConfigState,
  *   gridControls: GridConfigControls,
  *   generatorParams: GeneratorConfigState,
@@ -45,9 +43,10 @@ const Menu = ({
   menuRef,
   handleFileSelection,
   handleRecalcGrid,
-  handleRedrawGridHtmlPreview,
-  handleSaveClick,
   handleRedrawGridPreview,
+  handleRedrawGridHtmlPreview,
+  handlePlayAnimation,
+  handleSaveClick,
   gridParams,
   gridControls,
   generatorParams,
@@ -417,13 +416,13 @@ const Menu = ({
                 value: animationParams.direction,
                 updateValue: animationControls.updateDirection,
                 options: [
-                  { value: 'left-to-right', label: 'Left to right' },
-                  { value: 'right-to-left', label: 'Right to left' },
-                  { value: 'top-to-bottom', label: 'Top to bottom' },
-                  { value: 'bottom-to-top', label: 'Bottom to top' },
+                  { value: 'left-to-right', label: 'Left to right', disabled: true },
+                  { value: 'right-to-left', label: 'Right to left', disabled: true },
+                  { value: 'top-to-bottom', label: 'Top to bottom', disabled: true },
+                  { value: 'bottom-to-top', label: 'Bottom to top', disabled: true },
                   { value: 'h-sides', label: 'Horizontal sides' },
-                  { value: 'v-sides', label: 'Vertical sides' },
-                  { value: 'all', label: 'All' },
+                  { value: 'v-sides', label: 'Vertical sides', disabled: true },
+                  { value: 'all', label: 'All', disabled: true },
                 ]
               },
               {
@@ -623,6 +622,7 @@ const Menu = ({
             <button className="button" onClick={handleRecalcGrid}>Recalculate grid</button>
             <button className="button" onClick={handleRedrawGridPreview}>Redraw canvas preview</button>
             <button className="button" onClick={handleRedrawGridHtmlPreview}>Redraw html preview</button>
+            <button className="button" onClick={handlePlayAnimation}>Play animation</button>
             <button className="button" onClick={handleSaveClick}>Save output</button>
           </li>
         </ul>

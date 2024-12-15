@@ -1,14 +1,27 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef, useMemo } from 'react';
+import { switchClasses } from '../utils/html';
 
 /**
  * @typedef {import('../index.d.ts').GridHtmlVisualParams} GridHtmlVisualParams
  * @typedef {import('../index.d.ts').DotterCell} DotterCell
+ * @typedef {import('../index.d.ts').AnimationParams} AnimationParams
  */
 
+/**
+ * @type {React.ForwardRefExoticComponent<React.RefAttributes<{
+ *   drawHtmlPreview: (gridHtmlParams: GridHtmlVisualParams, animationParams: AnimationParams) => void,
+ *   setSize: (width: number, height: number) => void,
+ *   backgroundRef: React.MutableRefObject<HTMLDivElement>,
+ *   grid: DotterCell[][],
+ *   setGrid: React.Dispatch<React.SetStateAction<DotterCell[][]>>,
+ *   setForceRerender: React.Dispatch<React.SetStateAction<boolean>>,
+ *   playAnimation: () => void
+ * }>>}
+ */
 const GridOutput = forwardRef((props, refs) => {
   const [grid, setGrid] = useState([]);
   const [gridHtmlParams, setGridHtmlParams] = useState({});
-  const [_animationParams, setAnimationParams] = useState({});
+  const [animationParams, setAnimationParams] = useState({});
   const [forceRerender, setForceRerender] = useState(false);
 
   const drawHtmlPreview = (gridHtmlParams, animationParams) => {
@@ -23,7 +36,9 @@ const GridOutput = forwardRef((props, refs) => {
     background.style.height = `${height}px`;
   };
 
+  /** @type {React.MutableRefObject<HTMLDivElement>} */
   const containerRef = useRef(null);
+  /** @type {React.MutableRefObject<HTMLDivElement>} */
   const backgroundRef = useRef(null);
 
   useImperativeHandle(refs, () => {
@@ -33,7 +48,8 @@ const GridOutput = forwardRef((props, refs) => {
       backgroundRef,
       grid,
       setGrid,
-      setForceRerender
+      setForceRerender,
+      playAnimation
     };
   });
 
@@ -41,27 +57,63 @@ const GridOutput = forwardRef((props, refs) => {
     const container = containerRef.current;
     if (!container) return;
     container.classList.add('shown');
-    container.addEventListener('click', () => {
-      if (container.classList.contains('shown')) {
-        container.classList.remove('shown');
-        container.classList.add('hide');
-      } else
-      if (container.classList.contains('hidden')) {
-        container.classList.remove('hidden');
-        container.classList.add('show');
-      }
-    });
     container.addEventListener('animationend', () => {
-      if (container.classList.contains('show')) {
-        container.classList.remove('show');
-        container.classList.add('shown');
-      }
-      if (container.classList.contains('hide')) {
-        container.classList.remove('hide');
-        container.classList.add('hidden');
-      }
+      container.classList.remove('animated');
     });
   }, []);
+
+  const playAnimation = () => {
+    const container = containerRef.current;
+    if (!container || container.classList.contains('animated')) return;
+    /** @type {AnimationParams} */
+    const _animationParams = animationParams;
+    switch (_animationParams.type) {
+    case 'appear': {
+      if (!container.classList.contains('hidden') && !container.classList.contains('shown')) {
+        container.classList.add('shown');
+      }
+      container.classList.remove('slide');
+      switchClasses(container, 'hidden', 'shown');
+      container.style.animationDelay = '0ms';
+      container.style.animationDuration = `${_animationParams.duration}ms`;
+      container.style.animationTimingFunction = _animationParams.easing;
+      container.classList.add('animated');
+      break;
+    }
+    case 'slide': {
+      container.classList.remove('hidden');
+      container.classList.remove('shown');
+      container.classList.add('slide');
+      /** @type {HTMLDivElement | null} */
+      const gridElement = container.querySelector('.grid');
+      if (!gridElement) {
+        return;
+      }
+      /** @type {NodeListOf<HTMLDivElement>} */
+      const rows = gridElement.querySelectorAll('.row');
+      if (!rows || rows.length === 0) {
+        return;
+      }
+      const delayIter = Math.ceil((_animationParams.delay.max - _animationParams.delay.min) / rows.length);
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        row.style.animationDelay = `${_animationParams.delay.min + delayIter * i}ms`;
+        row.style.animationDuration = `${_animationParams.duration}ms`;
+        row.style.animationTimingFunction = _animationParams.easing;
+        row.classList.add('animated');
+        row.addEventListener('animationend', () => {
+          row.classList.remove('animated');
+          row.style.animationDelay = null;
+          row.style.animationDuration = null;
+          row.style.animationTimingFunction = null;
+        });
+      }
+      break;
+    }
+    default:
+      throw new Error('Unknown animation type: ' + _animationParams.type);
+    }
+  };
 
   const MemoizedGrid = useMemo(() =>
     <Grid grid={grid} gridHtmlParams={gridHtmlParams} containerRef={containerRef}/>

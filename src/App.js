@@ -86,6 +86,17 @@ const App = () => {
 
   const menuRef = useRef();
 
+  /**
+   * @type {React.MutableRefObject<React.FC<> & {
+   *   drawHtmlPreview: (gridHtmlParams: GridHtmlVisualParams, animationParams: AnimationParams) => void,
+   *   setSize: (width: number, height: number) => void,
+   *   backgroundRef: React.MutableRefObject<HTMLDivElement>,
+   *   grid: DotterCell[][],
+   *   setGrid: React.Dispatch<React.SetStateAction<DotterCell[][]>>,
+   *   setForceRerender: React.Dispatch<React.SetStateAction<boolean>>,
+   *   playAnimation: () => void
+   * }>}
+   */
   const gridOutputRef = useRef();
   const inputCanvasRef = useRef();
   const outputCanvasRef = useRef();
@@ -479,6 +490,13 @@ const App = () => {
     );
   };
 
+  const playHtmlAnimation = () => {
+    if (!gridOutputRef.current || !image) {
+      return;
+    }
+    gridOutputRef.current.playAnimation();
+  };
+
   const handleSaveClick = async (e) => {
     e.preventDefault();
     const handle = await window.showSaveFilePicker({
@@ -514,6 +532,7 @@ const App = () => {
         handleRecalcGrid={recalcGrid}
         handleRedrawGridPreview={redrawGridPreview}
         handleRedrawGridHtmlPreview={redrawGridHtmlPreview}
+        handlePlayAnimation={playHtmlAnimation}
         handleSaveClick={handleSaveClick}
         gridParams={gridParams}
         gridControls={gridControls}
