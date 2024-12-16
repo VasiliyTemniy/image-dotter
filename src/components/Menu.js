@@ -2,6 +2,7 @@ import { MenuInputItem } from './MenuInputItem.js';
 import { MenuItemGroup } from './MenuItemGroup';
 import { LightSvg } from '../assets/light.js';
 import { DarkSvg } from '../assets/dark.js';
+import { MenuSelectItem } from './MenuSelectItem.js';
 
 /**
  * @typedef {import('../index.d.ts').GridConfigState} GridConfigState
@@ -78,6 +79,7 @@ const Menu = ({
         <ul className='container flex column gap-05rem' style={{ paddingTop: '1rem' }}>
           <MenuInputItem
             item={{
+              tag: 'input',
               type: 'switch',
               name: 'theme',
               label: 'Theme',
@@ -88,6 +90,27 @@ const Menu = ({
               svgLeft: LightSvg,
               svgRight: DarkSvg,
               style: { marginBottom: '0.5rem' },
+            }}
+          />
+          <MenuSelectItem
+            item={{
+              tag: 'select',
+              type: 'select',
+              name: 'language',
+              label: 'Language',
+              value: values.language,
+              updateValue: valueHandlers.updateLanguage,
+              options: [
+                {
+                  value: 'en',
+                  label: 'English',
+                },
+                {
+                  value: 'ru',
+                  label: 'Русский',
+                },
+              ],
+              style: { width: '14rem', marginBottom: '0.5rem' },
             }}
           />
           <li className="file-input">

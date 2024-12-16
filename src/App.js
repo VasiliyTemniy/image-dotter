@@ -78,6 +78,10 @@ const storageTheme = getLocalStorageMap('image-dotter-theme', {
   theme: 'light'
 }).theme;
 
+const storageLanguage = getLocalStorageMap('image-dotter-language', {
+  language: 'en'
+}).language;
+
 const App = () => {
 
   const [menuOpen, setMenuOpen] = useState(true);
@@ -95,6 +99,10 @@ const App = () => {
   const [image, setImage] = useState(null);
 
   const [theme, setTheme] = useState(storageTheme);
+
+  const [language, setLanguage] = useState(storageLanguage);
+
+  const { i18n } = useTranslation();
 
   const showNotification = (text, type) => {
     if (message.timeoutId) {
@@ -494,6 +502,29 @@ const App = () => {
     document.body.classList.add(newTheme);
   };
 
+  const updateLanguage = (value) => {
+    if (language === value) {
+      if (i18n.language === value) {
+        return;
+      } else { // i18n.language !== value
+        i18n.changeLanguage(value);
+      }
+    }
+
+    // language !== value
+    setLanguage(value);
+    setLocalStorageMap('image-dotter-language', {
+      language: value
+    });
+
+    if (i18n.language === value) {
+      return;
+    }
+
+    // i18n.language !== value
+    i18n.changeLanguage(value);
+  };
+
   const handleFileSelection = async (e) => {
     e.preventDefault();
     if (!e.target.files || !e.target.files[0]) {
@@ -608,6 +639,7 @@ const App = () => {
     document.body.classList.remove('light');
     document.body.classList.remove('dark');
     document.body.classList.add(storageTheme);
+    i18n.changeLanguage(language);
   }, []);
 
   return (
@@ -640,7 +672,8 @@ const App = () => {
           alwaysRecalcGrid,
           alwaysRedrawCanvas,
           alwaysRedrawHtml,
-          theme
+          theme,
+          language
         }}
         valueHandlers={{
           updateBackgroundColorsBound,
@@ -649,7 +682,8 @@ const App = () => {
           updateAlwaysRecalcGrid,
           updateAlwaysRedrawCanvas,
           updateAlwaysRedrawHtml,
-          toggleTheme
+          toggleTheme,
+          updateLanguage
         }}
         refs={{
           pipetteRGBARef,

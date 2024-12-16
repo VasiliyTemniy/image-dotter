@@ -1,4 +1,5 @@
 import { useState, useEffect, forwardRef, useImperativeHandle, useRef, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { switchClasses } from '../utils/html';
 
 /**
@@ -12,6 +13,8 @@ const GridOutput = forwardRef((props, refs) => {
   const [gridHtmlParams, setGridHtmlParams] = useState({});
   const [animationParams, setAnimationParams] = useState({});
   const [forceRerender, setForceRerender] = useState(false);
+
+  const { t } = useTranslation();
 
   const drawHtmlPreview = (gridHtmlParams, animationParams) => {
     setGridHtmlParams(gridHtmlParams);
@@ -111,7 +114,7 @@ const GridOutput = forwardRef((props, refs) => {
   return (
     <div className='container padding-1rem border-black-1px width-fit-content bg-main margin-1rem'>
       <div className='title'>
-        HTML Output
+        {t('layout.htmlOutput.title')}
       </div>
       <div id="background" className="grid-output__background" ref={backgroundRef}>
         <div id="container" className="grid-output__container" ref={containerRef}>
