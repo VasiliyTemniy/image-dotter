@@ -5,11 +5,9 @@ import {
   mapColorGridToHex,
   readImage
 } from './utils/dottergrid';
-import { ImageInit } from './components/ImageInit';
-import { GridOutput } from './components/GridOutput';
-import { Menu } from './components/Menu';
-import { Notification } from './components/Notification';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import './styles/grid-output.css';
 import './styles/nav.css';
 import './styles/button.css';
@@ -20,16 +18,23 @@ import './styles/container.css';
 import './styles/main.css';
 import './styles/color-picker.css';
 import './styles/switch.css';
-import { pipetteHexText, pipetteRGBAText } from './utils/color';
+
 import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 import { useGridConfig } from './hooks/useGridConfig.js';
 import { useGeneratorConfig } from './hooks/useGeneratorConfig.js';
 import { useAnimationConfig } from './hooks/useAnimationConfig.js';
 import { useLayoutConfig } from './hooks/useLayoutConfig.js';
-import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
 import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
+
+import { ImageInit } from './components/ImageInit';
+import { GridOutput } from './components/GridOutput';
+import { Menu } from './components/Menu';
+import { Notification } from './components/Notification';
+import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
+
 import { gridCss } from './examples/gridCss.js';
 import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
+import { pipetteHexText, pipetteRGBAText } from './utils/color';
 
 
 /**
