@@ -1,5 +1,11 @@
 import { useEffect, useRef } from 'react';
 
+/**
+ * Debounced callback
+ * @param {Function} callback
+ * @param {number} delay
+ * @returns {Function} debounced callback
+ */
 export function useDebouncedCallback(
   callback,
   delay
