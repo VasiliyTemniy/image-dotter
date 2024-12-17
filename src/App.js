@@ -258,10 +258,9 @@ const App = () => {
     if (grid === null || setGrid === null) {
       return;
     }
-    const contextInput = inputCanvasRef.current.getContext('2d', { willReadFrequently: true });
     const contextOutput = outputCanvasRef.current.getContext('2d', { willReadFrequently: true });
     const newGrid = mapColorGridToHex(makeColorGrid(
-      contextInput, gridParams, generatorParams
+      _image, gridParams, generatorParams
     ));
 
     setGrid(newGrid);

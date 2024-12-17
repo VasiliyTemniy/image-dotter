@@ -61,14 +61,14 @@ export const mapColorGridToHex = (grid) =>
 
 /**
  * Make grid of colored cells from input image
- * @param {CanvasRenderingContext2D} contextInput
+ * @param {Image} image
  * @param {GridParams} params
  * @param {GeneratorParams} generatorParams
 //  * @param {Generator | null} generator
  * @returns {DotterIntermediateCell[][]}
  */
 export const makeColorGrid = (
-  contextInput,
+  image,
   {
     rowsCount,
     columnsCount,
@@ -76,10 +76,18 @@ export const makeColorGrid = (
   },
   generatorParams
 ) => {
+  const baseWidth = 2400; // desired base width
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = baseWidth;
+  tempCanvas.height = image.height * (baseWidth / image.width);
+
+  const tempContext = tempCanvas.getContext('2d');
+  tempContext.drawImage(image, 0, 0, tempCanvas.width, tempCanvas.height);
+
   /** @type {DotterIntermediateCell[][]} */
   let grid = [];
-  const columnWidth = Math.max(contextInput.canvas.width / columnsCount, 1);
-  const rowHeight = Math.max(contextInput.canvas.height / rowsCount, 1);
+  const columnWidth = Math.max(tempCanvas.width / columnsCount, 1);
+  const rowHeight = Math.max(tempCanvas.height / rowsCount, 1);
 
   const icRed = ignoreColor ? hexToInt(ignoreColor.color.substring(1, 3)) : 0;
   const icGreen = ignoreColor ? hexToInt(ignoreColor.color.substring(3, 5)) : 0;
@@ -92,9 +100,9 @@ export const makeColorGrid = (
     for (let column = 0; column < columnsCount; column++) {
       const x = columnWidth * column;
       const y = rowHeight * row;
-      const data = contextInput.getImageData(x, y, columnWidth, rowHeight).data;
+      const data = tempContext.getImageData(x, y, columnWidth, rowHeight).data;
       let color = middleweightColor(data);
-      if (!color) {
+      if (!color || color[3] < 3) { // color[3] < 3 is almost opaque
         continue;
       }
       if (
