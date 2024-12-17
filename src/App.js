@@ -7,6 +7,7 @@ import {
 } from './utils/dottergrid';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import exampleImage from './assets/infinity.png';
 
 import './styles/grid-output.css';
 import './styles/menu.css';
@@ -57,7 +58,7 @@ import { Modal } from './components/Modal.js';
  * 5.DONE. Save as HTML + CSS instead of json. Leave json as an option. For json, though, change structure -
  *    some common options like borderRadius and gaps should be handled separately from the grid
  * 6.DONE. Add theming
- * 7. Add translation to Russian language with i18n
+ * 7.DONE. Add translation to Russian language with i18n
  * 8. Add manual in md format + md reader engine
  *
  *
@@ -68,7 +69,7 @@ import { Modal } from './components/Modal.js';
  * 1.3. Add ability to move cells around (swap with another cell, for example - swap colors...)
  * 2.DONE. Fix dottergrid.js -> handleCellSpanGeneration - Combine cells whose span is less than minimum span
  * 3. Implement all the animation params handling for slide; Add moar animation types
- * 4. Make it accept .png files (omg it doesn't...)
+ * 4.DONE. Make it accept .png files (omg it doesn't...)
  *
  * TO_POSSIBLY_NOT_DO:
  * 1. Rewrite grid handling from functions to gridHandler class. Could be more efficient, could be hemorroidal to handle it together with React
@@ -340,6 +341,12 @@ const App = () => {
     localWidth = inputCanvasRef.current ? inputCanvasRef.current.width : 0,
     localMenuOpen = menuOpen
   }) => {
+
+    if (localHeight === 0 || localWidth === 0) {
+      // Throw an error? Will return infinite localColumnsCount if continue without return / throw
+      return;
+    }
+
     const windowWidth = window.innerWidth;
 
     let unavailableWidth = 18;
@@ -648,6 +655,28 @@ const App = () => {
     document.body.classList.remove('dark');
     document.body.classList.add(storageTheme);
     i18n.changeLanguage(language);
+
+    // Get the grid handles from the GridOutput component
+    if (gridOutputRef.current) {
+      ({ grid, setGrid } = gridOutputRef.current);
+    }
+
+    fetch(exampleImage)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(blob);
+        const image = new Image();
+        image.src = url;
+        image.onload = () => {
+          setImage(image);
+          const { localRowsCount, localColumnsCount } = resizeCanvas({}, {
+            localWidth: image.width,
+            localHeight: image.height
+          });
+          drawImage(image, inputCanvasRef);
+          recalcGrid({ rowsCount: localRowsCount, columnsCount: localColumnsCount }, {}, image);
+        };
+      });
   }, []);
 
   return (
