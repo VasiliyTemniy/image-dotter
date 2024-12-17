@@ -127,3 +127,21 @@
   -ms-transform: translateX(0);
   transform: translateX(0);
 }
+
+
+#docs-modal-toggle {
+  position: absolute;
+  top: 1.4rem;
+  right: 3rem;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  z-index: 2001;
+}
+
+#docs-modal-toggle > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
