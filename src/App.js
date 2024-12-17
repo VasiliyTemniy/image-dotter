@@ -7,6 +7,11 @@ import {
 } from './utils/dottergrid';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Markdown from 'react-markdown';
+
+import enGuideMd from './assets/en-guide.md';
+import ruGuideMd from './assets/ru-guide.md';
+
 import exampleImage from './assets/infinity.png';
 
 import './styles/grid-output.css';
@@ -21,6 +26,7 @@ import './styles/color-picker.css';
 import './styles/switch.css';
 import './styles/modal.css';
 import './styles/scrollbar.css';
+import './styles/markdown.css';
 
 import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 import { useGridConfig } from './hooks/useGridConfig.js';
@@ -39,6 +45,7 @@ import { gridCss } from './examples/gridCss.js';
 import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
 import { pipetteHexText, pipetteRGBAText } from './utils/color.js';
 import { Modal } from './components/Modal.js';
+import { swapImageUrls } from './utils/imgSwapper.js';
 
 
 /**
@@ -90,7 +97,10 @@ const App = () => {
 
   const [menuOpen, setMenuOpen] = useState(true);
 
-  const [docsModalOpen, setDocsModalOpen] = useState(false);
+  const [guideModalOpen, setGuideModalOpen] = useState(false);
+  const [guideMarkdown, setGuideMarkdown] = useState(null);
+  const [guideLanguage, setGuideLanguage] = useState(null);
+  const [guideTheme, setGuideTheme] = useState(null);
 
   const [backgroundColorsBound, setBackgroundColorsBound] = useState(true);
   const [htmlBackgroundColor, setHtmlBackgroundColor] = useState('#1C1E21FF');
@@ -536,8 +546,9 @@ const App = () => {
     i18n.changeLanguage(value);
   };
 
-  const updateDocsModalOpen = (value) => {
-    setDocsModalOpen(value);
+  const updateGuideModalOpen = (value) => {
+    fetchGuideMarkdown();
+    setGuideModalOpen(value);
   };
 
   const handleFileSelection = async (e) => {
@@ -649,6 +660,23 @@ const App = () => {
     await writableStream.close();
   };
 
+  const fetchGuideMarkdown = () => {
+    if (guideMarkdown !== null && guideLanguage === language && guideTheme === theme) {
+      return;
+    }
+
+    const guideFile = language === 'en' ? enGuideMd : ruGuideMd;
+
+    fetch(guideFile)
+      .then((response) => response.text())
+      .then((text) => {
+        const textWithSwappedImages = swapImageUrls(text, language, theme);
+        setGuideMarkdown(textWithSwappedImages);
+        setGuideLanguage(language);
+        setGuideTheme(theme);
+      });
+  };
+
   // Set to true to test and debug the generator
   const generatorTest = false;
 
@@ -684,8 +712,14 @@ const App = () => {
 
   return (
     <>
-      <Modal title={t('main.docsTitle')} active={docsModalOpen} close={() => updateDocsModalOpen(false)} closeOnBgClick>
-        Well, hello there!
+      <Modal
+        title={t('main.guideTitle')}
+        active={guideModalOpen}
+        close={() => updateGuideModalOpen(false)}
+        closeOnBgClick
+        className="wide"
+      >
+        <Markdown className="markdown">{guideMarkdown}</Markdown>
       </Modal>
       <Notification message={message.text} type={message.type} shown={message.shown}/>
       <Menu
@@ -727,7 +761,7 @@ const App = () => {
           updateAlwaysRedrawHtml,
           toggleTheme,
           updateLanguage,
-          updateDocsModalOpen
+          updateGuideModalOpen
         }}
         refs={{
           pipetteRGBARef,

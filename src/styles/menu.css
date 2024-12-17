@@ -129,7 +129,7 @@
 }
 
 
-#docs-modal-toggle {
+#guide-modal-toggle {
   position: absolute;
   top: 1.4rem;
   right: 3rem;
@@ -139,7 +139,7 @@
   z-index: 2001;
 }
 
-#docs-modal-toggle > span {
+#guide-modal-toggle > span {
   position: absolute;
   top: 50%;
   left: 50%;

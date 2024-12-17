@@ -28,6 +28,16 @@
   overflow: hidden;
 }
 
+.modal.wide {
+  min-width: calc(100% - 2rem);
+}
+
+@media screen and (width > 1200px) {
+  .modal.wide {
+    min-width: calc(1200px - 2rem);
+  }
+}
+
 .modal__header {
   margin: 0;
   text-align: center;

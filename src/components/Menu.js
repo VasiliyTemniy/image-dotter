@@ -76,7 +76,7 @@ const Menu = ({
       <input type="checkbox" id="nav-toggle" checked={menuOpen} onChange={(e) => updateMenuOpen(e.target.checked)} hidden />
       <nav className="nav" ref={menuRef}>
         <label htmlFor="nav-toggle" className="nav-toggle"></label>
-        <button id="docs-modal-toggle" className="button" onClick={() => valueHandlers.updateDocsModalOpen(true)}>
+        <button id="guide-modal-toggle" className="button" onClick={() => valueHandlers.updateGuideModalOpen(true)}>
           <span>i</span>
         </button>
         <h2 className="logo">

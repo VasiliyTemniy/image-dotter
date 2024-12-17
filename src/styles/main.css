@@ -34,3 +34,8 @@ body.dark {
   --deep-accent-color: #0153b1;
   --thumb-color: #b8b9b9;
 }
+
+canvas {
+  border: 1px solid var(--border-color);
+  display: 'inline-block';
+}

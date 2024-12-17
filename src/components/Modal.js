@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
  *   close: () => void,
  *   closeOnBgClick: boolean
  *   title: string,
+ *   className?: string,
  *   children: React.ReactNode | React.ReactNode[]
  * }} params
  */
@@ -14,13 +15,14 @@ const Modal = ({
   close,
   closeOnBgClick,
   title,
+  className,
   children
 }) => {
   if (active) {
     return ReactDOM.createPortal(
       <>
         <div className="modal-backdrop" onClick={closeOnBgClick ? close : null}/>
-        <div className="modal">
+        <div className={`modal ${className}`}>
           <h3 className="modal__header">
             {title}
             <button

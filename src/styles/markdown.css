@@ -1,0 +1,7 @@
+/* Markdown styles could be adjusted here */
+
+.markdown p img {
+  display: inline-block;
+  max-width: 100%;
+  object-fit: scale-down;
+}

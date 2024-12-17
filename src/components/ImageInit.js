@@ -11,11 +11,6 @@ const ImageInit = ({
 
   const { t } = useTranslation();
 
-  const topsideStyle = {
-    border: '1px solid #000000',
-    display: 'inline-block'
-  };
-
   const handleMouseMove = (e, canvasRef) => {
     if (!canvasRef.current) {
       return;
@@ -125,7 +120,6 @@ const ImageInit = ({
             width="500"
             height="100"
             ref={inputCanvasRef}
-            style={topsideStyle}
           >
             {t('layout.canvasSupportAlt')}
           </canvas>
@@ -139,7 +133,6 @@ const ImageInit = ({
             width="500"
             height="100"
             ref={outputCanvasRef}
-            style={topsideStyle}
           >
             {t('layout.canvasSupportAlt')}
           </canvas>
