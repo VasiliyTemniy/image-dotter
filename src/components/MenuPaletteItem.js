@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { MenuInputItem } from './MenuInputItem';
 
 /**
@@ -8,6 +9,9 @@ import { MenuInputItem } from './MenuInputItem';
  * @returns
  */
 export const MenuPaletteItem = ({ palette, updatePalette }) => {
+
+  const { t } = useTranslation();
+
   return (
     <div className='container flex column gap-05rem'>
       {palette.map((color, i) => (
@@ -46,7 +50,7 @@ export const MenuPaletteItem = ({ palette, updatePalette }) => {
         </div>
       ))}
       <button className="button" onClick={() => updatePalette('#ffffffff', 'add', null)}>
-        Add palette color
+        {t('inputs.palette.buttons.add.label')}
       </button>
     </div>
   );
