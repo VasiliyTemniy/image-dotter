@@ -19,6 +19,7 @@ import './styles/main.css';
 import './styles/color-picker.css';
 import './styles/switch.css';
 import './styles/modal.css';
+import './styles/scrollbar.css';
 
 import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 import { useGridConfig } from './hooks/useGridConfig.js';
