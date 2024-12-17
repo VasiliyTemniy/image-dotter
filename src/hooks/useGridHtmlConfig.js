@@ -11,11 +11,13 @@ import { isPositiveFloatNonZero, isPositiveInteger, isPositiveIntegerNonZero } f
  * @type {GridHtmlVisualParams}
  */
 const initialGridHtmlPreviewConfig = {
-  monoCellSize: 8,
+  monoCellSize: 9,
   overrideBorderRadius: initialGridConfig.borderRadius,
-  overrideHorizontalGapPx: initialGridConfig.horizontalGapPx,
-  overrideVerticalGapPx: initialGridConfig.verticalGapPx,
-  overrideSpanWidthFactor: 1,
+  // overrideHorizontalGapPx: initialGridConfig.horizontalGapPx,
+  overrideHorizontalGapPx: 5,
+  // overrideVerticalGapPx: initialGridConfig.verticalGapPx,
+  overrideVerticalGapPx: 5,
+  overrideSpanWidthFactor: 2,
   leftCorrectionPx: 0,
   topCorrectionPx: 0
 };

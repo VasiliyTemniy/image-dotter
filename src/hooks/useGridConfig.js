@@ -12,7 +12,7 @@ import { isPositiveInteger, isPositiveIntegerNonZero } from '../utils/validators
  * @type {GridConfigState}
  */
 export const initialGridConfig = {
-  rowsCount: 42,
+  rowsCount: 58,
   columnsCount: 100,
   borderRadius: 10,
   horizontalGapPx: 1,

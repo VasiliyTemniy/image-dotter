@@ -13,13 +13,13 @@ import { isFloatBetween, isPositiveInteger, isPositiveIntegerNonZero } from '../
  */
 const initialGeneratorConfig = {
   // seed: Math.ceil(Math.random() * 100000),
-  seed: 98564,
+  seed: 98589,
   // useCellSpan: false,
   useCellSpan: true,
   cellSpan: {
-    estimated: 2.35,
+    estimated: 4.35,
     min: 2,
-    max: 3
+    max: 7
   },
   // useMainPalette: false,
   useMainPalette: true,
@@ -36,19 +36,19 @@ const initialGeneratorConfig = {
     colorVariation: 4,
     alphaVariation: 4,
     height: {
-      estimated: 1,
-      min: 1,
-      max: 2
+      estimated: 3,
+      min: 2,
+      max: 4
     },
     depth: {
       estimated: 2.35,
       min: 2,
-      max: 3
+      max: 6
     },
     span: {
       estimated: 2.35,
-      min: 2,
-      max: 3
+      min: 1,
+      max: 7
     }
   }
 };

@@ -14,12 +14,12 @@ import { isPositiveInteger, isPositiveIntegerNonZero } from '../utils/validators
 const initialAnimationConfig = {
   type: 'slide',
   direction: 'h-sides',
-  duration: 1000,
+  duration: 2000,
   delay: {
-    min: 0,
-    max: 0
+    min: 100,
+    max: 2000
   },
-  easing: 'ease-out'
+  easing: 'ease-in-out'
 };
 
 /**
