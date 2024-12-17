@@ -13,7 +13,7 @@ import { isFloatBetween, isPositiveInteger, isPositiveIntegerNonZero } from '../
  */
 const initialGeneratorConfig = {
   // seed: Math.ceil(Math.random() * 100000),
-  seed: 98589,
+  seed: 98595,
   // useCellSpan: false,
   useCellSpan: true,
   cellSpan: {
