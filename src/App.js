@@ -66,7 +66,7 @@ import { swapImageUrls } from './utils/imgSwapper.js';
  *    some common options like borderRadius and gaps should be handled separately from the grid
  * 6.DONE. Add theming
  * 7.DONE. Add translation to Russian language with i18n
- * 8. Add manual in md format + md reader engine
+ * 8.DONE. Add manual in md format + md reader engine
  *
  *
  * Some thoughts for the future:
@@ -77,6 +77,7 @@ import { swapImageUrls } from './utils/imgSwapper.js';
  * 2.DONE. Fix dottergrid.js -> handleCellSpanGeneration - Combine cells whose span is less than minimum span
  * 3. Implement all the animation params handling for slide; Add moar animation types
  * 4.DONE. Make it accept .png files (omg it doesn't...)
+ * 5. Fill in all the 'INSERT IMAGE' parts of the guide
  *
  * TO_POSSIBLY_NOT_DO:
  * 1. Rewrite grid handling from functions to gridHandler class. Could be more efficient, could be hemorroidal to handle it together with React
