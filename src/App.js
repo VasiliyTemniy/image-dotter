@@ -530,7 +530,6 @@ const App = () => {
   };
 
   const updateDocsModalOpen = (value) => {
-    console.log('Tryin to set modal open', value);
     setDocsModalOpen(value);
   };
 
