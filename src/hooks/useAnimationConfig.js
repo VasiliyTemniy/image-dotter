@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { isPositiveInteger, isPositiveIntegerNonZero } from '../utils/validators.js';
 
 /**
  * @typedef {import('../index.d.ts').AnimationConfigState} AnimationConfigState
@@ -41,14 +43,18 @@ export const useAnimationConfig = (
   const [delay, setDelay] = useState(initialAnimationConfig.delay);
   const [easing, setEasing] = useState(initialAnimationConfig.easing);
 
+  const { t } = useTranslation();
+  const tBaseErrors = 'notifications.animationConfig.errors';
+
   // Animation params
 
   const updateType = (value) => {
     let newType = value;
     if (!value || !(['slide', 'appear'].includes(value))) {
-      showNotification('Please select a valid animation type', 'error');
+      showNotification(t(`${tBaseErrors}.invalidType`), 'error');
       newType = initialAnimationConfig.type;
     }
+
     setType(newType);
 
     if (alwaysRedrawHtml) {
@@ -62,7 +68,7 @@ export const useAnimationConfig = (
       (!value && value !== null) ||
       ['left-to-right', 'right-to-left', 'top-to-bottom', 'bottom-to-top', 'h-sides', 'v-sides', 'all'].includes(value) === false
     ) {
-      showNotification('Please select a valid animation direction', 'error');
+      showNotification(t(`${tBaseErrors}.invalidDirection`), 'error');
       newDirection = initialAnimationConfig.direction;
     }
     setDirection(newDirection);
@@ -74,8 +80,8 @@ export const useAnimationConfig = (
 
   const updateDuration = (value) => {
     let newDuration = value;
-    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
-      showNotification(' duration must be a positive integer', 'error');
+    if (!isPositiveIntegerNonZero(value)) {
+      showNotification(t(`${tBaseErrors}.invalidDuration`), 'error');
       newDuration = initialAnimationConfig.duration;
     }
     setDuration(newDuration);
@@ -95,8 +101,8 @@ export const useAnimationConfig = (
 
   const updateDelayMin = (value) => {
     const newDelay = { ...delay, min: value };
-    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
-      showNotification(' delay min must be a positive integer', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidDelayMin`), 'error');
       newDelay.min = initialAnimationConfig.delay.min;
     }
     _updateDelay(newDelay);
@@ -104,8 +110,8 @@ export const useAnimationConfig = (
 
   const updateDelayMax = (value) => {
     const newDelay = { ...delay, max: value };
-    if (!value || !Number.isInteger(Number(value)) || Number(value) < 0) {
-      showNotification(' delay max must be a positive integer', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidDelayMax`), 'error');
       newDelay.max = initialAnimationConfig.delay.max;
     }
     _updateDelay(newDelay);
@@ -114,7 +120,7 @@ export const useAnimationConfig = (
   const updateEasing = (value) => {
     let newEasing = value;
     if (!value || ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out'].includes(value) === false) {
-      showNotification('Please select a valid animation easing', 'error');
+      showNotification(t(`${tBaseErrors}.invalidEasing`), 'error');
       newEasing = initialAnimationConfig.easing;
     }
     setEasing(newEasing);

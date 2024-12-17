@@ -1,5 +1,18 @@
 {
   "htmlOutput": {
     "title": "HTML preview"
-  }
+  },
+  "options": {
+    "stretchCanvas": "Stretch canvas width if image is greater than screen width",
+    "screenOverflow": "Add horizontal scrollbar if image is wider than screen width",
+    "fitBothCanvasInOneRow": "Fit both canvas in one row",
+    "shiftMainByMenu": "Shift main area with menu navbar"
+  },
+  "inputCanvas": {
+    "title": "Input image canvas"
+  },
+  "outputCanvas": {
+    "title": "Output grid preview canvas"
+  },
+  "canvasSupportAlt": "Your browser does not support the HTML5 canvas tag. Please use another browser."
 }

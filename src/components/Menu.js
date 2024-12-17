@@ -3,6 +3,7 @@ import { MenuItemGroup } from './MenuItemGroup';
 import { LightSvg } from '../assets/light.js';
 import { DarkSvg } from '../assets/dark.js';
 import { MenuSelectItem } from './MenuSelectItem.js';
+import { useTranslation } from 'react-i18next';
 
 /**
  * @typedef {import('../index.d.ts').GridConfigState} GridConfigState
@@ -68,6 +69,8 @@ const Menu = ({
   refs,
 }) => {
 
+  const { t } = useTranslation();
+
   return (
     <>
       <input type="checkbox" id="nav-toggle" checked={menuOpen} onChange={(e) => updateMenuOpen(e.target.checked)} hidden />
@@ -82,11 +85,11 @@ const Menu = ({
               tag: 'input',
               type: 'switch',
               name: 'theme',
-              label: 'Theme',
+              label: t('menu.inputs.theme.label'),
               value: values.theme === 'light',
               updateValue: valueHandlers.toggleTheme,
-              textLeft: 'LI',
-              textRight: 'DK',
+              textLeft: t('menu.inputs.theme.options.light'),
+              textRight: t('menu.inputs.theme.options.dark'),
               svgLeft: LightSvg,
               svgRight: DarkSvg,
               style: { marginBottom: '0.5rem' },
@@ -97,17 +100,17 @@ const Menu = ({
               tag: 'select',
               type: 'select',
               name: 'language',
-              label: 'Language',
+              label: t('menu.inputs.language.label'),
               value: values.language,
               updateValue: valueHandlers.updateLanguage,
               options: [
                 {
                   value: 'en',
-                  label: 'English',
+                  label: t('menu.inputs.language.options.en'),
                 },
                 {
                   value: 'ru',
-                  label: 'Русский',
+                  label: t('menu.inputs.language.options.ru'),
                 },
               ],
               style: { width: '14rem', marginBottom: '0.5rem' },
@@ -117,11 +120,11 @@ const Menu = ({
             <label
               htmlFor="file-input"
               className="file-input__label"
-              title="Select a file to operate with"
+              title={t('menu.buttons.selectFile.tooltip')}
               accept=".bmp, .jpg, .jpeg, .png"
               style={{ width: '12rem', display: 'block', textAlign: 'center' }}
             >
-                Select file
+              {t('menu.buttons.selectFile.label')}
             </label>
             <input
               id="file-input"
@@ -131,7 +134,7 @@ const Menu = ({
             />
           </li>
           <MenuItemGroup
-            title="Color under cursor (pipette)"
+            title={t('menu.groups.pipette.title')}
             tag='li'
             foldable={true}
             defaultFolded={true}
@@ -154,7 +157,7 @@ const Menu = ({
             ]}
           />
           <MenuItemGroup
-            title="Grid params"
+            title={t('menu.groups.gridParams.title')}
             tag='li'
             foldable={true}
             defaultFolded={true}
@@ -163,7 +166,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'rows',
-                label: 'Rows',
+                label: t('menu.groups.gridParams.rows.label'),
                 type: 'number',
                 value: gridParams.rowsCount,
                 updateValue: gridControls.updateRowsCount
@@ -171,7 +174,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'columns',
-                label: 'Columns',
+                label: t('menu.groups.gridParams.columns.label'),
                 type: 'number',
                 value: gridParams.columnsCount,
                 updateValue: gridControls.updateColumnsCount
@@ -179,7 +182,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'borderRadius',
-                label: 'Cell border radius',
+                label: t('menu.groups.gridParams.borderRadius.label'),
                 type: 'number',
                 value: gridParams.borderRadius,
                 updateValue: gridControls.updateBorderRadius
@@ -187,7 +190,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'horizontal-gap-px',
-                label: 'Horizontal gap px',
+                label: t('menu.groups.gridParams.horizontalGapPx.label'),
                 type: 'number',
                 value: gridParams.horizontalGapPx,
                 updateValue: gridControls.updateHorizontalGapPx
@@ -195,7 +198,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'vertical-gap-px',
-                label: 'Vertical gap px',
+                label: t('menu.groups.gridParams.verticalGapPx.label'),
                 type: 'number',
                 value: gridParams.verticalGapPx,
                 updateValue: gridControls.updateVerticalGapPx
@@ -203,29 +206,29 @@ const Menu = ({
               {
                 tag: 'select',
                 name: 'aspect-select',
-                label: 'Aspect ratio mode',
+                label: t('menu.groups.gridParams.aspectRatioMode.label'),
                 type: 'select',
                 value: gridParams.aspectRatioMode,
                 updateValue: gridControls.updateAspectRatioMode,
                 options: [
                   {
                     value: 'image',
-                    label: 'Fix by image ratio'
+                    label: t('menu.groups.gridParams.aspectRatioMode.options.imageRatio')
                   },
                   {
                     value: 'square',
-                    label: 'Fix square ratio'
+                    label: t('menu.groups.gridParams.aspectRatioMode.options.squareRatio')
                   },
                   {
                     value: 'none',
-                    label: 'Do not fix ratio'
+                    label: t('menu.groups.gridParams.aspectRatioMode.options.none')
                   }
                 ]
               }
             ]}
           />
           <MenuItemGroup
-            title="Additional visual params"
+            title={t('menu.groups.additionalVisualParams.title')}
             tag='li'
             foldable={true}
             defaultFolded={true}
@@ -234,7 +237,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'angle',
-                label: 'Angle',
+                label: t('menu.groups.additionalVisualParams.angle.label'),
                 type: 'number',
                 value: gridParams.angle,
                 updateValue: gridControls.updateAngle
@@ -242,7 +245,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'use-stroke',
-                label: 'Use stroke',
+                label: t('menu.groups.additionalVisualParams.useStroke.label'),
                 type: 'checkbox',
                 value: gridParams.useStroke,
                 updateValue: gridControls.updateUseStroke
@@ -250,7 +253,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'stroke-color',
-                label: 'Stroke color',
+                label: t('menu.groups.additionalVisualParams.strokeColor.label'),
                 type: 'color',
                 hidden: !gridParams.useStroke,
                 disabled: !gridParams.useStroke,
@@ -260,7 +263,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'stroke-width',
-                label: 'Stroke width',
+                label: t('menu.groups.additionalVisualParams.strokeWidth.label'),
                 type: 'number',
                 hidden: !gridParams.useStroke,
                 disabled: !gridParams.useStroke,
@@ -270,7 +273,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'use-ignore-color',
-                label: 'Use ignore color',
+                label: t('menu.groups.additionalVisualParams.useIgnoreColor.label'),
                 type: 'checkbox',
                 value: gridParams.useIgnoreColor,
                 updateValue: gridControls.updateUseIgnoreColor
@@ -278,7 +281,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'ignore-color',
-                label: 'Ignore color',
+                label: t('menu.groups.additionalVisualParams.ignoreColor.label'),
                 type: 'color',
                 hidden: !gridParams.useIgnoreColor,
                 disabled: !gridParams.useIgnoreColor,
@@ -288,7 +291,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'ignore-color-opacity-threshold',
-                label: 'Ignore color opacity threshold (0-255)',
+                label: t('menu.groups.additionalVisualParams.ignoreColorOpacityThreshold.label'),
                 type: 'number',
                 hidden: !gridParams.useIgnoreColor,
                 disabled: !gridParams.useIgnoreColor,
@@ -298,7 +301,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'ignore-color-max-deviation',
-                label: 'Ignore color max deviation',
+                label: t('menu.groups.additionalVisualParams.ignoreColorMaxDeviation.label'),
                 type: 'number',
                 hidden: !gridParams.useIgnoreColor,
                 disabled: !gridParams.useIgnoreColor,
@@ -308,7 +311,7 @@ const Menu = ({
             ]}
           />
           <MenuItemGroup
-            title="Generator params"
+            title={t('menu.groups.generatorParams.title')}
             tag='li'
             foldable={true}
             defaultFolded={true}
@@ -317,7 +320,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'seed',
-                label: 'Seed',
+                label: t('menu.groups.generatorParams.seed.label'),
                 type: 'number',
                 value: generatorParams.seed,
                 updateValue: generatorControls.updateSeed
@@ -325,7 +328,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'use-cell-span',
-                label: 'Use cell span',
+                label: t('menu.groups.generatorParams.useCellSpan.label'),
                 type: 'checkbox',
                 value: generatorParams.useCellSpan,
                 updateValue: generatorControls.updateUseCellSpan
@@ -333,7 +336,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'cell-span',
-                label: 'Cell span',
+                label: t('menu.groups.generatorParams.cellSpan.label'),
                 type: 'number',
                 metaType: 'generator-group',
                 hidden: !generatorParams.useCellSpan,
@@ -344,7 +347,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'use-main-palette',
-                label: 'Use main palette',
+                label: t('menu.groups.generatorParams.useMainPalette.label'),
                 type: 'checkbox',
                 value: generatorParams.useMainPalette,
                 updateValue: generatorControls.updateUseMainPalette
@@ -352,7 +355,7 @@ const Menu = ({
               {
                 tag: 'div',
                 name: 'main-palette',
-                label: 'Main palette',
+                label: t('menu.groups.generatorParams.mainPalette.label'),
                 type: 'palette',
                 hidden: !generatorParams.useMainPalette,
                 disabled: !generatorParams.useMainPalette,
@@ -362,7 +365,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'use-surrounding-cells',
-                label: 'Use surrounding cells',
+                label: t('menu.groups.generatorParams.useSurroundingCells.label'),
                 type: 'checkbox',
                 value: generatorParams.useSurroundingCells,
                 updateValue: generatorControls.updateUseSurroundingCells
@@ -370,7 +373,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'surrounding-cells-color',
-                label: 'Surrounding cells color',
+                label: t('menu.groups.generatorParams.surroundingCellsColor.label'),
                 type: 'color',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
@@ -380,7 +383,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'surrounding-cells-color-variation',
-                label: 'Surrounding cells color variation',
+                label: t('menu.groups.generatorParams.surroundingCellsColorVariation.label'),
                 type: 'number',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
@@ -390,7 +393,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'surrounding-cells-alpha-variation',
-                label: 'Surrounding cells alpha variation',
+                label: t('menu.groups.generatorParams.surroundingCellsAlphaVariation.label'),
                 type: 'number',
                 hidden: !generatorParams.useSurroundingCells,
                 disabled: !generatorParams.useSurroundingCells,
@@ -400,7 +403,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'surrounding-cells-height',
-                label: 'Surrounding cells height',
+                label: t('menu.groups.generatorParams.surroundingCellsHeight.label'),
                 type: 'number',
                 metaType: 'generator-group',
                 hidden: !generatorParams.useSurroundingCells,
@@ -411,7 +414,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'surrounding-cells-span',
-                label: 'Surrounding cells span',
+                label: t('menu.groups.generatorParams.surroundingCellsSpan.label'),
                 type: 'number',
                 metaType: 'generator-group',
                 hidden: !generatorParams.useSurroundingCells,
@@ -422,7 +425,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'surrounding-cells-depth',
-                label: 'Surrounding cells depth',
+                label: t('menu.groups.generatorParams.surroundingCellsDepth.label'),
                 type: 'number',
                 metaType: 'generator-group',
                 hidden: !generatorParams.useSurroundingCells,
@@ -433,7 +436,7 @@ const Menu = ({
             ]}
           />
           <MenuItemGroup
-            title="Animation params"
+            title={t('menu.groups.animationParams.title')}
             tag='li'
             foldable={true}
             defaultFolded={true}
@@ -442,37 +445,37 @@ const Menu = ({
               {
                 tag: 'select',
                 name: 'animation-type',
-                label: 'Animation type',
+                label: t('menu.groups.animationParams.type.label'),
                 type: 'select',
                 value: animationParams.type,
                 updateValue: animationControls.updateType,
                 options: [
-                  { value: 'slide', label: 'Slide' },
-                  { value: 'appear', label: 'Appear' },
+                  { value: 'slide', label: t('menu.groups.animationParams.type.options.slide') },
+                  { value: 'appear', label: t('menu.groups.animationParams.type.options.appear') },
                 ]
               },
               {
                 tag: 'select',
                 name: 'animation-direction',
-                label: 'Animation direction',
+                label: t('menu.groups.animationParams.direction.label'),
                 type: 'select',
                 disabled: animationParams.type === 'appear',
                 value: animationParams.direction,
                 updateValue: animationControls.updateDirection,
                 options: [
-                  { value: 'left-to-right', label: 'Left to right', disabled: true },
-                  { value: 'right-to-left', label: 'Right to left', disabled: true },
-                  { value: 'top-to-bottom', label: 'Top to bottom', disabled: true },
-                  { value: 'bottom-to-top', label: 'Bottom to top', disabled: true },
-                  { value: 'h-sides', label: 'Horizontal sides' },
-                  { value: 'v-sides', label: 'Vertical sides', disabled: true },
-                  { value: 'all', label: 'All', disabled: true },
+                  { value: 'left-to-right', label: t('menu.groups.animationParams.direction.options.leftToRight'), disabled: true },
+                  { value: 'right-to-left', label: t('menu.groups.animationParams.direction.options.rightToLeft'), disabled: true },
+                  { value: 'top-to-bottom', label: t('menu.groups.animationParams.direction.options.topToBottom'), disabled: true },
+                  { value: 'bottom-to-top', label: t('menu.groups.animationParams.direction.options.bottomToTop'), disabled: true },
+                  { value: 'h-sides', label: t('menu.groups.animationParams.direction.options.hSides') },
+                  { value: 'v-sides', label: t('menu.groups.animationParams.direction.options.vSides'), disabled: true },
+                  { value: 'all', label: t('menu.groups.animationParams.direction.options.all'), disabled: true },
                 ]
               },
               {
                 tag: 'input',
                 name: 'animation-duration',
-                label: 'Animation duration',
+                label: t('menu.groups.animationParams.duration.label'),
                 type: 'number',
                 value: animationParams.duration,
                 updateValue: animationControls.updateDuration
@@ -480,7 +483,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'animation-delay-min',
-                label: 'Animation delay min',
+                label: t('menu.groups.animationParams.delayMin.label'),
                 type: 'number',
                 disabled: animationParams.type === 'appear',
                 value: animationParams.delay.min,
@@ -489,7 +492,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'animation-delay-max',
-                label: 'Animation delay max',
+                label: t('menu.groups.animationParams.delayMax.label'),
                 type: 'number',
                 disabled: animationParams.type === 'appear',
                 value: animationParams.delay.max,
@@ -498,21 +501,21 @@ const Menu = ({
               {
                 tag: 'select',
                 name: 'animation-easing',
-                label: 'Animation easing',
+                label: t('menu.groups.animationParams.easing.label'),
                 type: 'select',
                 value: animationParams.easing,
                 updateValue: animationControls.updateEasing,
                 options: [
-                  { value: 'linear', label: 'Linear' },
-                  { value: 'ease-in', label: 'Ease in' },
-                  { value: 'ease-out', label: 'Ease out' },
-                  { value: 'ease-in-out', label: 'Ease in out' },
+                  { value: 'linear', label: t('menu.groups.animationParams.easing.options.linear') },
+                  { value: 'ease-in', label: t('menu.groups.animationParams.easing.options.easeIn') },
+                  { value: 'ease-out', label: t('menu.groups.animationParams.easing.options.easeOut') },
+                  { value: 'ease-in-out', label: t('menu.groups.animationParams.easing.options.easeInOut') },
                 ]
               }
             ]}
           />
           <MenuItemGroup
-            title="Html grid params"
+            title={t('menu.groups.htmlGridParams.title')}
             tag='li'
             foldable={true}
             defaultFolded={true}
@@ -521,7 +524,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'mono-cell-size',
-                label: 'Mono cell size',
+                label: t('menu.groups.htmlGridParams.monoCellSize.label'),
                 type: 'number',
                 value: gridHtmlParams.monoCellSize,
                 updateValue: gridHtmlControls.updateMonoCellSize
@@ -529,7 +532,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'override-border-radius',
-                label: 'Override border radius',
+                label: t('menu.groups.htmlGridParams.overrideBorderRadius.label'),
                 type: 'number',
                 value: gridHtmlParams.overrideBorderRadius,
                 updateValue: gridHtmlControls.updateOverrideBorderRadius
@@ -537,7 +540,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'override-horizontal-gap-px',
-                label: 'Override horizontal gap px',
+                label: t('menu.groups.htmlGridParams.overrideHorizontalGapPx.label'),
                 type: 'number',
                 value: gridHtmlParams.overrideHorizontalGapPx,
                 updateValue: gridHtmlControls.updateOverrideHorizontalGapPx
@@ -545,7 +548,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'override-vertical-gap-px',
-                label: 'Override vertical gap px',
+                label: t('menu.groups.htmlGridParams.overrideVerticalGapPx.label'),
                 type: 'number',
                 value: gridHtmlParams.overrideVerticalGapPx,
                 updateValue: gridHtmlControls.updateOverrideVerticalGapPx
@@ -553,7 +556,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'override-span-width-factor',
-                label: 'Override span width factor',
+                label: t('menu.groups.htmlGridParams.overrideSpanWidthFactor.label'),
                 type: 'number',
                 value: gridHtmlParams.overrideSpanWidthFactor,
                 updateValue: gridHtmlControls.updateOverrideSpanWidthFactor
@@ -561,7 +564,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'left-correction-px',
-                label: 'Left correction px',
+                label: t('menu.groups.htmlGridParams.leftCorrectionPx.label'),
                 type: 'number',
                 value: gridHtmlParams.leftCorrectionPx,
                 updateValue: gridHtmlControls.updateLeftCorrectionPx
@@ -569,7 +572,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'top-correction-px',
-                label: 'Top correction px',
+                label: t('menu.groups.htmlGridParams.topCorrectionPx.label'),
                 type: 'number',
                 value: gridHtmlParams.topCorrectionPx,
                 updateValue: gridHtmlControls.updateTopCorrectionPx
@@ -577,7 +580,7 @@ const Menu = ({
             ]}
           />
           <MenuItemGroup
-            title="Preview background params"
+            title={t('menu.groups.previewBackgroundParams.title')}
             tag='li'
             foldable={true}
             defaultFolded={true}
@@ -586,7 +589,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'background-colors-bound',
-                label: 'Background colors bound',
+                label: t('menu.groups.previewBackgroundParams.backgroundColorsBound.label'),
                 type: 'checkbox',
                 value: values.backgroundColorsBound,
                 updateValue: valueHandlers.updateBackgroundColorsBound
@@ -594,7 +597,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'canvas-background-color',
-                label: ' Canvas background color',
+                label: t('menu.groups.previewBackgroundParams.canvasBackgroundColor.label'),
                 type: 'color',
                 defaultFolded: true,
                 value: values.canvasBackgroundColor,
@@ -603,7 +606,7 @@ const Menu = ({
               {
                 tag: 'input',
                 name: 'html-background-color',
-                label: ' Html background color',
+                label: t('menu.groups.previewBackgroundParams.htmlBackgroundColor.label'),
                 type: 'color',
                 defaultFolded: true,
                 value: values.htmlBackgroundColor,
@@ -623,9 +626,9 @@ const Menu = ({
             <label
               htmlFor="always-recalc"
               className="checkbox-input__label"
-              title="Should recalculate grid on inputs change"
+              title={t('menu.inputs.alwaysRecalc.tooltip')}
             >
-              Always recalculate grid on params change
+              {t('menu.inputs.alwaysRecalc.label')}
             </label>
           </li>
           <li>
@@ -640,9 +643,9 @@ const Menu = ({
             <label
               htmlFor="always-redraw-canvas"
               className="checkbox-input__label"
-              title="Should redraw preview on inputs change"
+              title={t('menu.inputs.alwaysRedrawCanvas.tooltip')}
             >
-              Always redraw canvas preview after recalc
+              {t('menu.inputs.alwaysRedrawCanvas.label')}
             </label>
           </li>
           <li>
@@ -657,19 +660,19 @@ const Menu = ({
             <label
               htmlFor="always-redraw-html"
               className="checkbox-input__label"
-              title="Should redraw preview on inputs change"
+              title={t('menu.inputs.alwaysRedrawHtml.tooltip')}
             >
-              Always redraw html preview after recalc
+              {t('menu.inputs.alwaysRedrawHtml.label')}
             </label>
           </li>
           <li className="button-container">
-            <button className="button" onClick={handleRecalcGrid}>Recalculate grid</button>
-            <button className="button" onClick={handleRedrawGridPreview}>Redraw canvas preview</button>
-            <button className="button" onClick={handleRedrawGridHtmlPreview}>Redraw html preview</button>
-            <button className="button" onClick={handlePlayAnimation}>Play animation</button>
-            <button className="button" onClick={handleSaveJSONClick}>Save output as JSON</button>
-            <button className="button" onClick={handleSaveHTMLClick}>Save output as HTML</button>
-            <button className="button" onClick={handleSaveCSSClick}>Save CSS example</button>
+            <button className="button" onClick={handleRecalcGrid}>{t('menu.buttons.recalculateGrid.label')}</button>
+            <button className="button" onClick={handleRedrawGridPreview}>{t('menu.buttons.redrawCanvasPreview.label')}</button>
+            <button className="button" onClick={handleRedrawGridHtmlPreview}>{t('menu.buttons.redrawHtmlPreview.label')}</button>
+            <button className="button" onClick={handlePlayAnimation}>{t('menu.buttons.playAnimation.label')}</button>
+            <button className="button" onClick={handleSaveJSONClick}>{t('menu.buttons.saveJson.label')}</button>
+            <button className="button" onClick={handleSaveHTMLClick}>{t('menu.buttons.saveHtml.label')}</button>
+            <button className="button" onClick={handleSaveCSSClick}>{t('menu.buttons.saveCss.label')}</button>
           </li>
         </ul>
       </nav>

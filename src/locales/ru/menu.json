@@ -1,1 +1,230 @@
-{}
+{
+  "groups": {
+    "pipette": {
+      "title": "Цвет под курсором (пипетка)"
+    },
+    "gridParams": {
+      "title": "Параметры сетки",
+      "rows": {
+        "label": "Строки"
+      },
+      "columns": {
+        "label": "Столбцы"
+      },
+      "borderRadius": {
+        "label": "Радиус углов ячейки"
+      },
+      "horizontalGapPx": {
+        "label": "Горизонтальный отступ px"
+      },
+      "verticalGapPx": {
+        "label": "Вертикальный отступ px"
+      },
+      "aspectRatioMode": {
+        "label": "Соотношение сторон",
+        "options": {
+          "imageRatio": "По изображению",
+          "squareRatio": "Квадратное соотношение",
+          "none": "Не фиксировать"
+        }
+      }
+    },
+    "additionalVisualParams": {
+      "title": "Доп визуальные параметры",
+      "angle": {
+        "label": "Угол"
+      },
+      "useStroke": {
+        "label": "Использовать обводку"
+      },
+      "strokeColor": {
+        "label": "Цвет обводки"
+      },
+      "strokeWidth": {
+        "label": "Ширина обводки"
+      },
+      "useIgnoreColor": {
+        "label": "Использовать игнорирование цвета"
+      },
+      "ignoreColor": {
+        "label": "Игнорируемый цвет"
+      },
+      "ignoreColorOpacityThreshold": {
+        "label": "Порог прозрачности игн.цвета (0-255)"
+      },
+      "ignoreColorMaxDeviation": {
+        "label": "Максимальное отклонение игн.цвета"
+      }
+    },
+    "generatorParams": {
+      "title": "Параметры генератора",
+      "seed": {
+        "label": "Семя"
+      },
+      "useCellSpan": {
+        "label": "Использовать расширение ячеек"
+      },
+      "cellSpan": {
+        "label": "Расширение ячеек"
+      },
+      "useMainPalette": {
+        "label": "Использовать главную палитру"
+      },
+      "mainPalette": {
+        "label": "Главная палитра"
+      },
+      "useSurroundingCells": {
+        "label": "Использовать окружающие ячейки"
+      },
+      "surroundingCellsColor": {
+        "label": "Цвет окружающих ячеек"
+      },
+      "surroundingCellsColorVariation": {
+        "label": "Вариация цвета окружающих ячеек"
+      },
+      "surroundingCellsAlphaVariation": {
+        "label": "Вариация прозр. окружающих ячеек"
+      },
+      "surroundingCellsHeight": {
+        "label": "Высота окружающих ячеек"
+      },
+      "surroundingCellsSpan": {
+        "label": "Ширина окружающих ячеек"
+      },
+      "surroundingCellsDepth": {
+        "label": "Глубина окружающих ячеек"
+      }
+    },
+    "animationParams": {
+      "title": "Параметры анимации",
+      "type": {
+        "label": "Тип",
+        "options": {
+          "slide": "Сдвиг",
+          "appear": "Появление"
+        }
+      },
+      "direction": {
+        "label": "Направление",
+        "options": {
+          "leftToRight": "Слева направо",
+          "rightToLeft": "Справа налево",
+          "topToBottom": "Сверху вниз",
+          "bottomToTop": "Снизу вверх",
+          "hSides": "Горизонтальные стороны",
+          "vSides": "Вертикальные стороны",
+          "all": "Все"
+        }
+      },
+      "duration": {
+        "label": "Продолжительность"
+      },
+      "delayMin": {
+        "label": "Задержка минимальная"
+      },
+      "delayMax": {
+        "label": "Задержка максимальная"
+      },
+      "easing": {
+        "label": "Сглаживание",
+        "options": {
+          "linear": "Линейная",
+          "easeIn": "Сгладить начало",
+          "easeOut": "Сгладить конец",
+          "easeInOut": "Сгладить начало и конец"
+        }
+      }
+    },
+    "htmlGridParams": {
+      "title": "Html параметры сетки",
+      "monoCellSize": {
+        "label": "Размер единичной ячейки"
+      },
+      "overrideBorderRadius": {
+        "label": "Коррекция радиуса углов"
+      },
+      "overrideHorizontalGapPx": {
+        "label": "Коррекция горизонтального отступа"
+      },
+      "overrideVerticalGapPx": {
+        "label": "Коррекция вертикального отступа"
+      },
+      "overrideSpanWidthFactor": {
+        "label": "Коррекция множителя ширины ячейки"
+      },
+      "leftCorrectionPx": {
+        "label": "Коррекция положения слева"
+      },
+      "topCorrectionPx": {
+        "label": "Коррекция положения сверху"
+      }
+    },
+    "previewBackgroundParams": {
+      "title": "Параметры фона предпросмотра",
+      "backgroundColorsBound": {
+        "label": "Цвета фона связаны"
+      },
+      "canvasBackgroundColor": {
+        "label": " Цвет фона холста"
+      },
+      "htmlBackgroundColor": {
+        "label": " Цвет фона в html"
+      }
+    }
+  },
+  "inputs": {
+    "theme": {
+      "label": "Тема",
+      "options": {
+        "light": "СВ",
+        "dark": "ТМ"
+      }
+    },
+    "language": {
+      "label": "Язык",
+      "options": {
+        "en": "English",
+        "ru": "Русский"
+      }
+    },
+    "alwaysRecalc": {
+      "label": "Всегда пересчитывать сетку",
+      "tooltip": "Пересчитывать ли сетку при изменении параметров"
+    },
+    "alwaysRedrawCanvas": {
+      "label": "Всегда обновлять холст",
+      "tooltip": "Обновлять ли изображение на холсте при изменении параметров"
+    },
+    "alwaysRedrawHtml": {
+      "label": "Всегда обновлять html превью",
+      "tooltip": "Обновлять ли html превью при изменении параметров"
+    }
+  },
+  "buttons": {
+    "selectFile": {
+      "label": "Выбрать файл",
+      "tooltip": "Выберите файл для обработки"
+    },
+    "recalculateGrid": {
+      "label": "Пересчитать сетку"
+    },
+    "redrawCanvasPreview": {
+      "label": "Обновить холст"
+    },
+    "redrawHtmlPreview": {
+      "label": "Обновить html превью"
+    },
+    "playAnimation": {
+      "label": "Проиграть анимацию"
+    },
+    "saveJson": {
+      "label": "Сохранить как JSON"
+    },
+    "saveHtml": {
+      "label": "Сохранить как HTML"
+    },
+    "saveCss": {
+      "label": "Сохранить пример CSS"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "colorPicker": {
+    "alpha": "Непрозр"
+  },
+  "palette": {
+    "buttons": {
+      "add": {
+        "label": "Добавить цвет"
+      }
+    }
+  },
+  "generatorGroupItem": {
+    "estimated": "Ожидаемое",
+    "min": "Мин",
+    "max": "Макс"
+  }
+}

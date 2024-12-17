@@ -1,1 +1,230 @@
-{}
+{
+  "groups": {
+    "pipette": {
+      "title": "Color under cursor (pipette)"
+    },
+    "gridParams": {
+      "title": "Grid params",
+      "rows": {
+        "label": "Rows"
+      },
+      "columns": {
+        "label": "Columns"
+      },
+      "borderRadius": {
+        "label": "Cell border radius"
+      },
+      "horizontalGapPx": {
+        "label": "Horizontal gap px"
+      },
+      "verticalGapPx": {
+        "label": "Vertical gap px"
+      },
+      "aspectRatioMode": {
+        "label": "Aspect ratio mode",
+        "options": {
+          "imageRatio": "Fix by image ratio",
+          "squareRatio": "Fix square ratio",
+          "none": "Do not fix ratio"
+        }
+      }
+    },
+    "additionalVisualParams": {
+      "title": "Additional visual params",
+      "angle": {
+        "label": "Angle"
+      },
+      "useStroke": {
+        "label": "Use stroke"
+      },
+      "strokeColor": {
+        "label": "Stroke color"
+      },
+      "strokeWidth": {
+        "label": "Stroke width"
+      },
+      "useIgnoreColor": {
+        "label": "Use ignore color"
+      },
+      "ignoreColor": {
+        "label": "Ignore color"
+      },
+      "ignoreColorOpacityThreshold": {
+        "label": "Ignore color opacity threshold (0-255)"
+      },
+      "ignoreColorMaxDeviation": {
+        "label": "Ignore color max deviation"
+      }
+    },
+    "generatorParams": {
+      "title": "Generator params",
+      "seed": {
+        "label": "Seed"
+      },
+      "useCellSpan": {
+        "label": "Use cell span"
+      },
+      "cellSpan": {
+        "label": "Cell span"
+      },
+      "useMainPalette": {
+        "label": "Use main palette"
+      },
+      "mainPalette": {
+        "label": "Main palette"
+      },
+      "useSurroundingCells": {
+        "label": "Use surrounding cells"
+      },
+      "surroundingCellsColor": {
+        "label": "Surrounding cells color"
+      },
+      "surroundingCellsColorVariation": {
+        "label": "Surrounding cells color variation"
+      },
+      "surroundingCellsAlphaVariation": {
+        "label": "Surrounding cells alpha variation"
+      },
+      "surroundingCellsHeight": {
+        "label": "Surrounding cells height"
+      },
+      "surroundingCellsSpan": {
+        "label": "Surrounding cells span"
+      },
+      "surroundingCellsDepth": {
+        "label": "Surrounding cells depth"
+      }
+    },
+    "animationParams": {
+      "title": "Animation params",
+      "type": {
+        "label": "Type",
+        "options": {
+          "slide": "Slide",
+          "appear": "Appear"
+        }
+      },
+      "direction": {
+        "label": "Direction",
+        "options": {
+          "leftToRight": "Left to right",
+          "rightToLeft": "Right to left",
+          "topToBottom": "Top to bottom",
+          "bottomToTop": "Bottom to top",
+          "hSides": "Horizontal sides",
+          "vSides": "Vertical sides",
+          "all": "All"
+        }
+      },
+      "duration": {
+        "label": "Duration"
+      },
+      "delayMin": {
+        "label": "Delay min"
+      },
+      "delayMax": {
+        "label": "Delay max"
+      },
+      "easing": {
+        "label": "Easing",
+        "options": {
+          "linear": "Linear",
+          "easeIn": "Ease in",
+          "easeOut": "Ease out",
+          "easeInOut": "Ease in-out"
+        }
+      }
+    },
+    "htmlGridParams": {
+      "title": "Html grid params",
+      "monoCellSize": {
+        "label": "Mono cell size"
+      },
+      "overrideBorderRadius": {
+        "label": "Override border radius"
+      },
+      "overrideHorizontalGapPx": {
+        "label": "Override horizontal gap px"
+      },
+      "overrideVerticalGapPx": {
+        "label": "Override vertical gap px"
+      },
+      "overrideSpanWidthFactor": {
+        "label": "Override span width factor"
+      },
+      "leftCorrectionPx": {
+        "label": "Left correction px"
+      },
+      "topCorrectionPx": {
+        "label": "Top correction px"
+      }
+    },
+    "previewBackgroundParams": {
+      "title": "Preview background params",
+      "backgroundColorsBound": {
+        "label": "Background colors bound"
+      },
+      "canvasBackgroundColor": {
+        "label": " Canvas background color"
+      },
+      "htmlBackgroundColor": {
+        "label": " Html background color"
+      }
+    }
+  },
+  "inputs": {
+    "theme": {
+      "label": "Theme",
+      "options": {
+        "light": "LI",
+        "dark": "DK"
+      }
+    },
+    "language": {
+      "label": "Language",
+      "options": {
+        "en": "English",
+        "ru": "Русский"
+      }
+    },
+    "alwaysRecalc": {
+      "label": "Always recalculate grid on params change",
+      "tooltip": "Should recalculate grid on inputs change"
+    },
+    "alwaysRedrawCanvas": {
+      "label": "Always redraw canvas preview after recalc",
+      "tooltip": "Should redraw canvas preview on params change"
+    },
+    "alwaysRedrawHtml": {
+      "label": "Always redraw html preview after recalc",
+      "tooltip": "Should redraw html preview on params change"
+    }
+  },
+  "buttons": {
+    "selectFile": {
+      "label": "Select file",
+      "tooltip": "Select a file to operate with"
+    },
+    "recalculateGrid": {
+      "label": "Recalculate grid"
+    },
+    "redrawCanvasPreview": {
+      "label": "Redraw canvas preview"
+    },
+    "redrawHtmlPreview": {
+      "label": "Redraw html preview"
+    },
+    "playAnimation": {
+      "label": "Play animation"
+    },
+    "saveJson": {
+      "label": "Save as JSON"
+    },
+    "saveHtml": {
+      "label": "Save as HTML"
+    },
+    "saveCss": {
+      "label": "Save CSS example"
+    }
+  }
+}

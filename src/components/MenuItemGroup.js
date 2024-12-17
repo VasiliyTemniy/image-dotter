@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MenuTextItem } from './MenuTextItem.js';
 import { MenuInputItem } from './MenuInputItem.js';
 import { MenuSelectItem } from './MenuSelectItem.js';
-import { MenuPaletteItem } from './Palette.js';
+import { MenuPaletteItem } from './MenuPaletteItem.js';
 
 /**
  * @typedef {import('../index.d.ts').MenuItem} MenuItem
@@ -11,7 +11,6 @@ import { MenuPaletteItem } from './Palette.js';
 /**
  * @param {{ items: MenuItem[], tag: 'div' | 'li', title: string, foldable: boolean, defaultFolded: boolean, style?: any }} params
  */
-
 const MenuItemGroup = ({
   items,
   tag,
@@ -67,6 +66,9 @@ const MenuItemGroup = ({
   );
 };
 
+/**
+ * @param {{ items: MenuItem[] }} params
+ */
 const MenuItemGroupContents = ({
   items
 }) => {

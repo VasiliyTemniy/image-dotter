@@ -6,17 +6,20 @@ import ru_main from './locales/ru/main.json';
 import ru_notifications from './locales/ru/notifications.json';
 import ru_menu from './locales/ru/menu.json';
 import ru_layout from './locales/ru/layout.json';
+import ru_inputs from './locales/ru/inputs.json';
 import en_main from './locales/en/main.json';
 import en_notifications from './locales/en/notifications.json';
 import en_menu from './locales/en/menu.json';
 import en_layout from './locales/en/layout.json';
+import en_inputs from './locales/en/inputs.json';
 
 const ru = {
   translation: {
     main: { ...ru_main },
     notifications: { ...ru_notifications },
     menu: { ...ru_menu },
-    layout: { ...ru_layout }
+    layout: { ...ru_layout },
+    inputs: { ...ru_inputs }
   }
 };
 
@@ -25,7 +28,8 @@ const en = {
     main: { ...en_main },
     notifications: { ...en_notifications },
     menu: { ...en_menu },
-    layout: { ...en_layout }
+    layout: { ...en_layout },
+    inputs: { ...en_inputs }
   }
 };
 

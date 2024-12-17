@@ -5,7 +5,6 @@
 /**
  * @param {{ item: MenuItem }} params
  */
-
 const MenuSelectItem = ({
   item
 }) => {

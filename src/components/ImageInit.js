@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ImageInit = ({
   inputCanvasRef,
@@ -7,6 +8,8 @@ const ImageInit = ({
   layoutParams,
   layoutControls,
 }) => {
+
+  const { t } = useTranslation();
 
   const topsideStyle = {
     border: '1px solid #000000',
@@ -60,7 +63,7 @@ const ImageInit = ({
             htmlFor="stretch-canvas"
             className="checkbox-input__label"
           >
-            Stretch canvas width if image is less than screen width
+            {t('layout.options.stretchCanvas')}
           </label>
         </div>
         <div className="checkbox-input">
@@ -76,7 +79,7 @@ const ImageInit = ({
             htmlFor="screen-overflow"
             className="checkbox-input__label"
           >
-            Add horizontal scrollbar if image is wider than screen width
+            {t('layout.options.screenOverflow')}
           </label>
         </div>
         <div className="checkbox-input">
@@ -92,7 +95,7 @@ const ImageInit = ({
             htmlFor="fit-canvas-in-one-row"
             className="checkbox-input__label"
           >
-            Fit both canvas in one row
+            {t('layout.options.fitBothCanvasInOneRow')}
           </label>
         </div>
         <div className="checkbox-input">
@@ -108,14 +111,14 @@ const ImageInit = ({
             htmlFor="shift-main-by-menu"
             className="checkbox-input__label"
           >
-            Shift main area with menu navbar
+            {t('layout.options.shiftMainByMenu')}
           </label>
         </div>
       </div>
       <div className={`container ${layoutParams.fitBothCanvasInOneRow ? 'flex wrap' : 'flex column'}`}>
         <div className='container padding-1rem border-black-1px width-fit-content bg-main margin-1rem'>
           <div className='title'>
-            Input image canvas
+            {t('layout.inputCanvas.title')}
           </div>
           <canvas
             id="input-canvas"
@@ -124,12 +127,12 @@ const ImageInit = ({
             ref={inputCanvasRef}
             style={topsideStyle}
           >
-            Your browser does not support the HTML5 canvas tag.
+            {t('layout.canvasSupportAlt')}
           </canvas>
         </div>
         <div className='container padding-1rem border-black-1px width-fit-content bg-main margin-1rem'>
           <div className='title'>
-            Output grid preview canvas
+            {t('layout.outputCanvas.title')}
           </div>
           <canvas
             id="output-canvas"
@@ -138,7 +141,7 @@ const ImageInit = ({
             ref={outputCanvasRef}
             style={topsideStyle}
           >
-            Your browser does not support the HTML5 canvas tag.
+            {t('layout.canvasSupportAlt')}
           </canvas>
         </div>
       </div>

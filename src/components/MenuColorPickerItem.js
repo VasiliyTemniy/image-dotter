@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const MenuColorPickerItem = ({ item }) => {
 
@@ -6,6 +7,8 @@ const MenuColorPickerItem = ({ item }) => {
   const [folded, setFolded] = useState(item.defaultFolded);
 
   const foldSymbol = folded ? ' ▾' : ' ▴';
+
+  const { t } = useTranslation();
 
   const updateTempColor = (value) => {
     setTempColor(value);
@@ -71,7 +74,7 @@ const MenuColorPickerItem = ({ item }) => {
         </span>
       </div>
       <div className='container flex align-center gap-05rem color-alpha-input'>
-        <span style={{ flexShrink: 0 }}>Alpha:</span>
+        <span style={{ flexShrink: 0 }}>{t('inputs.colorPicker.alpha')}:</span>
         <input
           type='range'
           name={`color-alpha-${item.name}`}

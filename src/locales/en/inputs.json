@@ -1,0 +1,17 @@
+{
+  "colorPicker": {
+    "alpha": "Alpha"
+  },
+  "palette": {
+    "buttons": {
+      "add": {
+        "label": "Add palette color"
+      }
+    }
+  },
+  "generatorGroupItem": {
+    "estimated": "Estimated",
+    "min": "Min",
+    "max": "Max"
+  }
+}

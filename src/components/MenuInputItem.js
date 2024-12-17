@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { MenuColorPickerItem } from './MenuColorPickerItem.js';
 
 /**
@@ -66,6 +67,9 @@ const MenuInputItem = ({
  * @param {{ item: MenuItem }} params
  */
 const MenuInputGeneratorGroupItem = ({ item }) => {
+
+  const { t } = useTranslation();
+
   return (
     <div className='input-group-tight-three'>
       <label
@@ -81,7 +85,7 @@ const MenuInputGeneratorGroupItem = ({ item }) => {
             htmlFor={`${item.type}-${item.name}-estimated`}
             className={`${item.type}-input__label`}
           >
-            Estimated
+            {t('inputs.generatorGroupItem.estimated')}
           </label>
           <input
             id={`${item.type}-${item.name}-estimated`}
@@ -99,7 +103,7 @@ const MenuInputGeneratorGroupItem = ({ item }) => {
             htmlFor={`${item.type}-${item.name}-min`}
             className={`${item.type}-input__label`}
           >
-            Min
+            {t('inputs.generatorGroupItem.min')}
           </label>
           <input
             id={`${item.type}-${item.name}-min`}
@@ -117,7 +121,7 @@ const MenuInputGeneratorGroupItem = ({ item }) => {
             htmlFor={`${item.type}-${item.name}-max`}
             className={`${item.type}-input__label`}
           >
-            Max
+            {t('inputs.generatorGroupItem.max')}
           </label>
           <input
             id={`${item.type}-${item.name}-max`}

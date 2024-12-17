@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { initialGridConfig } from './useGridConfig.js';
+import { useTranslation } from 'react-i18next';
+import { isPositiveFloatNonZero, isPositiveInteger, isPositiveIntegerNonZero } from '../utils/validators.js';
 
 /**
  * @typedef {import('../index').GridHtmlVisualParams} GridHtmlVisualParams
@@ -41,10 +43,13 @@ export const useGridHtmlConfig = (
   const [leftCorrectionPx, setLeftCorrectionPx] = useState(0);
   const [topCorrectionPx, setTopCorrectionPx] = useState(0);
 
+  const { t } = useTranslation();
+  const tBaseErrors = 'notifications.gridHtmlConfig.errors';
+
   const updateMonoCellSize = (value) => {
     let newMonoCellSize = value;
-    if (value === null || value === undefined || value < 1) {
-      showNotification('Please select a valid mono cell size', 'error');
+    if (!isPositiveIntegerNonZero(value)) {
+      showNotification(t(`${tBaseErrors}.invalidMonoCellSize`), 'error');
       newMonoCellSize = initialGridHtmlPreviewConfig.monoCellSize;
     }
     setMonoCellSize(newMonoCellSize);
@@ -56,8 +61,8 @@ export const useGridHtmlConfig = (
 
   const updateOverrideBorderRadius = (value) => {
     let newOverrideBorderRadius = value;
-    if (value === null || value === undefined || value < 0) {
-      showNotification('Please select a valid override border radius', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidOverrideBorderRadius`), 'error');
       newOverrideBorderRadius = initialGridHtmlPreviewConfig.overrideBorderRadius;
     }
     setOverrideBorderRadius(newOverrideBorderRadius);
@@ -69,8 +74,8 @@ export const useGridHtmlConfig = (
 
   const updateOverrideHorizontalGapPx = (value) => {
     let newOverrideHorizontalGapPx = value;
-    if (value === null || value === undefined || value < 0) {
-      showNotification('Please select a valid override horizontal gap', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidOverrideHorizontalGap`), 'error');
       newOverrideHorizontalGapPx = initialGridHtmlPreviewConfig.overrideHorizontalGapPx;
     }
     setOverrideHorizontalGapPx(newOverrideHorizontalGapPx);
@@ -82,8 +87,8 @@ export const useGridHtmlConfig = (
 
   const updateOverrideVerticalGapPx = (value) => {
     let newOverrideVerticalGapPx = value;
-    if (value === null || value === undefined || value < 0) {
-      showNotification('Please select a valid override vertical gap', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidOverrideVerticalGap`), 'error');
       newOverrideVerticalGapPx = initialGridHtmlPreviewConfig.overrideVerticalGapPx;
     }
     setOverrideVerticalGapPx(newOverrideVerticalGapPx);
@@ -95,8 +100,8 @@ export const useGridHtmlConfig = (
 
   const updateOverrideSpanWidthFactor = (value) => {
     let newOverrideSpanWidthFactor = value;
-    if (value === null || value === undefined || value < 0) {
-      showNotification('Please select a valid override span width factor', 'error');
+    if (!isPositiveFloatNonZero(value)) {
+      showNotification(t(`${tBaseErrors}.invalidOverrideSpanWidthFactor`), 'error');
       newOverrideSpanWidthFactor = initialGridHtmlPreviewConfig.overrideSpanWidthFactor;
     }
     setOverrideSpanWidthFactor(newOverrideSpanWidthFactor);
@@ -108,8 +113,8 @@ export const useGridHtmlConfig = (
 
   const updateLeftCorrectionPx = (value) => {
     let newLeftCorrectionPx = value;
-    if (value === null || value === undefined || !Number.isInteger(value)) {
-      showNotification('Please select a valid left correction', 'error');
+    if (!Number.isInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidLeftCorrection`), 'error');
       newLeftCorrectionPx = initialGridHtmlPreviewConfig.leftCorrectionPx;
     }
     setLeftCorrectionPx(newLeftCorrectionPx);
@@ -121,8 +126,8 @@ export const useGridHtmlConfig = (
 
   const updateTopCorrectionPx = (value) => {
     let newTopCorrectionPx = value;
-    if (value === null || value === undefined || !Number.isInteger(value)) {
-      showNotification('Please select a valid top correction', 'error');
+    if (!Number.isInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidTopCorrection`), 'error');
       newTopCorrectionPx = initialGridHtmlPreviewConfig.topCorrectionPx;
     }
     setTopCorrectionPx(newTopCorrectionPx);

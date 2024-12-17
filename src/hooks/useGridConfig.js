@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { isPositiveInteger, isPositiveIntegerNonZero } from '../utils/validators.js';
 
 /**
  * @typedef {import('../index.d.ts').GridConfigState} GridConfigState
@@ -63,17 +65,20 @@ export const useGridConfig = (
   const [useIgnoreColor, setUseIgnoreColor] = useState(initialGridConfig.useIgnoreColor);
   const [ignoreColor, setIgnoreColor] = useState(initialGridConfig.ignoreColor);
 
+  const { t } = useTranslation();
+  const tBaseErrors = 'notifications.gridConfig.errors';
+
   // Main grid params
   const updateRowsCount = (count) => {
-    if (!count || !Number.isInteger(count) || count < 1) {
-      showNotification('Rows count must be a positive integer', 'error');
+    if (!isPositiveIntegerNonZero(count)) {
+      showNotification(t(`${tBaseErrors}.invalidRowsCount`), 'error');
       setRowsCount(initialGridConfig.rowsCount);
       return;
     }
     let localRowsCount = count;
     let localColumnsCount = columnsCount;
     if (localRowsCount * localColumnsCount > MAX_CELLS) {
-      showNotification('Too many cells', 'error');
+      showNotification(t(`${tBaseErrors}.tooManyCells`), 'error');
       localRowsCount = Math.floor(MAX_CELLS / localColumnsCount) || 1;
     }
 
@@ -100,15 +105,15 @@ export const useGridConfig = (
   };
 
   const updateColumnsCount = (count) => {
-    if (!count || !Number.isInteger(count) || count < 1) {
-      showNotification('Columns count must be a positive integer', 'error');
+    if (!isPositiveIntegerNonZero(count)) {
+      showNotification(t(`${tBaseErrors}.invalidColumnsCount`), 'error');
       setColumnsCount(initialGridConfig.columnsCount);
       return;
     }
     let localRowsCount = rowsCount;
     let localColumnsCount = count;
     if (localRowsCount * localColumnsCount > MAX_CELLS) {
-      showNotification('Too many cells', 'error');
+      showNotification(t(`${tBaseErrors}.tooManyCells`), 'error');
       localColumnsCount = Math.floor(MAX_CELLS / localRowsCount) || 1;
     }
 
@@ -136,8 +141,8 @@ export const useGridConfig = (
 
   const updateBorderRadius = (value) => {
     let newBorderRadius = value;
-    if (value === null || value === undefined || !Number.isInteger(value) || value < 0) {
-      showNotification('Radius must be a positive integer', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidBorderRadius`), 'error');
       newBorderRadius = initialGridConfig.borderRadius;
     }
     setRadius(newBorderRadius);
@@ -150,8 +155,8 @@ export const useGridConfig = (
 
   const updateHorizontalGapPx = (value) => {
     let newHorizontalGapPx = value;
-    if (value === null || value === undefined || !Number.isInteger(value) || value < 0) {
-      showNotification('Horizontal gap must be a positive integer or 0', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidHorizontalGap`), 'error');
       newHorizontalGapPx = initialGridConfig.horizontalGapPx;
     }
     setHorizontalGapPx(newHorizontalGapPx);
@@ -164,8 +169,8 @@ export const useGridConfig = (
 
   const updateVerticalGapPx = (value) => {
     let newVerticalGapPx = value;
-    if (value === null || value === undefined || !Number.isInteger(value) || value < 0) {
-      showNotification('Vertical gap must be a positive integer or 0', 'error');
+    if (!isPositiveInteger(value)) {
+      showNotification(t(`${tBaseErrors}.invalidVerticalGap`), 'error');
       newVerticalGapPx = initialGridConfig.verticalGapPx;
     }
     setVerticalGapPx(newVerticalGapPx);
@@ -205,8 +210,8 @@ export const useGridConfig = (
   // Additional grid params
   const updateAngle = (value) => {
     let newAngle = value;
-    if (value === null || value === undefined || !Number.isInteger(value) || value < 0 || value > 360) {
-      showNotification('Angle must be a positive integer between 0 and 360', 'error');
+    if (!isPositiveInteger(value) || value > 360) {
+      showNotification(t(`${tBaseErrors}.invalidAngle`), 'error');
       newAngle = initialGridConfig.angle;
     }
     setAngle(newAngle);
@@ -239,8 +244,8 @@ export const useGridConfig = (
 
   const updateStrokeWidth = (value) => {
     const newStroke = { ...stroke, width: value };
-    if (value === null || value === undefined || !Number.isInteger(value) || value < 1) {
-      showNotification('Stroke width must be a positive integer', 'error');
+    if (!isPositiveIntegerNonZero(value)) {
+      showNotification(t(`${tBaseErrors}.invalidStrokeWidth`), 'error');
       newStroke.width = initialGridConfig.stroke.width;
     }
     _updateStroke(newStroke);
@@ -269,8 +274,8 @@ export const useGridConfig = (
 
   const updateIgnoreColorOpacityThreshold = (value) => {
     const newIgnoreColor = { ...ignoreColor, opacityThreshold: value };
-    if (value === null || value === undefined || !Number.isInteger(value) || value < 0 || value > 255) {
-      showNotification('Ignore color opacity threshold must be a positive integer between 0 and 255', 'error');
+    if (!isPositiveInteger(value) || value > 255) {
+      showNotification(t(`${tBaseErrors}.invalidIgnoreColorOpacityThreshold`), 'error');
       newIgnoreColor.opacityThreshold = initialGridConfig.ignoreColor.opacityThreshold;
     }
     _updateIgnoreColor(newIgnoreColor);
@@ -278,8 +283,8 @@ export const useGridConfig = (
 
   const updateIgnoreColorMaxDeviation = (value) => {
     const newIgnoreColor = { ...ignoreColor, maxDeviation: value };
-    if (value === null || value === undefined || !Number.isInteger(value) || value < 0 || value > 255) {
-      showNotification('Ignore color max deviation must be a positive integer between 0 and 255', 'error');
+    if (!isPositiveInteger(value) || value > 255) {
+      showNotification(t(`${tBaseErrors}.invalidIgnoreColorMaxDeviation`), 'error');
       newIgnoreColor.maxDeviation = initialGridConfig.ignoreColor.maxDeviation;
     }
     _updateIgnoreColor(newIgnoreColor);

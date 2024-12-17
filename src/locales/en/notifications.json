@@ -1,1 +1,66 @@
-{}
+{
+  "animationConfig": {
+    "errors": {
+      "invalidType": "Please select a valid animation type",
+      "invalidDirection": "Please select a valid animation direction",
+      "invalidDuration": "Duration must be a positive integer",
+      "invalidDelayMin": "Minimum delay must be a positive integer",
+      "invalidDelayMax": "Maximum delay must be a positive integer",
+      "invalidEasing": "Please select a valid easing function"
+    }
+  },
+  "generatorConfig": {
+    "errors": {
+      "invalidSeed": "Seed must be a positive integer between 1 and 99999",
+      "invalidCellSpanEstimated": "Cell span estimated must be a positive float more than 1 and between min and max",
+      "cellSpanMinLessMax": "Cell span min must be less than cell span max",
+      "invalidCellSpanMin": "Cell span min must be a positive integer",
+      "cellSpanMaxGreaterMin": "Cell span max must be greater than cell span min",
+      "invalidCellSpanMax": "Cell span max must be a positive integer",
+      "noColorChosen": "Please select a color",
+      "oneColorLeft": "You cannot remove the last palette color - just set \"Use palette\" to false",
+      "invalidSurroundingCellsColorVariation": "Surrounding cells color variation must be a positive integer between 0 and 255",
+      "invalidSurroundingCellsAlphaVariation": "Surrounding cells alpha variation must be a positive integer between 0 and 255",
+      "invalidSurroundingCellsHeightEstimated": "Surrounding cells height estimated must be a positive float more than 1 and between min and max",
+      "surroundingCellsHeightMinLessMax": "Surrounding cells height min must be less than surrounding cells height max",
+      "invalidSurroundingCellsHeightMin": "Surrounding cells height min must be a positive integer",
+      "surroundingCellsHeightMaxGreaterMin": "Surrounding cells height max must be greater than surrounding cells height min",
+      "invalidSurroundingCellsHeightMax": "Surrounding cells height max must be a positive integer",
+      "invalidSurroundingCellsDepthEstimated": "Surrounding cells depth estimated must be a positive float more than 1 and between min and max",
+      "surroundingCellsDepthMinLessMax": "Surrounding cells depth min must be less than surrounding cells depth max",
+      "invalidSurroundingCellsDepthMin": "Surrounding cells depth min must be a positive integer",
+      "surroundingCellsDepthMaxGreaterMin": "Surrounding cells depth max must be greater than surrounding cells depth min",
+      "invalidSurroundingCellsDepthMax": "Surrounding cells depth max must be a positive integer",
+      "invalidSurroundingCellsSpanEstimated": "Surrounding cells span estimated must be a positive float more than 1 and between min and max",
+      "surroundingCellsSpanMinLessMax": "Surrounding cells span min must be less than surrounding cells span max",
+      "invalidSurroundingCellsSpanMin": "Surrounding cells span min must be a positive integer",
+      "surroundingCellsSpanMaxGreaterMin": "Surrounding cells span max must be greater than surrounding cells span min",
+      "invalidSurroundingCellsSpanMax": "Surrounding cells span max must be a positive integer"
+    }
+  },
+  "gridConfig": {
+    "errors": {
+      "tooManyCells": "Too many cells - try reducing the rows or columns count",
+      "invalidRowsCount": "Rows count must be a positive integer",
+      "invalidColumnsCount": "Columns count must be a positive integer",
+      "invalidBorderRadius": "Border radius must be a positive integer",
+      "invalidHorizontalGap": "Horizontal gap must be a positive integer",
+      "invalidVerticalGap": "Vertical gap must be a positive integer",
+      "invalidAngle": "Angle must be a positive integer between 0 and 360",
+      "invalidStrokeWidth": "Stroke width must be a positive integer greater than 0",
+      "invalidIgnoreColorOpacityThreshold": "Ignore color opacity threshold must be a positive integer between 0 and 255",
+      "invalidIgnoreColorMaxDeviation": "Ignore color max deviation must be a positive integer between 0 and 255"
+    }
+  },
+  "gridHtmlConfig": {
+    "errors": {
+      "invalidMonoCellSize": "Mono cell size must be a positive integer greater than 0",
+      "invalidOverrideBorderRadius": "Override border radius must be a positive integer",
+      "invalidOverrideHorizontalGapPx": "Override horizontal gap must be a positive integer",
+      "invalidOverrideVerticalGapPx": "Override vertical gap must be a positive integer",
+      "invalidOverrideSpanWidthFactor": "Override span width factor must be a positive float greater than 0",
+      "invalidLeftCorrection": "Left correction must be an integer",
+      "invalidTopCorrection": "Top correction must be an integer"
+    }
+  }
+}
