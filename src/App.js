@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import './styles/grid-output.css';
-import './styles/nav.css';
+import './styles/menu.css';
 import './styles/button.css';
 import './styles/input.css';
 import './styles/notification.css';
@@ -18,6 +18,7 @@ import './styles/container.css';
 import './styles/main.css';
 import './styles/color-picker.css';
 import './styles/switch.css';
+import './styles/modal.css';
 
 import { useDebouncedCallback } from './hooks/useDebouncedCallback.js';
 import { useGridConfig } from './hooks/useGridConfig.js';
@@ -35,6 +36,7 @@ import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
 import { gridCss } from './examples/gridCss.js';
 import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
 import { pipetteHexText, pipetteRGBAText } from './utils/color';
+import { Modal } from './components/Modal.js';
 
 
 /**
@@ -86,6 +88,8 @@ const App = () => {
 
   const [menuOpen, setMenuOpen] = useState(true);
 
+  const [docsModalOpen, setDocsModalOpen] = useState(false);
+
   const [backgroundColorsBound, setBackgroundColorsBound] = useState(true);
   const [htmlBackgroundColor, setHtmlBackgroundColor] = useState('#1C1E21FF');
   const [canvasBackgroundColor, setCanvasBackgroundColor] = useState('#FFFFFFFF');
@@ -102,7 +106,7 @@ const App = () => {
 
   const [language, setLanguage] = useState(storageLanguage);
 
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const showNotification = (text, type) => {
     if (message.timeoutId) {
@@ -525,6 +529,11 @@ const App = () => {
     i18n.changeLanguage(value);
   };
 
+  const updateDocsModalOpen = (value) => {
+    console.log('Tryin to set modal open', value);
+    setDocsModalOpen(value);
+  };
+
   const handleFileSelection = async (e) => {
     e.preventDefault();
     if (!e.target.files || !e.target.files[0]) {
@@ -644,6 +653,9 @@ const App = () => {
 
   return (
     <>
+      <Modal title={t('main.docsTitle')} active={docsModalOpen} close={() => updateDocsModalOpen(false)} closeOnBgClick>
+        Well, hello there!
+      </Modal>
       <Notification message={message.text} type={message.type} shown={message.shown}/>
       <Menu
         menuOpen={menuOpen}
@@ -683,7 +695,8 @@ const App = () => {
           updateAlwaysRedrawCanvas,
           updateAlwaysRedrawHtml,
           toggleTheme,
-          updateLanguage
+          updateLanguage,
+          updateDocsModalOpen
         }}
         refs={{
           pipetteRGBARef,

@@ -76,6 +76,9 @@ const Menu = ({
       <input type="checkbox" id="nav-toggle" checked={menuOpen} onChange={(e) => updateMenuOpen(e.target.checked)} hidden />
       <nav className="nav" ref={menuRef}>
         <label htmlFor="nav-toggle" className="nav-toggle"></label>
+        <button id="docs-modal-toggle" className="button" onClick={() => valueHandlers.updateDocsModalOpen(true)}>
+          <span>i</span>
+        </button>
         <h2 className="logo">
           <span>I</span><span style={{ color: '#ff0000' }}>Dotter</span>
         </h2>
