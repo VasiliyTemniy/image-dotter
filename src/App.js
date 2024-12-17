@@ -27,15 +27,15 @@ import { useAnimationConfig } from './hooks/useAnimationConfig.js';
 import { useLayoutConfig } from './hooks/useLayoutConfig.js';
 import { useGridHtmlConfig } from './hooks/useGridHtmlConfig.js';
 
-import { ImageInit } from './components/ImageInit';
-import { GridOutput } from './components/GridOutput';
-import { Menu } from './components/Menu';
-import { Notification } from './components/Notification';
+import { ImageInit } from './components/ImageInit.js';
+import { GridOutput } from './components/GridOutput.js';
+import { Menu } from './components/Menu.js';
+import { Notification } from './components/Notification.js';
 import { GeneratorTestComponent } from './components/GeneratorTestComponent.js';
 
 import { gridCss } from './examples/gridCss.js';
 import { getLocalStorageMap, setLocalStorageMap } from './utils/storage.js';
-import { pipetteHexText, pipetteRGBAText } from './utils/color';
+import { pipetteHexText, pipetteRGBAText } from './utils/color.js';
 import { Modal } from './components/Modal.js';
 
 
