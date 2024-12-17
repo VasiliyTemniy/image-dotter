@@ -1,6 +1,6 @@
 {
   "name": "image-dotter",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "maketh coloured dot array for further usage",
   "private": true,
   "dependencies": {
