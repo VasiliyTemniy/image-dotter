@@ -592,13 +592,16 @@ const App = () => {
       horizontalGapPx: gridHtmlParams.overrideHorizontalGapPx ?? gridParams.horizontalGapPx,
       verticalGapPx: gridHtmlParams.overrideVerticalGapPx ?? gridParams.verticalGapPx,
       angle: gridParams.angle,
-      stroke: gridParams.stroke,
       monoCellSize: gridParams.monoCellSize,
       overrideSpanWidthFactor: gridHtmlParams.overrideSpanWidthFactor ?? 1,
       leftCorrectionPx: gridHtmlParams.leftCorrectionPx ?? 0,
       topCorrectionPx: gridHtmlParams.topCorrectionPx ?? 0,
       grid: gridOutputRef.current.grid,
     };
+
+    if (gridParams.useStroke) {
+      content.stroke = gridParams.stroke;
+    }
 
     const blob = new Blob([JSON.stringify(content)], { type: 'application/json' });
 
